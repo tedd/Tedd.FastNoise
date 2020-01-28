@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Xunit;
 
 namespace Tedd.FastNoise.Tests
@@ -8,7 +9,7 @@ namespace Tedd.FastNoise.Tests
         [Fact]
         public void Test1()
         {
-
+            
         }
     }
 }

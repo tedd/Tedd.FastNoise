@@ -72,12 +72,13 @@ namespace Tedd.FastNoise.Visualizer.ViewModels
              {
                  for (var y = 0; y < h; y++)
                  {
-                     var p = y * w + x;
-                     var v = g.Perlin((double)x / (double)w * ((double)Zoom / 10D), (double)y / (double)h * ((double)Zoom / 10D), 0);
-                     var c = (byte)(255D * v);
-                     image.ImageBytePtr[p * 3 + 0] = c;
-                     image.ImageBytePtr[p * 3 + 1] = c;
-                     image.ImageBytePtr[p * 3 + 2] = c;
+                     //TODO
+                     //var p = y * w + x;
+                     //var v = g.Perlin((double)x / (double)w * ((double)Zoom / 10D), (double)y / (double)h * ((double)Zoom / 10D), 0);
+                     //var c = (byte)(255D * v);
+                     //image.ImageBytePtr[p * 3 + 0] = c;
+                     //image.ImageBytePtr[p * 3 + 1] = c;
+                     //image.ImageBytePtr[p * 3 + 2] = c;
                  }
              }
                 //);
