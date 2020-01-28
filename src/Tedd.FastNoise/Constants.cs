@@ -12,7 +12,7 @@ namespace Tedd.FastNoise
         // https://github.com/dotnet/roslyn/pull/24621
         public static ReadOnlySpan<int> Permutations => new[]
 #else
-        private static readonly int[] Permutations =
+        public static readonly int[] Permutations =
 #endif
         {
             151, 160, 137, 91, 90, 15,
@@ -32,9 +32,9 @@ namespace Tedd.FastNoise
 
 #if !NETCOREAPP2 && !NETSTANDARD && !DOTNET
         // https://github.com/dotnet/roslyn/pull/24621
-        private static ReadOnlySpan<int> PermutationsOverflow => new[]
+        public static ReadOnlySpan<int> PO => new[]
 #else
-        private static readonly int[] PermutationsOverflow =
+        public static readonly int[] PO =
 #endif
         {
             151, 160, 137, 091, 090, 015, 131, 013, 201, 095, 096, 053, 194, 233, 007, 225,
