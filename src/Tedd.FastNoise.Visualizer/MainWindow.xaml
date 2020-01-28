@@ -1,0 +1,15 @@
+﻿<Window x:Class="Tedd.FastNoise.Visualizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tedd.FastNoise.Visualizer"
+        xmlns:ui="clr-namespace:Tedd.FastNoise.Visualizer.UI"
+        xmlns:viewModels="clr-namespace:Tedd.FastNoise.Visualizer.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel, IsDesignTimeCreatable=False}"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+<ui:DimensionsTabs x:Name="DimensionsTabs" />
+    </Grid>
+</Window>
