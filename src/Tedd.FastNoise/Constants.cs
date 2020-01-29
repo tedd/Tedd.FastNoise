@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Tedd.FastNoise
+namespace Tedd.FastNoiseTmp
 {
     internal static class Constants
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using c = Tedd.FastNoise.Constants;
+using c = Tedd.FastNoiseTmp.Constants;
 
-namespace Tedd.FastNoise
+namespace Tedd.FastNoiseTmp
 {
     public class Generator
     {

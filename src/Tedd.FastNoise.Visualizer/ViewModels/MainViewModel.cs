@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Tedd.FastNoise.Visualizer.Annotations;
+using Tedd.FastNoiseTmp;
 
 namespace Tedd.FastNoise.Visualizer.ViewModels
 {

@@ -13,4 +13,12 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tedd.FastNoise\Tedd.FastNoise.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Referenced\" />
+  </ItemGroup>
+
 </Project>
