@@ -67,21 +67,31 @@ namespace Tedd.FastNoise.Visualizer.ViewModels
             var w = image.Width;
             var h = image.Height;
 
-            for (var x = 0; x < w; x++)
-            //Parallel.For(0, w, new ParallelOptions { MaxDegreeOfParallelism = 32 }, (x) =>
-             {
-                 for (var y = 0; y < h; y++)
-                 {
-                     //TODO
-                     //var p = y * w + x;
-                     //var v = g.Perlin((double)x / (double)w * ((double)Zoom / 10D), (double)y / (double)h * ((double)Zoom / 10D), 0);
-                     //var c = (byte)(255D * v);
-                     //image.ImageBytePtr[p * 3 + 0] = c;
-                     //image.ImageBytePtr[p * 3 + 1] = c;
-                     //image.ImageBytePtr[p * 3 + 2] = c;
-                 }
-             }
-                //);
+            var span = new Span<double>(new double[w * h]);
+            g.Fill(span, w, h);
+            for (var i = 0; i < w * h; i++)
+            {
+                var c = (byte)(255 * span[i]);
+                image.ImageBytePtr[i * 3 + 0] = c;
+                image.ImageBytePtr[i * 3 + 1] = c;
+                image.ImageBytePtr[i * 3 + 2] = c;
+            }
+
+            //for (var x = 0; x < w; x++)
+            ////Parallel.For(0, w, new ParallelOptions { MaxDegreeOfParallelism = 32 }, (x) =>
+            // {
+            //     for (var y = 0; y < h; y++)
+            //     {
+            //         //TODO
+            //         //var p = y * w + x;
+            //         //var v = g.Perlin((double)x / (double)w * ((double)Zoom / 10D), (double)y / (double)h * ((double)Zoom / 10D), 0);
+            //         //var c = (byte)(255D * v);
+            //         //image.ImageBytePtr[p * 3 + 0] = c;
+            //         //image.ImageBytePtr[p * 3 + 1] = c;
+            //         //image.ImageBytePtr[p * 3 + 2] = c;
+            //     }
+            // }
+            //);
             image.Invalidate();
         }
 
