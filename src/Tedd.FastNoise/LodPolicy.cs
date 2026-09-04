@@ -20,6 +20,12 @@ namespace Tedd.FastNoise;
 /// argument as mipmapping a texture, applied to a procedural function.
 /// </para>
 /// <para>
+/// The ramp does not stop at one octave. Once even the coarsest octave is finer than the grid, its
+/// amplitude falls to zero and the field flattens to its mean -- the same way the smallest mip of a
+/// texture is its average colour, not one arbitrarily chosen texel. Keeping a final octave at full
+/// amplitude instead would leave a zoomed-out view covered in peaks that are pure aliasing.
+/// </para>
+/// <para>
 /// Off by default. With it off, output is bit-identical to FastNoiseLite for any step; with it on,
 /// coarse fills deliberately differ from a decimated fine fill, because that is the point.
 /// </para>
@@ -67,36 +73,51 @@ public readonly record struct LodPolicy
     /// <param name="lacunarity">Frequency multiplier between octaves.</param>
     /// <param name="octaves">Octave count at full detail.</param>
     /// <param name="step">World units between samples.</param>
-    /// <returns>The octave count to run, and an amplitude multiplier in (0, 1] for the final octave.</returns>
+    /// <returns>
+    /// The octave count to run, and an amplitude multiplier in [0, 1] for the final octave. Zero is
+    /// a legitimate answer: it means the sample grid cannot carry any of this field.
+    /// </returns>
     public (int Octaves, float LastOctaveFade) Resolve(float baseFrequency, float lacunarity, int octaves, float step)
     {
-        if (!CullOctaves || octaves <= 1 || lacunarity <= 1f || baseFrequency <= 0f || !float.IsFinite(step))
+        if (!CullOctaves || lacunarity <= 1f || baseFrequency <= 0f || step <= 0f || !float.IsFinite(step))
         {
             return (octaves, 1f);
         }
 
         float nyquist = NyquistFactor > 0f ? NyquistFactor : 2f;
 
-        // An octave survives while its wavelength is at least `nyquist` sample steps:
-        //   1 / (baseFrequency * lacunarity^i) >= nyquist * step
-        // Solving for i gives the count directly, without walking the octaves.
+        // Octave i has wavelength 1 / (baseFrequency * lacunarity^i), and survives while that is at
+        // least `nyquist` sample steps. Solving for i gives the count directly, fractionally, without
+        // walking the octaves. `exact` is how many octaves this sample grid can actually carry; it
+        // goes negative once even the base octave is finer than the grid.
         float limit = 1f / (nyquist * step * baseFrequency);
-        if (limit <= 1f)
+        float exact = (MathF.Log(limit) / MathF.Log(lacunarity)) + 1f;
+
+        if (exact >= octaves)
         {
-            // Even the base octave is below the sample grid. Keep one so the field does not vanish.
-            return (1, 1f);
+            return (octaves, 1f);
         }
 
-        float exact = MathF.Log(limit) / MathF.Log(lacunarity) + 1f;
-        int usable = Math.Clamp((int)exact, 1, octaves);
+        int usable = Math.Clamp((int)MathF.Floor(exact), 1, octaves);
 
-        if (!FadeLastOctave || usable >= octaves)
+        if (!FadeLastOctave)
         {
             return (usable, 1f);
         }
 
-        // Fractional part of the cutoff: how far the next octave is from becoming representable.
-        // Ramping the final octave's amplitude across that interval removes the pop.
+        if (exact <= 0f)
+        {
+            // Nothing is resolvable, not even the base octave. The correct band-limited answer is
+            // the average of the field over the sample footprint, which for zero-mean noise is zero.
+            // Keeping one octave at full amplitude instead -- the obvious "don't let it vanish"
+            // reflex -- is what makes a zoomed-out view keep its mountain peaks: they are not
+            // mountains any more, they are the aliased remains of an octave the grid cannot carry,
+            // and they change shape rather than flatten as the camera moves.
+            return (1, 0f);
+        }
+
+        // Below one whole octave, `exact` is itself the fraction of the base octave that survives,
+        // so the same expression carries the ramp all the way down to silence.
         float fade = exact - MathF.Floor(exact);
         return (usable, fade <= 0f ? 1f : fade);
     }

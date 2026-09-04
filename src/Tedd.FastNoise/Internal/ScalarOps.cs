@@ -129,5 +129,7 @@ internal readonly struct ScalarOps : ISimdOps<float, int>
     public static float Load(ReadOnlySpan<float> source) => source[0];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Store(float value, Span<float> destination) => destination[0] = value;
+    public static void Store(float value, Span<float> destination, int index)
+        => System.Runtime.CompilerServices.Unsafe.Add(
+            ref System.Runtime.InteropServices.MemoryMarshal.GetReference(destination), (nint)(uint)index) = value;
 }

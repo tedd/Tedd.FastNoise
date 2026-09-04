@@ -89,7 +89,7 @@ internal static class StackFill
                 TF baseX = TOps.Ramp(region.OriginX + (column * step), step);
                 TF baseY = TOps.F(worldY);
 
-                TOps.Store(Evaluate2<TOps, TF, TI>(layers, baseX, baseY), destination.Slice(rowStart + column, lanes));
+                TOps.Store(Evaluate2<TOps, TF, TI>(layers, baseX, baseY), destination, rowStart + column);
             }
 
             for (; column < width; column++)
@@ -134,7 +134,7 @@ internal static class StackFill
 
                 TOps.Store(
                     Evaluate3<TOps, TF, TI>(layers, baseX, baseY, baseZ),
-                    destination.Slice(rowStart + column, lanes));
+                    destination, rowStart + column);
             }
 
             for (; column < width; column++)

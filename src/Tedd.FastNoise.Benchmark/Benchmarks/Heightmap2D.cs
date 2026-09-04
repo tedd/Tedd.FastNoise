@@ -79,9 +79,17 @@ public class Heightmap2D
 
     /// <summary>The 2020 implementation: scalar, double precision, one sample per call.</summary>
     /// <remarks>
+    /// <para>
     /// Not an apples-to-apples algorithm comparison -- it is table-based Perlin in double precision
     /// against simplex in single -- but it is where this repository actually started, and the point
     /// of keeping it is to know the size of the gap rather than to guess at it.
+    /// </para>
+    /// <para>
+    /// The octave loop is written out here because v1 had no concept of a fractal. Without it this
+    /// row would do a fraction of the work of every other row at <see cref="Octaves"/> above one and
+    /// look far better than it is -- which is exactly the kind of quiet unfairness that makes a
+    /// benchmark suite worse than no benchmark suite.
+    /// </para>
     /// </remarks>
     [Benchmark(Description = "v1 archive (2020, scalar double)")]
     public double[] V1Archive()
@@ -90,7 +98,18 @@ public class Heightmap2D
         {
             for (int x = 0; x < Size; x++)
             {
-                _destinationV1[x + (y * Size)] = _v1.Perlin(x * 0.01d, y * 0.01d, 0d);
+                double sum = 0;
+                double amplitude = 1d / 1.75d;
+                double frequency = 0.01d;
+
+                for (int octave = 0; octave < Octaves; octave++)
+                {
+                    sum += _v1.Perlin(x * frequency, y * frequency, 0d) * amplitude;
+                    frequency *= 2d;
+                    amplitude *= 0.5d;
+                }
+
+                _destinationV1[x + (y * Size)] = sum;
             }
         }
 

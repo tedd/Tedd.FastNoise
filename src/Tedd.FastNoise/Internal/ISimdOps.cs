@@ -123,6 +123,14 @@ internal interface ISimdOps<TF, TI>
     /// <summary>Reads <see cref="Count"/> lanes starting at the beginning of <paramref name="source"/>.</summary>
     static abstract TF Load(ReadOnlySpan<float> source);
 
-    /// <summary>Writes <see cref="Count"/> lanes to the beginning of <paramref name="destination"/>.</summary>
-    static abstract void Store(TF value, Span<float> destination);
+    /// <summary>
+    /// Writes <see cref="Count"/> lanes to <paramref name="destination"/> starting at <paramref name="index"/>.
+    /// </summary>
+    /// <remarks>
+    /// Takes an index rather than a pre-sliced span on purpose. Slicing per write costs a bounds
+    /// check and a span construction, and in the scalar instantiation -- where a "vector" is one
+    /// float -- that was measurably more expensive than the store itself. The caller has already
+    /// proved the range is in bounds by its loop condition.
+    /// </remarks>
+    static abstract void Store(TF value, Span<float> destination, int index);
 }

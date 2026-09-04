@@ -99,8 +99,19 @@ public sealed class CompiledNoiseStack
                 continue;
             }
 
-            (int octaves, _) = _lod.Resolve(plan.Frequency, plan.Lacunarity, plan.Octaves, step);
-            names.Add($"{plan.Name ?? plan.Kernel.NoiseType.ToString()} ({octaves}/{plan.Octaves} octaves)");
+            (int octaves, float fade) = _lod.Resolve(plan.Frequency, plan.Lacunarity, plan.Octaves, step);
+            string name = plan.Name ?? plan.Kernel.NoiseType.ToString();
+
+            // The fade matters as much as the count: one octave at 4% amplitude and one octave at
+            // full amplitude cost the same and look nothing like each other.
+            string detail = fade switch
+            {
+                <= 0f => "silent, below the sample grid",
+                < 1f => $"{octaves}/{plan.Octaves} octaves, finest at {fade:P0}",
+                _ => $"{octaves}/{plan.Octaves} octaves",
+            };
+
+            names.Add($"{name} ({detail})");
         }
 
         return names;

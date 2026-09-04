@@ -213,5 +213,8 @@ internal readonly unsafe struct VectorOps : ISimdOps<Vector<float>, Vector<int>>
     public static Vector<float> Load(ReadOnlySpan<float> source) => new(source);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Store(Vector<float> value, Span<float> destination) => value.CopyTo(destination);
+    public static void Store(Vector<float> value, Span<float> destination, int index)
+        => Unsafe.WriteUnaligned(
+            ref Unsafe.As<float, byte>(ref Unsafe.Add(ref MemoryMarshal.GetReference(destination), (nint)(uint)index)),
+            value);
 }

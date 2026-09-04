@@ -161,15 +161,26 @@ var noise = new NoiseGenerator(1337)
     Lod = LodPolicy.Automatic,
 };
 
-noise.Fill(closeUp,  new GridRegion2D(0, 0, 256, 256, step: 1f));      // all 8 octaves
-noise.Fill(fromOrbit, new GridRegion2D(0, 0, 256, 256, step: 4096f));  // 1 octave, and correct
+noise.Fill(closeUp,  new GridRegion2D(0, 0, 256, 256, Step: 1f));      // all 8 octaves
+noise.Fill(fromOrbit, new GridRegion2D(0, 0, 256, 256, Step: 4096f));  // 1 octave, and correct
 ```
 
-`FadeLastOctave` ramps the finest surviving octave's amplitude across the cull boundary so detail
-appears smoothly as you approach rather than popping in. The normalisation constant is deliberately
-*not* recomputed for the reduced octave count — renormalising would make the coarse rendering of a
-landscape a different height from the fine one, and the terrain would visibly breathe as you flew
-toward it.
+`FadeLastOctave` ramps the finest surviving octave's amplitude across the cull boundary, so detail
+appears smoothly as you approach rather than popping in. The ramp continues past the base octave:
+once even the coarsest octave is finer than the sample grid, its amplitude falls to zero and the
+field flattens to its mean.
+
+That last part matters more than it sounds. The obvious alternative — keep one octave at full
+amplitude so the field never vanishes — is what makes a zoomed-out view *keep its mountain peaks*.
+Those are not mountains any more; they are the aliased remains of an octave the grid cannot carry,
+and as the camera moves they slide and change shape instead of flattening. Pulling back should
+smooth the landscape, exactly as the smallest mip of a texture is its average colour rather than one
+arbitrarily chosen texel. If a view goes flat, that is the honest answer: nothing in the
+configuration has features large enough to be visible at that spacing.
+
+The normalisation constant is deliberately *not* recomputed for the reduced octave count —
+renormalising would make the coarse rendering of a landscape a different height from the fine one,
+and the terrain would visibly breathe as you flew toward it.
 
 Off by default, because with it off the output is bit-identical to FastNoiseLite at any step.
 

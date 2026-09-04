@@ -60,7 +60,7 @@ internal static class GridFill
                 NoisePipeline.Transform2<TOps, TF, TI>(kernel.NoiseType, frequency, ref x, ref y);
                 TF value = FractalKernel.Fractal2<TOps, TF, TI>(kernel, fractal, seed, x, y, octaves, lastOctaveFade);
 
-                TOps.Store(value, destination.Slice(rowStart + column, lanes));
+                TOps.Store(value, destination, rowStart + column);
             }
 
             // Rows whose width is not a whole number of vectors finish scalar.
@@ -113,7 +113,7 @@ internal static class GridFill
                 NoisePipeline.Transform3<TOps, TF, TI>(kernel.Transform3D, frequency, ref vx, ref vy, ref vz);
                 TF value = FractalKernel.Fractal3<TOps, TF, TI>(kernel, fractal, seed, vx, vy, vz, octaves, lastOctaveFade);
 
-                TOps.Store(value, destination.Slice(rowStart + column, lanes));
+                TOps.Store(value, destination, rowStart + column);
             }
 
             for (; column < width; column++)

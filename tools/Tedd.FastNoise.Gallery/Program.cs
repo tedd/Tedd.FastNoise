@@ -63,8 +63,22 @@ internal static class Program
 
         yield return ("layered-world", BuildWorld, Palette.Terrain);
 
-        yield return ("lod-close", () => BuildLodStack().Create(new GridRegion2D(0, 0, Size, Size, 1f)), Palette.Terrain);
-        yield return ("lod-far", () => BuildLodStack().Create(new GridRegion2D(0, 0, Size, Size, 64f)), Palette.Terrain);
+        // The zoom ladder: the same world at four sample spacings, band-limited, plus the same
+        // far view with level of detail off so the difference is visible rather than asserted.
+        foreach (float step in new[] { 1f, 64f, 1024f, 4096f })
+        {
+            float captured = step;
+            yield return (
+                $"lod-{captured:0}",
+                () => BuildLodStack(LodPolicy.Automatic with { CullLayers = true })
+                    .Create(new GridRegion2D(0, 0, Size, Size, captured)),
+                Palette.Terrain);
+        }
+
+        yield return (
+            "lod-off-4096",
+            () => BuildLodStack(LodPolicy.Disabled).Create(new GridRegion2D(0, 0, Size, Size, 4096f)),
+            Palette.Terrain);
     }
 
     /// <summary>The layered world from the README, rendered as a map.</summary>
@@ -97,10 +111,11 @@ internal static class Program
         return stack.Compile().Create(new GridRegion2D(0, 0, Size, Size));
     }
 
-    /// <summary>An eight-octave world with level of detail on, for the close/far comparison.</summary>
-    private static CompiledNoiseStack BuildLodStack()
+    /// <summary>An eight-octave world, for the zoom ladder.</summary>
+    /// <param name="lod">The policy to build it with, so the same world can be rendered both ways.</param>
+    private static CompiledNoiseStack BuildLodStack(LodPolicy lod)
     {
-        NoiseStack stack = new() { Lod = LodPolicy.Automatic with { CullLayers = true } };
+        NoiseStack stack = new() { Lod = lod };
 
         stack.Add(new NoiseLayer
         {

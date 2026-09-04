@@ -50,8 +50,8 @@ namespace Tedd.FastNoise;
 /// });
 ///
 /// var compiled = stack.Compile();
-/// compiled.Fill(heights, new GridRegion2D(0, 0, 512, 512, step: 1f));      // walking: all layers
-/// compiled.Fill(overview, new GridRegion2D(0, 0, 512, 512, step: 512f));   // orbit: continents only
+/// compiled.Fill(heights, new GridRegion2D(0, 0, 512, 512, Step: 1f));      // walking: all layers
+/// compiled.Fill(overview, new GridRegion2D(0, 0, 512, 512, Step: 512f));   // orbit: continents only
 /// </code>
 /// </example>
 /// </remarks>

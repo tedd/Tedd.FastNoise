@@ -54,7 +54,9 @@ public sealed class MainViewModel : ObservableObject
     private RampKind _ramp = RampKind.Terrain;
     private NoiseBackend _backend = NoiseBackend.Auto;
 
-    private bool _lodEnabled;
+    // On by default. A design tool that shows an aliased field unless you find the right checkbox
+    // teaches the wrong thing about what a zoom level costs and what it should look like.
+    private bool _lodEnabled = true;
     private bool _lodCullLayers = true;
     private bool _lodFade = true;
     private float _nyquistFactor = 2f;

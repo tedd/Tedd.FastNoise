@@ -62,9 +62,12 @@ internal static class FractalKernel
         if (fractal.Type == FractalType.None || octaves <= 1)
         {
             TF single = NoisePipeline.Single2<TOps, TF, TI>(kernel, TOps.I(seed), x, y);
-            return fractal.Type == FractalType.None
-                ? single
-                : TOps.Mul(ShapeSingle<TOps, TF, TI>(fractal, single), TOps.F(lastOctaveFade));
+
+            // The fade applies to a plain single-octave source too, not just to a fractal that level
+            // of detail has worn down to one octave. Without this a non-fractal layer keeps full
+            // amplitude at every zoom, which is exactly the layer whose detail should disappear first.
+            TF shaped = fractal.Type == FractalType.None ? single : ShapeSingle<TOps, TF, TI>(fractal, single);
+            return TOps.Mul(shaped, TOps.F(lastOctaveFade));
         }
 
         TF sum = TOps.F(0f);
@@ -135,9 +138,12 @@ internal static class FractalKernel
         if (fractal.Type == FractalType.None || octaves <= 1)
         {
             TF single = NoisePipeline.Single3<TOps, TF, TI>(kernel, TOps.I(seed), x, y, z);
-            return fractal.Type == FractalType.None
-                ? single
-                : TOps.Mul(ShapeSingle<TOps, TF, TI>(fractal, single), TOps.F(lastOctaveFade));
+
+            // The fade applies to a plain single-octave source too, not just to a fractal that level
+            // of detail has worn down to one octave. Without this a non-fractal layer keeps full
+            // amplitude at every zoom, which is exactly the layer whose detail should disappear first.
+            TF shaped = fractal.Type == FractalType.None ? single : ShapeSingle<TOps, TF, TI>(fractal, single);
+            return TOps.Mul(shaped, TOps.F(lastOctaveFade));
         }
 
         TF sum = TOps.F(0f);

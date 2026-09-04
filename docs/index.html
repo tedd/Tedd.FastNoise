@@ -126,15 +126,43 @@ noise.Fill(density, <span class="k">new</span> <span class="t">GridRegion3D</spa
         <img src="gallery/layered-world.png" alt="A world built from three stacked noise layers">
         <figcaption><strong>A layered world</strong> — continents, ridged mountains, surface grain.</figcaption>
       </figure>
+    </div>
+  </div>
+</section>
+
+<section id="zoom">
+  <div class="wrap">
+    <h2>Pulling back should smooth, not shuffle</h2>
+    <p class="lede">
+      The same eight-octave world, sampled at four spacings. Nothing about the world changes; only
+      how far apart the samples are.
+    </p>
+
+    <div class="gallery">
       <figure>
-        <img src="gallery/lod-close.png" alt="Eight-octave terrain sampled once per world unit">
-        <figcaption><strong>Close up</strong> — sampled every world unit, all eight octaves.</figcaption>
+        <img src="gallery/lod-1.png" alt="Eight-octave terrain sampled once per world unit">
+        <figcaption><strong>1 unit per sample</strong> &mdash; every octave, full detail.</figcaption>
       </figure>
       <figure>
-        <img src="gallery/lod-far.png" alt="The same terrain sampled every 64 units with level of detail on">
-        <figcaption><strong>From altitude</strong> — every 64 units, band-limited. Same landscape, a fraction of the work.</figcaption>
+        <img src="gallery/lod-64.png" alt="The same terrain sampled every 64 units, band-limited">
+        <figcaption><strong>64 units</strong> &mdash; the fine octaves are gone. Same coastlines, a fraction of the work.</figcaption>
+      </figure>
+      <figure>
+        <img src="gallery/lod-1024.png" alt="The same terrain sampled every 1024 units: flat">
+        <figcaption><strong>1024 units</strong> &mdash; nothing in this world is that big, so the honest answer is its mean.</figcaption>
+      </figure>
+      <figure>
+        <img src="gallery/lod-off-4096.png" alt="The same terrain sampled every 4096 units without level of detail: pure noise">
+        <figcaption><strong>4096 units, level of detail off</strong> &mdash; what point-sampling a field finer than the grid actually gives you.</figcaption>
       </figure>
     </div>
+
+    <p style="margin-top:24px">
+      That last one is the point. It is not a coarse view of the landscape, it is white noise: every
+      sample is an independent draw from a field the grid cannot represent. Move the camera and it
+      does not flatten, it <em>boils</em> &mdash; the peaks stay, in different places. Band-limiting is
+      what turns it back into terrain.
+    </p>
   </div>
 </section>
 

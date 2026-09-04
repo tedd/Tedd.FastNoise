@@ -39,7 +39,9 @@ public class LodTests
         Assert.Equal(5, policy.Resolve(0.01f, 2f, octaves: 10, step: 2f).Octaves);
         Assert.Equal(4, policy.Resolve(0.01f, 2f, octaves: 10, step: 4f).Octaves);
 
-        // Never below one: a field that returns nothing at all is worse than a coarse field.
+        // Never below one octave. With fading off there is no way to express "less than one octave",
+        // so the count bottoms out here and the amplitude stays full; see
+        // Fade_KeepsFallingOnceTheBaseOctaveIsTooFine for what happens with fading on.
         Assert.Equal(1, policy.Resolve(0.01f, 2f, octaves: 10, step: 100_000f).Octaves);
     }
 
@@ -178,5 +180,125 @@ public class LodTests
         float[] result = compiled.Create(new GridRegion2D(0f, 0f, 8, 8, 1_000_000f));
 
         Assert.All(result, static value => Assert.Equal(0f, value));
+    }
+
+    /// <summary>
+    /// Past the point where the base octave stops being resolvable, the fade has to keep falling.
+    /// </summary>
+    /// <remarks>
+    /// The original implementation clamped to one octave at full amplitude here, on the reasoning
+    /// that the field should not vanish. The visible consequence was that zooming out did not smooth
+    /// anything: the peaks stayed, in different places, because they were the aliased remains of an
+    /// octave the sample grid could not carry.
+    /// </remarks>
+    [Fact]
+    public void Fade_KeepsFallingOnceTheBaseOctaveIsTooFine()
+    {
+        LodPolicy policy = LodPolicy.Automatic;
+
+        // Frequency 0.01 is a wavelength of 100 world units.
+        float previous = 1f;
+        bool reachedSilence = false;
+
+        for (float step = 50f; step <= 200f; step *= 1.05f)
+        {
+            (int octaves, float fade) = policy.Resolve(baseFrequency: 0.01f, lacunarity: 2f, octaves: 1, step);
+
+            Assert.Equal(1, octaves);
+            Assert.InRange(fade, 0f, 1f);
+            Assert.True(
+                fade <= previous + 1e-4f,
+                $"Fade rose from {previous:0.###} to {fade:0.###} as the sample spacing grew to {step:0.#}.");
+
+            previous = fade;
+            reachedSilence |= fade == 0f;
+        }
+
+        Assert.True(reachedSilence, "The fade never reached zero, so a coarse enough view still carries aliased detail.");
+    }
+
+    /// <summary>A source with no fractal at all still has to fade; it is one octave like any other.</summary>
+    [Fact]
+    public void SingleOctaveSource_FadesOutToo()
+    {
+        NoiseGenerator noise = new(3)
+        {
+            NoiseType = NoiseType.OpenSimplex2,
+            FractalType = FractalType.None,
+            Frequency = 0.05f,
+            Lod = LodPolicy.Automatic,
+        };
+
+        // Wavelength is 20 units; sampling every 200 cannot carry any of it.
+        float[] coarse = noise.Create(new GridRegion2D(0f, 0f, 32, 32, Step: 200f));
+
+        Assert.All(coarse, static value => Assert.Equal(0f, value));
+    }
+
+    /// <summary>
+    /// The behaviour this is all for: as the camera pulls back, the terrain should smooth out, not
+    /// merely rearrange its peaks.
+    /// </summary>
+    [Fact]
+    public void ZoomingOut_SmoothsTheFieldInsteadOfMovingThePeaks()
+    {
+        static NoiseGenerator Build(LodPolicy lod) => new(1337)
+        {
+            NoiseType = NoiseType.OpenSimplex2,
+            FractalType = FractalType.FBm,
+            Octaves = 6,
+            Frequency = 0.01f,
+            Lod = lod,
+        };
+
+        NoiseGenerator aliased = Build(LodPolicy.Disabled);
+        NoiseGenerator banded = Build(LodPolicy.Automatic);
+
+        float[] steps = [1f, 8f, 64f, 512f];
+        double previousBanded = double.MaxValue;
+
+        foreach (float step in steps)
+        {
+            GridRegion2D region = new(0f, 0f, 96, 96, step);
+
+            double aliasedSpread = StandardDeviation(aliased.Create(region));
+            double bandedSpread = StandardDeviation(banded.Create(region));
+
+            // Without level of detail the field keeps its full range at every zoom: that is the
+            // aliasing, and it is why a distant landscape boils under camera motion.
+            Assert.True(
+                aliasedSpread > 0.1,
+                $"Expected the unfiltered field to stay rough at step {step}, but its spread was {aliasedSpread:0.####}.");
+
+            // With it, each step out must be at least as smooth as the last.
+            Assert.True(
+                bandedSpread <= previousBanded + 1e-6,
+                $"Band-limited spread rose from {previousBanded:0.####} to {bandedSpread:0.####} at step {step}.");
+
+            previousBanded = bandedSpread;
+        }
+
+        // And by the far end it is genuinely flat, not merely calmer.
+        Assert.True(previousBanded < 0.02, $"Expected a nearly flat field when zoomed right out, got a spread of {previousBanded:0.####}.");
+    }
+
+    private static double StandardDeviation(float[] values)
+    {
+        double mean = 0;
+        foreach (float value in values)
+        {
+            mean += value;
+        }
+
+        mean /= values.Length;
+
+        double sum = 0;
+        foreach (float value in values)
+        {
+            double delta = value - mean;
+            sum += delta * delta;
+        }
+
+        return Math.Sqrt(sum / values.Length);
     }
 }
