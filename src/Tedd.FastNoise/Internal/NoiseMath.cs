@@ -8,7 +8,8 @@ namespace Tedd.FastNoise.Internal;
 /// <remarks>
 /// Ported from FastNoiseLite 1.1.1 by Jordan Peck (MIT); see THIRD-PARTY-NOTICES.md. The exact
 /// forms matter: several of these differ from the obvious implementation in ways that change
-/// results, and matching them is what keeps this library bit-compatible.
+/// results, so they are reproduced deliberately rather than tidied into what they look like they
+/// should be.
 /// </remarks>
 internal static class NoiseMath
 {

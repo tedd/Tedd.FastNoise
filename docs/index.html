@@ -42,9 +42,9 @@
   <div class="wrap">
     <h2>What it is</h2>
     <p class="lede">
-      A port of <a href="https://github.com/Auburn/FastNoiseLite">FastNoiseLite</a> — the same
-      algorithms, the same constants, the same values — with the generation loop rebuilt around
-      filling buffers.
+      The algorithms started as a port of
+      <a href="https://github.com/Auburn/FastNoiseLite">FastNoiseLite</a>, with the generation loop
+      rebuilt around filling buffers.
     </p>
 
     <p>
@@ -77,11 +77,11 @@ noise.Fill(density, <span class="k">new</span> <span class="t">GridRegion3D</spa
         </p>
       </div>
       <div class="card">
-        <h3>Bit-compatible with FastNoiseLite</h3>
+        <h3>A port that was checked</h3>
         <p>
-          Any configuration produces exactly the values FastNoiseLite produces. Enforced against a
-          vendored copy of the reference across the whole configuration matrix, so an existing world
-          keeps generating the same terrain.
+          The kernels were restructured to vectorise, and every such rewrite can change a value by an
+          ULP unnoticed. An unmodified copy of FastNoiseLite is vendored as a test oracle and every
+          kernel is compared against it exactly. It caught two real bugs.
         </p>
       </div>
       <div class="card">

@@ -8,9 +8,9 @@ namespace Tedd.FastNoise.Internal;
 /// <remarks>
 /// <para>
 /// Ported from FastNoiseLite 1.1.1 by Jordan Peck (MIT); see THIRD-PARTY-NOTICES.md. The constants,
-/// the shift widths and the operation order are reproduced exactly, because "produces the same
-/// values as FastNoiseLite" is a feature -- existing worlds keep generating the same terrain -- and
-/// the test suite asserts it bit for bit against a vendored copy of the original.
+/// the shift widths and the operation order are reproduced exactly, and the test suite asserts that
+/// against a vendored copy of the original -- which is what makes the vectorising rewrites here
+/// safe to have made. Changing any of it is allowed; changing it by accident is not.
 /// </para>
 /// <para>
 /// What is not reproduced is the shape: everything here is generic over <see cref="ISimdOps{TF, TI}"/>,

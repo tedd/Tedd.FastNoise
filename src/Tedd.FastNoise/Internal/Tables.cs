@@ -1,7 +1,7 @@
 // Lookup tables from FastNoiseLite 1.1.1 by Jordan Peck, MIT licensed.
 // https://github.com/Auburn/FastNoiseLite -- see THIRD-PARTY-NOTICES.md.
-// Reproduced verbatim: these exact values are what make this library bit-compatible
-// with FastNoiseLite, so they must never be regenerated or "improved".
+// Reproduced verbatim. Regenerating them changes every value the gradient kernels produce, so
+// treat them as data rather than as something to tidy.
 
 using System;
 

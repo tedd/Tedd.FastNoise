@@ -4,18 +4,23 @@ using Tedd.FastNoise.Tests.Reference;
 namespace Tedd.FastNoise.Tests;
 
 /// <summary>
-/// The load-bearing tests: every kernel must reproduce FastNoiseLite exactly.
+/// Porting fidelity: every kernel is compared against an unmodified FastNoiseLite for exact equality.
 /// </summary>
 /// <remarks>
 /// <para>
 /// "Bit for bit" is the assertion, not "close enough". The kernels here were rewritten to
 /// vectorise -- branches turned into masks, loops unrolled, corner selection restructured -- and
-/// every one of those rewrites is a chance to change a value. Comparing against an unmodified copy
-/// of the reference is what makes those rewrites safe to make.
+/// every one of those rewrites is a chance to change a value by an ULP and never notice. Comparing
+/// against an unmodified copy of the reference is what makes those rewrites safe to make. It found
+/// two real bugs during the port, both float association differences that a tolerance-based test
+/// would have waved through.
 /// </para>
 /// <para>
-/// It also underwrites a promise to users: a world generated against FastNoiseLite keeps
-/// generating the same terrain after switching to this library.
+/// These tests describe the port as it stands, not a permanent contract. As this library diverges
+/// from upstream -- better quality, new algorithms, features FastNoiseLite has no reason to carry --
+/// the test for a changed algorithm should be retired along with it, deliberately and in the same
+/// commit. What must not happen is a kernel drifting quietly while its oracle test still passes
+/// because someone loosened it to a tolerance.
 /// </para>
 /// </remarks>
 public class CompatibilityTests

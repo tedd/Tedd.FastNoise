@@ -10,9 +10,10 @@ Perlin, OpenSimplex2, Value and Cellular noise in 2D and 3D, with fractal layeri
 a fusing layer stack and level-of-detail control. Single-point sampling when you need one value;
 SIMD and multi-core volume fills when you need a million.
 
-It is a port of [FastNoiseLite](https://github.com/Auburn/FastNoiseLite) — same algorithms, same
-constants, same values — with the generation loop rebuilt around filling buffers instead of
-answering one question at a time.
+The algorithms started as a port of [FastNoiseLite](https://github.com/Auburn/FastNoiseLite), with
+the generation loop rebuilt around filling buffers instead of answering one question at a time.
+Where the two still agree, the port is verified against the original; where this library goes
+further, it goes further.
 
 ```csharp
 var noise = new NoiseGenerator(seed: 1337)
@@ -41,9 +42,6 @@ Targets .NET 10. .NET 11 is validated in CI and enabled with `-p:EnableNet11=tru
 ---
 
 ## Why this exists
-
-FastNoiseLite is a good implementation of the algorithms, and this library does not claim to have
-improved them — it reproduces them exactly. What it changes is the shape of the API.
 
 A noise library that only offers `GetNoise(x, y, z)` forces you to call it once per voxel. That
 throws away the two things that make bulk generation fast: sixteen lanes of a vector register doing
@@ -81,15 +79,22 @@ Two consequences fall out of that promise:
 - Fused multiply-add is deliberately **not** used. It would be faster and it would change results
   by a fraction of an ULP relative to a machine without it.
 
-### Bit-compatible with FastNoiseLite
+### A port that was checked, not hoped at
 
-Any configuration produces exactly the values FastNoiseLite produces. A world generated against
-FastNoiseLite keeps generating the same terrain after switching.
+The kernels here are not transcriptions. Branchy corner selection became mask arithmetic, loops were
+unrolled, the whole thing was made generic over lane width -- and every one of those rewrites is a
+chance to change a value by an ULP and never notice.
 
-This is enforced, not asserted: `CompatibilityTests` runs every kernel against an unmodified
-vendored copy of the reference across the full matrix of noise types, fractal types, cellular
-variants, rotations and domain warps, and compares for exact equality — including at exact lattice
-boundaries, where the reference's floor function has a quirk worth reproducing.
+So an unmodified copy of FastNoiseLite is vendored into the test project as an oracle, and
+`CompatibilityTests` compares every kernel against it for exact equality across the full matrix of
+noise types, fractal types, cellular variants, rotations and domain warps. That is what makes the
+rewrites safe to make. It found two real bugs while this was being built, both float association
+differences invisible to a tolerance-based test.
+
+Those tests describe the port as it stands today, not a promise about tomorrow. This library will
+diverge from upstream as it grows -- new algorithms, better quality, features FastNoiseLite has no
+reason to carry -- and where it does, the corresponding oracle test goes with it. Pin a version if
+you need output stability.
 
 ### Layer stacks that fuse
 

@@ -12,6 +12,20 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     </Window.Resources>
 
+    <!-- Keyboard is faster than the mode picker when you are comparing two views of the same field. -->
+    <Window.InputBindings>
+        <KeyBinding Key="D1" Modifiers="Control" Command="{Binding SetModeCommand}"
+                    CommandParameter="{x:Static vm:PreviewMode.Map2D}" />
+        <KeyBinding Key="D2" Modifiers="Control" Command="{Binding SetModeCommand}"
+                    CommandParameter="{x:Static vm:PreviewMode.Heightmap3D}" />
+        <KeyBinding Key="D3" Modifiers="Control" Command="{Binding SetModeCommand}"
+                    CommandParameter="{x:Static vm:PreviewMode.Volume3D}" />
+        <KeyBinding Key="F5" Command="{Binding RefreshCommand}" />
+        <KeyBinding Key="Home" Command="{Binding ResetViewCommand}" />
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveDesignCommand}" />
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding LoadDesignCommand}" />
+    </Window.InputBindings>
+
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="330" />
@@ -201,9 +215,14 @@
         <DockPanel Grid.Column="2">
 
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                <Button Content="Open" Command="{Binding LoadDesignCommand}" ToolTip="Open a saved design (Ctrl+O)" />
+                <Button Content="Save" Command="{Binding SaveDesignCommand}" ToolTip="Save this design (Ctrl+S)"
+                        Margin="0,0,12,0" />
+
                 <TextBlock Text="View" Style="{StaticResource FieldLabel}" />
                 <ComboBox ItemsSource="{x:Static vm:MainViewModel.Modes}" SelectedItem="{Binding Mode}"
-                          Width="130" Margin="0,0,10,0" />
+                          Width="130" Margin="0,0,10,0"
+                          ToolTip="Ctrl+1 map, Ctrl+2 heightmap, Ctrl+3 volume" />
 
                 <TextBlock Text="Colours" Style="{StaticResource FieldLabel}" />
                 <ComboBox ItemsSource="{x:Static vm:MainViewModel.Ramps}" SelectedItem="{Binding Ramp}"
@@ -214,8 +233,9 @@
                           Width="90" Margin="0,0,10,0" />
 
                 <Button Content="Reset view" Command="{Binding ResetViewCommand}"
+                        ToolTip="Re-frame the camera (Home)"
                         Visibility="{Binding Is3D, Converter={StaticResource BoolToVisibility}}" />
-                <Button Content="Refresh" Command="{Binding RefreshCommand}" />
+                <Button Content="Refresh" Command="{Binding RefreshCommand}" ToolTip="Re-render now (F5)" />
             </StackPanel>
 
             <Border DockPanel.Dock="Bottom" Margin="0,6,0,0" Padding="6"
@@ -231,6 +251,12 @@
                            Visibility="{Binding Is2D, Converter={StaticResource BoolToVisibility}}" />
 
                     <!-- 3D: drag to orbit, right-drag to pan, wheel to zoom -->
+                    <TextBlock Text="drag to orbit  |  right-drag to pan  |  wheel to zoom"
+                               Panel.ZIndex="2" Margin="10" FontSize="11"
+                               HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                               Foreground="{StaticResource Shell.Muted}" IsHitTestVisible="False"
+                               Visibility="{Binding Is3D, Converter={StaticResource BoolToVisibility}}" />
+
                     <Border x:Name="ViewportSurface" Background="Transparent"
                             Visibility="{Binding Is3D, Converter={StaticResource BoolToVisibility}}">
                         <Viewport3D x:Name="Viewport" ClipToBounds="True">

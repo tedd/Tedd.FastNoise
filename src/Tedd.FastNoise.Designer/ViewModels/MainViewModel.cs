@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using Tedd.FastNoise.Designer.CodeGen;
+using Tedd.FastNoise.Designer.Presets;
 using Tedd.FastNoise.Designer.Rendering;
 
 namespace Tedd.FastNoise.Designer.ViewModels;
@@ -78,6 +79,9 @@ public sealed class MainViewModel : ObservableObject
         ResetViewCommand = new RelayCommand(() => ResetViewRequested?.Invoke(this, EventArgs.Empty));
         CopyCodeCommand = new RelayCommand(CopyCode);
         RefreshCommand = new RelayCommand(() => QueueRender(immediate: true));
+        SetModeCommand = new RelayCommand<PreviewMode>(mode => Mode = mode);
+        SaveDesignCommand = new RelayCommand(SaveDesign);
+        LoadDesignCommand = new RelayCommand(LoadDesign);
 
         LoadExampleWorld();
     }
@@ -313,6 +317,15 @@ public sealed class MainViewModel : ObservableObject
     /// <summary>Forces an immediate re-render.</summary>
     public RelayCommand RefreshCommand { get; }
 
+    /// <summary>Switches the preview mode. Bound to Ctrl+1 through Ctrl+3.</summary>
+    public RelayCommand<PreviewMode> SetModeCommand { get; }
+
+    /// <summary>Writes the whole design to a JSON file.</summary>
+    public RelayCommand SaveDesignCommand { get; }
+
+    /// <summary>Replaces the design with one read from a JSON file.</summary>
+    public RelayCommand LoadDesignCommand { get; }
+
     /// <summary>Sets the zoom to one of the presets.</summary>
     /// <param name="step">World units between samples.</param>
     public void ApplyZoom(float step) => Step = step;
@@ -438,6 +451,146 @@ public sealed class MainViewModel : ObservableObject
         }
 
         Layers.Move(index, target);
+        QueueRender();
+    }
+
+    /// <summary>Captures the current design.</summary>
+    private DesignDocument Capture()
+    {
+        DesignDocument document = new()
+        {
+            View = new ViewDocument
+            {
+                Mode = _mode,
+                Ramp = _ramp,
+                OriginX = _originX,
+                OriginY = _originY,
+                OriginZ = _originZ,
+                Step = _step,
+                Resolution = _resolution,
+                VolumeResolution = _volumeResolution,
+                Threshold = _threshold,
+                HeightScale = _heightScale,
+                ShowThresholdMask = _showThresholdMask,
+                LodEnabled = _lodEnabled,
+                LodCullLayers = _lodCullLayers,
+                LodFadeLastOctave = _lodFade,
+                NyquistFactor = _nyquistFactor,
+            },
+        };
+
+        foreach (LayerViewModel layer in Layers)
+        {
+            document.Layers.Add(LayerDocument.From(layer));
+        }
+
+        return document;
+    }
+
+    private void SaveDesign()
+    {
+        Microsoft.Win32.SaveFileDialog dialog = new()
+        {
+            Title = "Save design",
+            Filter = "FastNoise design (*.fnoise.json)|*.fnoise.json|JSON (*.json)|*.json",
+            DefaultExt = ".fnoise.json",
+            FileName = "design.fnoise.json",
+        };
+
+        if (dialog.ShowDialog() != true)
+        {
+            return;
+        }
+
+        try
+        {
+            Capture().Save(dialog.FileName);
+            Status = $"Saved to {System.IO.Path.GetFileName(dialog.FileName)}.";
+        }
+        catch (Exception exception) when (exception is System.IO.IOException or UnauthorizedAccessException)
+        {
+            Status = $"Could not save: {exception.Message}";
+        }
+    }
+
+    private void LoadDesign()
+    {
+        Microsoft.Win32.OpenFileDialog dialog = new()
+        {
+            Title = "Open design",
+            Filter = "FastNoise design (*.fnoise.json)|*.fnoise.json|JSON (*.json)|*.json|All files (*.*)|*.*",
+        };
+
+        if (dialog.ShowDialog() != true)
+        {
+            return;
+        }
+
+        DesignDocument document;
+
+        try
+        {
+            document = DesignDocument.Load(dialog.FileName);
+        }
+        catch (Exception exception)
+            when (exception is System.IO.IOException or System.Text.Json.JsonException or System.IO.InvalidDataException)
+        {
+            Status = $"Could not open: {exception.Message}";
+            return;
+        }
+
+        if (document.Layers.Count == 0)
+        {
+            Status = "That design has no layers.";
+            return;
+        }
+
+        Apply(document);
+        Status = $"Opened {System.IO.Path.GetFileName(dialog.FileName)}.";
+    }
+
+    /// <summary>Replaces the current design, rendering once at the end rather than per property.</summary>
+    private void Apply(DesignDocument document)
+    {
+        Layers.CollectionChanged -= OnLayersChanged;
+
+        foreach (LayerViewModel existing in Layers)
+        {
+            existing.Changed -= OnLayerChanged;
+        }
+
+        Layers.Clear();
+
+        foreach (LayerDocument layer in document.Layers)
+        {
+            LayerViewModel viewModel = layer.ToViewModel();
+            viewModel.Changed += OnLayerChanged;
+            Layers.Add(viewModel);
+        }
+
+        Layers.CollectionChanged += OnLayersChanged;
+
+        ViewDocument view = document.View;
+        _mode = view.Mode;
+        _ramp = view.Ramp;
+        _originX = view.OriginX;
+        _originY = view.OriginY;
+        _originZ = view.OriginZ;
+        _step = Math.Max(0.0001f, view.Step);
+        _resolution = Math.Clamp(view.Resolution, 16, 1024);
+        _volumeResolution = Math.Clamp(view.VolumeResolution, 8, 96);
+        _threshold = view.Threshold;
+        _heightScale = view.HeightScale;
+        _showThresholdMask = view.ShowThresholdMask;
+        _lodEnabled = view.LodEnabled;
+        _lodCullLayers = view.LodCullLayers;
+        _lodFade = view.LodFadeLastOctave;
+        _nyquistFactor = Math.Clamp(view.NyquistFactor, 1f, 16f);
+
+        // One blanket notification: the whole object changed, and enumerating every property name
+        // here would be a list to forget to update.
+        Raise(null);
+        SelectedLayer = Layers[0];
         QueueRender();
     }
 

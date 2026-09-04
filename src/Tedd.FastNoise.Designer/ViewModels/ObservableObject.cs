@@ -54,3 +54,28 @@ public sealed class RelayCommand(Action execute, Func<bool>? canExecute = null) 
     /// <inheritdoc />
     public void Execute(object? parameter) => execute();
 }
+
+/// <summary>A command backed by a delegate that takes a parameter.</summary>
+/// <typeparam name="T">Parameter type.</typeparam>
+/// <param name="execute">What the command does.</param>
+public sealed class RelayCommand<T>(Action<T> execute) : ICommand
+{
+    /// <inheritdoc />
+    public event EventHandler? CanExecuteChanged
+    {
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
+    }
+
+    /// <inheritdoc />
+    public bool CanExecute(object? parameter) => parameter is T;
+
+    /// <inheritdoc />
+    public void Execute(object? parameter)
+    {
+        if (parameter is T typed)
+        {
+            execute(typed);
+        }
+    }
+}
