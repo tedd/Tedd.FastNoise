@@ -87,7 +87,7 @@ jobs:
   nuget:
     name: publish to nuget
     needs: package
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -96,15 +96,55 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      # No-ops when the version in the csproj has not changed, so an unrelated
-      # push to `deploy` will not try to republish an existing version.
-      - name: Publish on version change
-        uses: tedd/publish-nuget-neo@v1
+      - uses: actions/download-artifact@v4
         with:
-          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
-          PROJECT_FILE_PATH: src/Tedd.FastNoise/Tedd.FastNoise.csproj
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: true
+          name: packages
+          path: packages
+
+      # Asks nuget.org whether this version already exists rather than assuming.
+      # A push to `deploy` that changes nothing but the docs must not fail here,
+      # and must not tag the commit as if it had released something.
+      - name: Check whether the version is already on nuget.org
+        id: check
+        shell: bash
+        run: |
+          version="${{ needs.package.outputs.version }}"
+          url="https://api.nuget.org/v3-flatcontainer/tedd.fastnoise/index.json"
+          status=$(curl -s -o /tmp/versions.json -w "%{http_code}" "$url")
+
+          if [ "$status" = "404" ]; then
+            echo "Package has never been published."
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          elif [ "$status" = "200" ] && grep -q "\"$version\"" /tmp/versions.json; then
+            echo "Version $version is already published; nothing to do."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          elif [ "$status" = "200" ]; then
+            echo "Version $version is new."
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::nuget.org returned HTTP $status while checking existing versions."
+            exit 1
+          fi
+
+      # Pushed directly rather than through tedd/publish-nuget-neo@v1, which at the
+      # time of writing builds its push command as `dotnet dotnet nuget push` and
+      # fails every time. Switch back once that is fixed upstream.
+      - name: Push to nuget.org
+        if: steps.check.outputs.publish == 'true'
+        run: >
+          dotnet nuget push "packages/*.nupkg"
+          --source https://api.nuget.org/v3/index.json
+          --api-key "${{ secrets.NUGET_API_KEY }}"
+          --skip-duplicate
+
+      - name: Tag the released commit
+        if: steps.check.outputs.publish == 'true'
+        run: |
+          version="${{ needs.package.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$version" -m "Tedd.FastNoise $version"
+          git push origin "v$version"
 
   release:
     name: publish the app
