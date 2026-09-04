@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    ARCHIVE: Tedd.FastNoise v1 (2020, netcoreapp3.1).
+
+    Frozen, byte-for-byte, apart from namespace renames and a retarget to a supported TFM.
+    It exists for one reason: to serve as the measurement baseline for the current
+    implementation. Every performance claim in the README is "vs. this project".
+
+    Do not optimise anything in here. A moving baseline measures nothing.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>Tedd.FastNoise.V1</AssemblyName>
+    <RootNamespace>Tedd.FastNoise.V1</RootNamespace>
+    <!-- Archived code is not held to current analyzer standards. -->
+    <NoWarn>$(NoWarn);CS0162;CS0219;CS8321;CS8981;IDE0005</NoWarn>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+</Project>

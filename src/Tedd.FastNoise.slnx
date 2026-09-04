@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="../archive/v1/Tedd.FastNoise.V1/Tedd.FastNoise.V1.csproj" />
+  <Project Path="Tedd.FastNoise.Benchmark/Tedd.FastNoise.Benchmark.csproj" />
+  <Project Path="Tedd.FastNoise.Designer/Tedd.FastNoise.Designer.csproj" />
+  <Project Path="Tedd.FastNoise.Tests/Tedd.FastNoise.Tests.csproj" />
+  <Project Path="Tedd.FastNoise/Tedd.FastNoise.csproj" />
+</Solution>

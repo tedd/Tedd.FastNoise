@@ -1,0 +1,159 @@
+name: Deploy
+
+# The only workflow that publishes anything. Push to `deploy` and it ships:
+#   * the NuGet package, if the version in the csproj changed
+#   * a GitHub release carrying the designer app
+#   * the documentation site to GitHub Pages
+#
+# Everything is verified first, and each publishing step is a separate job so a
+# failure in one does not half-ship the others.
+on:
+  push:
+    branches: [deploy]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Two deploys racing each other would fight over the Pages deployment and the
+# release tag. Queue them instead, and never cancel one midway.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet test src/Tedd.FastNoise.Tests -c Release
+
+  package:
+    name: package
+    needs: verify
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Read the package version
+        id: version
+        shell: pwsh
+        run: |
+          $xml = [xml](Get-Content src/Tedd.FastNoise/Tedd.FastNoise.csproj)
+          $version = $xml.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
+          "version=$version" >> $env:GITHUB_OUTPUT
+          Write-Host "Version is $version"
+
+      - run: dotnet pack src/Tedd.FastNoise -c Release -o artifacts/packages
+
+      # Self-contained so the download runs on a machine with no .NET installed,
+      # which is the whole point of shipping a designer to people evaluating the library.
+      - name: Publish the designer
+        run: >
+          dotnet publish src/Tedd.FastNoise.Designer -c Release -r win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -o artifacts/designer
+
+      - name: Zip the designer
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts/release | Out-Null
+          Compress-Archive -Path artifacts/designer/* -DestinationPath artifacts/release/Tedd.FastNoise.Designer-win-x64.zip -Force
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: artifacts/packages/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: designer
+          path: artifacts/release/*
+
+  nuget:
+    name: publish to nuget
+    needs: package
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      # No-ops when the version in the csproj has not changed, so an unrelated
+      # push to `deploy` will not try to republish an existing version.
+      - name: Publish on version change
+        uses: tedd/publish-nuget-neo@v1
+        with:
+          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
+          PROJECT_FILE_PATH: src/Tedd.FastNoise/Tedd.FastNoise.csproj
+          INCLUDE_SYMBOLS: true
+          TAG_COMMIT: true
+
+  release:
+    name: publish the app
+    needs: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: designer
+          path: release
+
+      # A rolling tag so the site can link to a stable
+      # /releases/latest/download/... URL without being regenerated each version.
+      - name: Publish the release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: designer-v${{ needs.package.outputs.version }}
+          name: Designer ${{ needs.package.outputs.version }}
+          body: |
+            The Tedd.FastNoise designer, built from `${{ github.sha }}`.
+
+            Self-contained Windows x64 build: unzip and run `Tedd.FastNoise.Designer.exe`.
+            No .NET installation required.
+          files: release/*
+          make_latest: true
+
+  site:
+    name: publish the site
+    needs: package
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      # The gallery is rendered by the library it documents, so the images cannot
+      # drift away from what the code actually produces.
+      - name: Render the gallery
+        run: dotnet run -c Release --project tools/Tedd.FastNoise.Gallery -- docs/gallery
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,9 +1,47 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>8.0</LangVersion>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(EnableNet11)' == 'true'">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- Optimize for throughput: the whole point of the library. -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <TieredPGO>true</TieredPGO>
+
+    <PackageId>Tedd.FastNoise</PackageId>
+    <Version>1.0.0</Version>
+    <Description>High-performance, deterministic coherent-noise generation for voxel and terrain workloads. Perlin, OpenSimplex2, Value and Cellular noise in 2D and 3D, with fractal (fBm/ridged/ping-pong) layering, domain warping, and a composition graph for building complex overlapping noise. Single-point sampling plus bulk grid/volume fills that are bit-identical across scalar, SIMD and parallel backends.</Description>
+    <PackageTags>noise;perlin;simplex;opensimplex;cellular;worley;voxel;terrain;procedural;generation;simd;vector;minecraft;heightmap;fbm;fractal;gamedev</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/tedd/Tedd.FastNoise</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tedd/Tedd.FastNoise.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>1.0.0 - First release of the rewritten engine. Perlin, OpenSimplex2, Value and Cellular noise for 2D and 3D; fBm, ridged and ping-pong fractals; domain warping; a batched composition graph; single-point, grid, volume and parallel APIs. Scalar, SIMD and parallel backends produce bit-identical output.</PackageReleaseNotes>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <!-- The MIT licence on the ported FastNoiseLite code requires its notice to travel with binaries. -->
+    <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Tedd.FastNoise.Tests" />
+    <InternalsVisibleTo Include="Tedd.FastNoise.Benchmark" />
+    <InternalsVisibleTo Include="Tedd.FastNoise.Gpu" />
+  </ItemGroup>
 
 </Project>

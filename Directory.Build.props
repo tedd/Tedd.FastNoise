@@ -1,0 +1,19 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <Authors>Tedd Hansen</Authors>
+    <Company>Tedd Hansen</Company>
+    <Copyright>Copyright (c) Tedd Hansen</Copyright>
+
+    <!--
+      .NET 11 is still preview. Opt in with -p:EnableNet11=true on an SDK that has it.
+      CI builds the stable matrix by default and validates net11.0 in a separate job.
+    -->
+    <EnableNet11 Condition="'$(EnableNet11)' == ''">false</EnableNet11>
+  </PropertyGroup>
+
+</Project>

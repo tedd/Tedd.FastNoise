@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tedd.FastNoise — deterministic coherent noise for voxel worlds</title>
+<meta name="description" content="Perlin, OpenSimplex2, Value and Cellular noise for .NET, built for bulk generation. SIMD and multi-core volume fills that are bit-identical across every backend.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%235b9cf8'/></svg>">
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Tedd.FastNoise</h1>
+    <p class="tagline">
+      Deterministic coherent noise for voxel worlds and terrain, built for bulk generation rather than
+      one sample at a time.
+    </p>
+
+    <div class="badges">
+      <a href="https://www.nuget.org/packages/Tedd.FastNoise/"><img src="https://img.shields.io/nuget/v/Tedd.FastNoise.svg?style=flat-square&amp;color=5b9cf8" alt="NuGet version"></a>
+      <a href="https://github.com/tedd/Tedd.FastNoise/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/tedd/Tedd.FastNoise/ci.yml?style=flat-square&amp;label=build" alt="Build status"></a>
+      <img src="https://img.shields.io/badge/.NET-10%20%7C%2011-5b9cf8?style=flat-square" alt="Targets .NET 10 and 11">
+    </div>
+
+    <div class="actions">
+      <a class="button primary" href="https://www.nuget.org/packages/Tedd.FastNoise/">
+        Get the package
+        <span class="sub">dotnet add package Tedd.FastNoise</span>
+      </a>
+      <a class="button" href="https://github.com/tedd/Tedd.FastNoise/releases/latest/download/Tedd.FastNoise.Designer-win-x64.zip">
+        Download the designer
+        <span class="sub">Windows, self-contained</span>
+      </a>
+      <a class="button" href="https://github.com/tedd/Tedd.FastNoise">Source on GitHub</a>
+    </div>
+  </div>
+</header>
+
+<section id="what">
+  <div class="wrap">
+    <h2>What it is</h2>
+    <p class="lede">
+      A port of <a href="https://github.com/Auburn/FastNoiseLite">FastNoiseLite</a> — the same
+      algorithms, the same constants, the same values — with the generation loop rebuilt around
+      filling buffers.
+    </p>
+
+    <p>
+      A noise library that only offers <code>GetNoise(x, y, z)</code> forces you to call it once per
+      voxel. That throws away the two things that make bulk generation fast: sixteen lanes of a
+      vector register doing the same arithmetic on adjacent coordinates, and the fact that a chunk's
+      worth of samples is independent work that can be spread across cores. Neither is available to
+      a function that returns one float.
+    </p>
+
+    <pre><span class="k">var</span> noise = <span class="k">new</span> <span class="t">NoiseGenerator</span>(seed: 1337)
+{
+    NoiseType   = <span class="t">NoiseType</span>.OpenSimplex2,
+    FractalType = <span class="t">FractalType</span>.FBm,
+    Octaves     = 5,
+    Frequency   = 0.005f,
+};
+
+<span class="c">// One 16x16x256 world column, vectorised across every core.</span>
+<span class="k">var</span> density = <span class="k">new float</span>[16 * 256 * 16];
+noise.Fill(density, <span class="k">new</span> <span class="t">GridRegion3D</span>(chunkX * 16, 0, chunkZ * 16, 16, 256, 16));</pre>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Every backend gives identical bytes</h3>
+        <p>
+          Scalar, SIMD and parallel fills are bit-for-bit equal, on x86 and on ARM, at any vector
+          width. A client with AVX-512 and a server on the scalar fallback agree on where the ground
+          is — and the test suite asserts exact equality, not closeness.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Bit-compatible with FastNoiseLite</h3>
+        <p>
+          Any configuration produces exactly the values FastNoiseLite produces. Enforced against a
+          vendored copy of the reference across the whole configuration matrix, so an existing world
+          keeps generating the same terrain.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Layer stacks that fuse</h3>
+        <p>
+          Continents, mountains, detail, masks. Compiling a stack flattens it so a fill runs every
+          layer against coordinates held in registers, instead of writing a buffer per layer and
+          reading them all back.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Zoom levels that cost what they should</h3>
+        <p>
+          Octaves finer than the sample grid contribute aliasing, not detail — and the aliasing
+          changes as the camera moves, so distant terrain boils. Level-of-detail culling drops them,
+          which is both cheaper and more stable.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="wrap">
+    <h2>Gallery</h2>
+    <p class="lede">Rendered by the library itself, as part of building this page.</p>
+
+    <div class="gallery">
+      <figure>
+        <img src="gallery/opensimplex2.png" alt="OpenSimplex2 fractional Brownian motion, five octaves">
+        <figcaption><strong>OpenSimplex2, fBm</strong> — five octaves. The general-purpose default.</figcaption>
+      </figure>
+      <figure>
+        <img src="gallery/ridged.png" alt="Ridged multifractal noise, six octaves">
+        <figcaption><strong>Ridged</strong> — six octaves. Mountain ranges and eroded rock.</figcaption>
+      </figure>
+      <figure>
+        <img src="gallery/cellular.png" alt="Cellular noise showing cell boundaries">
+        <figcaption><strong>Cellular</strong> — second-nearest minus nearest. Cracks, caves, region edges.</figcaption>
+      </figure>
+      <figure>
+        <img src="gallery/layered-world.png" alt="A world built from three stacked noise layers">
+        <figcaption><strong>A layered world</strong> — continents, ridged mountains, surface grain.</figcaption>
+      </figure>
+      <figure>
+        <img src="gallery/lod-close.png" alt="Eight-octave terrain sampled once per world unit">
+        <figcaption><strong>Close up</strong> — sampled every world unit, all eight octaves.</figcaption>
+      </figure>
+      <figure>
+        <img src="gallery/lod-far.png" alt="The same terrain sampled every 64 units with level of detail on">
+        <figcaption><strong>From altitude</strong> — every 64 units, band-limited. Same landscape, a fraction of the work.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="layers">
+  <div class="wrap">
+    <h2>Building a world in layers</h2>
+    <p class="lede">
+      Each layer is an independently tunable generator. The stack is what fuses them into one pass.
+    </p>
+
+    <pre><span class="k">var</span> stack = <span class="k">new</span> <span class="t">NoiseStack</span> { Lod = <span class="t">LodPolicy</span>.Automatic <span class="k">with</span> { CullLayers = <span class="k">true</span> } };
+
+stack.Add(<span class="k">new</span> <span class="t">NoiseLayer</span>
+{
+    Source      = <span class="k">new</span> <span class="t">NoiseGenerator</span>(1) { Frequency = 0.0002f, FractalType = <span class="t">FractalType</span>.FBm, Octaves = 4 },
+    FeatureSize = 2000f,
+    Name        = <span class="s">"continents"</span>,
+});
+
+stack.Add(<span class="k">new</span> <span class="t">NoiseLayer</span>
+{
+    Source      = <span class="k">new</span> <span class="t">NoiseGenerator</span>(2) { Frequency = 0.002f, FractalType = <span class="t">FractalType</span>.Ridged, Octaves = 5 },
+    Blend       = <span class="t">LayerBlend</span>.Add,
+    Amplitude   = 0.4f,
+    FeatureSize = 200f,
+    Name        = <span class="s">"mountains"</span>,
+});
+
+<span class="c">// Immutable, thread-safe, and flattened. Hand it to workers.</span>
+<span class="k">var</span> world = stack.Compile();
+
+world.Fill(heights, <span class="k">new</span> <span class="t">GridRegion2D</span>(0, 0, 512, 512, step: 1f));      <span class="c">// walking: all layers</span>
+world.Fill(overview, <span class="k">new</span> <span class="t">GridRegion2D</span>(0, 0, 512, 512, step: 512f));   <span class="c">// orbit: continents only</span></pre>
+
+    <p>
+      Blends are <code>Add</code>, <code>Subtract</code>, <code>Multiply</code>, <code>Min</code>,
+      <code>Max</code>, <code>Replace</code> and <code>Lerp</code>. The first layer to survive culling
+      initialises the accumulator.
+    </p>
+  </div>
+</section>
+
+<section id="designer">
+  <div class="wrap">
+    <h2>The designer</h2>
+    <p class="lede">
+      A Windows app for building a stack visually: live 2D map, rotatable 3D heightmap, rotatable
+      voxel volume, zoom sweep, and the C# to reproduce whatever is on screen.
+    </p>
+
+    <img class="shot" src="designer.png" alt="The Tedd.FastNoise designer showing a layered terrain map, layer settings and generated C# code">
+
+    <p style="margin-top:24px">
+      <a class="button primary" href="https://github.com/tedd/Tedd.FastNoise/releases/latest/download/Tedd.FastNoise.Designer-win-x64.zip">Download for Windows</a>
+    </p>
+    <p style="color:var(--muted);font-size:14px">
+      Self-contained: no .NET installation required. Unzip and run
+      <code>Tedd.FastNoise.Designer.exe</code>.
+    </p>
+  </div>
+</section>
+
+<section id="performance">
+  <div class="wrap">
+    <h2>Performance</h2>
+    <p class="lede">
+      Measured, not asserted. Every claim here comes from the benchmark project in the repository,
+      against the frozen 2020 implementation in <code>archive/v1</code> and against FastNoiseLite
+      called per sample.
+    </p>
+
+    <!-- PERFORMANCE_TABLE -->
+
+    <p style="margin-top:24px">
+      Reproduce with
+      <code>dotnet run -c Release --project src/Tedd.FastNoise.Benchmark -- --filter "*"</code>.
+    </p>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>Install</h2>
+    <pre>dotnet add package Tedd.FastNoise</pre>
+    <p>
+      Targets .NET 10. .NET 11 is validated in CI and enabled with
+      <code>-p:EnableNet11=true</code> until it ships.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>
+      Tedd.FastNoise is LGPL 2.1. It incorporates
+      <a href="https://github.com/Auburn/FastNoiseLite">FastNoiseLite</a> by Jordan Peck under the
+      MIT licence — see
+      <a href="https://github.com/tedd/Tedd.FastNoise/blob/master/THIRD-PARTY-NOTICES.md">THIRD-PARTY-NOTICES.md</a>
+      for what is used and where.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using c = Tedd.FastNoiseTmp.Constants;
+using c = Tedd.FastNoise.V1.Constants;
 
-namespace Tedd.FastNoiseTmp
+namespace Tedd.FastNoise.V1
 {
-    public class Generator
+    public class GeneratorV1
     {
 
         // Borrowing from https://flafla2.github.io/2014/08/09/perlinnoise.html which is based on https://mrl.nyu.edu/~perlin/noise/
 
-        public Generator(int seed, int dimensions)
+        public GeneratorV1(int seed, int dimensions)
         {
 
         }

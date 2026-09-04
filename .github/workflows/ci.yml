@@ -1,0 +1,70 @@
+name: CI
+
+# Quality gate only. Nothing here publishes anything -- see deploy.yml, which is
+# the single place that pushes a package, a release or the site.
+on:
+  push:
+    branches: [main, master, deploy]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: build and test (linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      # Not the solution: the designer targets net10.0-windows and cannot build here.
+      - run: dotnet build src/Tedd.FastNoise -c Release
+      - run: dotnet build src/Tedd.FastNoise.Benchmark -c Release
+      - run: dotnet build tools/Tedd.FastNoise.Gallery -c Release
+      - run: dotnet test src/Tedd.FastNoise.Tests -c Release
+      - run: dotnet pack src/Tedd.FastNoise -c Release -o artifacts/packages
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: artifacts/packages/*
+
+  # Vector<T> width and the gather implementation both differ by machine, and
+  # bit-identical output across backends is a promise this library makes. So the
+  # test suite runs on more than one instruction set.
+  arm64:
+    name: test (arm64)
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet test src/Tedd.FastNoise.Tests -c Release
+
+  windows:
+    name: test (windows, with designer)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet build src/Tedd.FastNoise.slnx -c Release
+      - run: dotnet test src/Tedd.FastNoise.Tests -c Release --no-build
+
+  preview:
+    name: test (.NET 11 preview)
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            10.0.x
+            11.0.x
+          dotnet-quality: preview
+      - run: dotnet test src/Tedd.FastNoise.Tests -c Release -f net11.0 -p:EnableNet11=true

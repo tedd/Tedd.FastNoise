@@ -348,3 +348,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+docs/gallery/
+
+# Benchmark run logs
+src/Tedd.FastNoise.Benchmark/bench-run.log

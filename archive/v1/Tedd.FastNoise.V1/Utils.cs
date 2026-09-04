@@ -6,9 +6,9 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 
-namespace Tedd.FastNoise
+namespace Tedd.FastNoise.V1
 {
-    public static class Utils
+    public static class UtilsV1
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SplitFraction(Vector128<double> d, out Vector128<double> i, out Vector128<double> f)
