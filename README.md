@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/tedd/Tedd.FastNoise/actions/workflows/ci.yml/badge.svg)](https://github.com/tedd/Tedd.FastNoise/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/Tedd.FastNoise.svg)](https://www.nuget.org/packages/Tedd.FastNoise/)
-[![Docs](https://img.shields.io/badge/docs-github%20pages-blue)](https://tedd.github.io/Tedd.FastNoise/)
+[![Docs](https://img.shields.io/badge/docs-github%20pages-blue)](https://tedd.no/Tedd.FastNoise/)
 
 Deterministic coherent noise for voxel worlds and terrain, built for bulk generation.
 
