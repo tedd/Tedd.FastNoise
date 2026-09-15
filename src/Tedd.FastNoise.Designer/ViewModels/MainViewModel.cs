@@ -44,9 +44,9 @@ public sealed class MainViewModel : ObservableObject
 
     private int _resolution = 384;
     private int _volumeResolution = 40;
-    private float _originX;
-    private float _originY;
-    private float _originZ;
+    private float _centerX;
+    private float _centerY;
+    private float _centerZ;
     private float _step = 1f;
     private float _threshold;
     private float _heightScale = 0.25f;
@@ -144,25 +144,25 @@ public sealed class MainViewModel : ObservableObject
         set => SetAndRender(ref _volumeResolution, Math.Clamp(value, 8, 96));
     }
 
-    /// <summary>World X of the first sample.</summary>
-    public float OriginX
+    /// <summary>World X at the centre of the preview.</summary>
+    public float CenterX
     {
-        get => _originX;
-        set => SetAndRender(ref _originX, value);
+        get => _centerX;
+        set => SetAndRender(ref _centerX, value);
     }
 
-    /// <summary>World Y of the first sample.</summary>
-    public float OriginY
+    /// <summary>World Y at the centre of the preview.</summary>
+    public float CenterY
     {
-        get => _originY;
-        set => SetAndRender(ref _originY, value);
+        get => _centerY;
+        set => SetAndRender(ref _centerY, value);
     }
 
-    /// <summary>World Z of the first sample. Volume preview only.</summary>
-    public float OriginZ
+    /// <summary>World Z at the centre of the preview. Volume preview only.</summary>
+    public float CenterZ
     {
-        get => _originZ;
-        set => SetAndRender(ref _originZ, value);
+        get => _centerZ;
+        set => SetAndRender(ref _centerZ, value);
     }
 
     /// <summary>
@@ -465,9 +465,9 @@ public sealed class MainViewModel : ObservableObject
             {
                 Mode = _mode,
                 Ramp = _ramp,
-                OriginX = _originX,
-                OriginY = _originY,
-                OriginZ = _originZ,
+                CenterX = _centerX,
+                CenterY = _centerY,
+                CenterZ = _centerZ,
                 Step = _step,
                 Resolution = _resolution,
                 VolumeResolution = _volumeResolution,
@@ -575,12 +575,11 @@ public sealed class MainViewModel : ObservableObject
         ViewDocument view = document.View;
         _mode = view.Mode;
         _ramp = view.Ramp;
-        _originX = view.OriginX;
-        _originY = view.OriginY;
-        _originZ = view.OriginZ;
         _step = Math.Max(0.0001f, view.Step);
         _resolution = Math.Clamp(view.Resolution, 16, 1024);
         _volumeResolution = Math.Clamp(view.VolumeResolution, 8, 96);
+        (_centerX, _centerY, _centerZ) = ResolveSavedCenter(
+            document, _mode, _resolution, _volumeResolution, _step);
         _threshold = view.Threshold;
         _heightScale = view.HeightScale;
         _showThresholdMask = view.ShowThresholdMask;
@@ -594,6 +593,27 @@ public sealed class MainViewModel : ObservableObject
         Raise(null);
         SelectedLayer = Layers[0];
         QueueRender();
+    }
+
+    /// <summary>Reads the centre anchor, migrating the first-sample coordinates stored by version 1.</summary>
+    internal static (float X, float Y, float Z) ResolveSavedCenter(
+        DesignDocument document,
+        PreviewMode mode,
+        int resolution,
+        int volumeResolution,
+        float step)
+    {
+        ViewDocument view = document.View;
+        if (document.Version >= 2)
+        {
+            return (view.CenterX, view.CenterY, view.CenterZ);
+        }
+
+        int edge = mode == PreviewMode.Volume3D ? volumeResolution : resolution;
+        return (
+            PreviewRegion.CenterFromFirstSample(view.OriginX ?? 0f, edge, step),
+            PreviewRegion.CenterFromFirstSample(view.OriginY ?? 0f, edge, step),
+            PreviewRegion.CenterFromFirstSample(view.OriginZ ?? 0f, volumeResolution, step));
     }
 
     private void CopyCode()
@@ -679,15 +699,16 @@ public sealed class MainViewModel : ObservableObject
         PreviewMode mode = _mode;
         int resolution = _resolution;
         int volumeResolution = _volumeResolution;
-        float originX = _originX, originY = _originY, originZ = _originZ;
+        float centerX = _centerX, centerY = _centerY, centerZ = _centerZ;
         float step = _step, threshold = _threshold, heightScale = _heightScale;
         bool showMask = _showThresholdMask;
         RampKind ramp = _ramp;
         NoiseBackend backend = _backend;
 
         PreviewRegion previewRegion = mode == PreviewMode.Volume3D
-            ? new PreviewRegion(originX, originY, originZ, volumeResolution, volumeResolution, volumeResolution, step)
-            : new PreviewRegion(originX, originY, originZ, resolution, resolution, 1, step);
+            ? PreviewRegion.Centered3D(
+                centerX, centerY, centerZ, volumeResolution, volumeResolution, volumeResolution, step)
+            : PreviewRegion.Centered2D(centerX, centerY, resolution, resolution, step);
 
         GeneratedCode = CSharpEmitter.Emit(Layers, lod, previewRegion, mode == PreviewMode.Volume3D);
 
@@ -703,8 +724,8 @@ public sealed class MainViewModel : ObservableObject
         try
         {
             RenderResult result = await Task.Run(
-                () => Render(enabled, lod, mode, resolution, volumeResolution,
-                    originX, originY, originZ, step, threshold, heightScale, showMask, ramp, backend, token),
+                () => Render(enabled, lod, mode, previewRegion,
+                    threshold, heightScale, showMask, ramp, backend, token),
                 token).ConfigureAwait(true);
 
             if (token.IsCancellationRequested)
@@ -731,12 +752,7 @@ public sealed class MainViewModel : ObservableObject
         List<LayerViewModel> layers,
         LodPolicy lod,
         PreviewMode mode,
-        int resolution,
-        int volumeResolution,
-        float originX,
-        float originY,
-        float originZ,
-        float step,
+        PreviewRegion previewRegion,
         float threshold,
         float heightScale,
         bool showThresholdMask,
@@ -755,7 +771,7 @@ public sealed class MainViewModel : ObservableObject
 
         string activeLayers = string.Join(
             Environment.NewLine,
-            compiled.DescribeActiveLayers(step).Select(static description => "- " + description));
+            compiled.DescribeActiveLayers(previewRegion.Step).Select(static description => "- " + description));
 
         if (activeLayers.Length == 0)
         {
@@ -767,7 +783,13 @@ public sealed class MainViewModel : ObservableObject
         if (mode == PreviewMode.Volume3D)
         {
             GridRegion3D region = new(
-                originX, originY, originZ, volumeResolution, volumeResolution, volumeResolution, step);
+                previewRegion.OriginX,
+                previewRegion.OriginY,
+                previewRegion.OriginZ,
+                previewRegion.Width,
+                previewRegion.Height,
+                previewRegion.Depth,
+                previewRegion.Step);
 
             float[] field = new float[region.SampleCount];
             compiled.Fill(field, region, backend);
@@ -785,7 +807,12 @@ public sealed class MainViewModel : ObservableObject
                 ActiveLayers: activeLayers);
         }
 
-        GridRegion2D region2D = new(originX, originY, resolution, resolution, step);
+        GridRegion2D region2D = new(
+            previewRegion.OriginX,
+            previewRegion.OriginY,
+            previewRegion.Width,
+            previewRegion.Height,
+            previewRegion.Step);
         float[] field2D = new float[region2D.SampleCount];
         compiled.Fill(field2D, region2D, backend);
         double fill2DMilliseconds = clock.Elapsed.TotalMilliseconds;
@@ -795,10 +822,13 @@ public sealed class MainViewModel : ObservableObject
         {
             // Cap the mesh independently of the field: WPF's scene graph is the bottleneck, not the noise.
             const int MaxMeshEdge = 192;
-            int meshEdge = Math.Min(resolution, MaxMeshEdge);
-            float[] meshField = meshEdge == resolution ? field2D : Downsample(field2D, resolution, meshEdge);
+            int meshEdge = Math.Min(previewRegion.Width, MaxMeshEdge);
+            float[] meshField = meshEdge == previewRegion.Width
+                ? field2D
+                : Downsample(field2D, previewRegion.Width, meshEdge);
 
-            MeshGeometry3D mesh = HeightmapMesh.Build(meshField, meshEdge, meshEdge, heightScale);
+            MeshGeometry3D mesh = HeightmapMesh.Build(
+                meshField, meshEdge, meshEdge, heightScale, previewRegion.Step);
 
             return new RenderResult(
                 Image: null,
@@ -809,7 +839,7 @@ public sealed class MainViewModel : ObservableObject
         }
 
         BitmapSource image = FieldImage.Render(
-            field2D, resolution, resolution, ramp, threshold, showThresholdMask);
+            field2D, previewRegion.Width, previewRegion.Height, ramp, threshold, showThresholdMask);
 
         return new RenderResult(
             Image: image,
@@ -819,22 +849,27 @@ public sealed class MainViewModel : ObservableObject
     }
 
     /// <summary>Point-samples a square field down to a smaller square.</summary>
-    private static float[] Downsample(float[] field, int sourceEdge, int targetEdge)
+    internal static float[] Downsample(float[] field, int sourceEdge, int targetEdge)
     {
         float[] result = new float[targetEdge * targetEdge];
 
         for (int y = 0; y < targetEdge; y++)
         {
-            int sourceY = y * sourceEdge / targetEdge;
+            int sourceY = MapEndpoint(y, sourceEdge, targetEdge);
 
             for (int x = 0; x < targetEdge; x++)
             {
-                result[x + (y * targetEdge)] = field[(x * sourceEdge / targetEdge) + (sourceY * sourceEdge)];
+                int sourceX = MapEndpoint(x, sourceEdge, targetEdge);
+                result[x + (y * targetEdge)] = field[sourceX + (sourceY * sourceEdge)];
             }
         }
 
         return result;
     }
+
+    /// <summary>Maps one edge-inclusive grid coordinate onto another edge-inclusive grid.</summary>
+    private static int MapEndpoint(int coordinate, int sourceEdge, int targetEdge)
+        => (int)Math.Round((double)coordinate * (sourceEdge - 1) / (targetEdge - 1));
 
     private static Model3D BuildModel(MeshGeometry3D mesh, RampKind ramp)
     {

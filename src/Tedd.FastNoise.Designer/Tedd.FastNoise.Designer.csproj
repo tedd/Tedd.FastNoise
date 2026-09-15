@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Tedd.FastNoise\Tedd.FastNoise.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Tedd.FastNoise.Designer.Tests" />
+  </ItemGroup>
+
 </Project>

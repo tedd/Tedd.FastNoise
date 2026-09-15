@@ -18,9 +18,21 @@ public static class HeightmapMesh
     /// <param name="width">Samples along X.</param>
     /// <param name="height">Samples along Y.</param>
     /// <param name="heightScale">Vertical exaggeration. 0 gives a flat plane.</param>
+    /// <param name="worldUnitsPerSample">World-space distance between adjacent samples.</param>
     /// <returns>A frozen mesh spanning roughly [-0.5, 0.5] in X and Z.</returns>
-    public static MeshGeometry3D Build(ReadOnlySpan<float> field, int width, int height, float heightScale)
+    public static MeshGeometry3D Build(
+        ReadOnlySpan<float> field,
+        int width,
+        int height,
+        float heightScale,
+        float worldUnitsPerSample)
     {
+        if (!float.IsFinite(worldUnitsPerSample) || worldUnitsPerSample <= 0f)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(worldUnitsPerSample), worldUnitsPerSample, "Sample spacing must be finite and greater than zero.");
+        }
+
         Point3DCollection positions = new(width * height);
         Vector3DCollection normals = new(width * height);
         PointCollection textureCoordinates = new(width * height);
@@ -28,6 +40,10 @@ public static class HeightmapMesh
 
         float stepX = 1f / MathF.Max(1f, width - 1);
         float stepY = 1f / MathF.Max(1f, height - 1);
+
+        // The footprint is normalised to one display unit. A coarser sample step covers a
+        // proportionally larger world-space area, so elevation must contract by the same factor.
+        float displayHeightScale = heightScale / worldUnitsPerSample;
 
         for (int y = 0; y < height; y++)
         {
@@ -37,10 +53,10 @@ public static class HeightmapMesh
 
                 positions.Add(new Point3D(
                     (x * stepX) - 0.5,
-                    value * heightScale,
+                    value * displayHeightScale,
                     (y * stepY) - 0.5));
 
-                normals.Add(EstimateNormal(field, width, height, x, y, heightScale, stepX, stepY));
+                normals.Add(EstimateNormal(field, width, height, x, y, displayHeightScale, stepX, stepY));
 
                 // The ramp texture is 256x1; U carries the value, V just picks the single row.
                 textureCoordinates.Add(new Point(Math.Clamp((value + 1f) * 0.5f, 0f, 1f), 0.5));

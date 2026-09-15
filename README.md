@@ -291,7 +291,8 @@ A Windows app for building a stack visually instead of guessing at frequencies a
 - **3D volume** — a 3D field thresholded into voxels and meshed from its exposed faces, rotatable.
 - **Layers** — add, reorder, blend, and toggle layers with every generator setting live.
 - **Zoom sweep** — drag the sample spacing from sub-block to orbital and watch which layers and
-  octaves survive level-of-detail culling, and what the fill costs.
+  octaves survive level-of-detail culling, and what the fill costs. The selected world-space centre
+  stays fixed while terrain elevation contracts with the horizontal scale.
 - **Generated C#** — the code that reproduces whatever is on screen, ready to paste.
 
 Drag to orbit, right-drag to pan, wheel to zoom. Every preview shows its own fill time and
@@ -313,6 +314,7 @@ src/Tedd.FastNoise/            the library
 src/Tedd.FastNoise.Tests/      xUnit, including the vendored reference used as the oracle
 src/Tedd.FastNoise.Benchmark/  BenchmarkDotNet
 src/Tedd.FastNoise.Designer/   the WPF designer
+src/Tedd.FastNoise.Designer.Tests/  Windows-only designer geometry tests
 tools/Tedd.FastNoise.Gallery/  renders the sample images for the documentation site
 docs/                          the GitHub Pages site
 archive/v1/                    the 2020 implementation, frozen

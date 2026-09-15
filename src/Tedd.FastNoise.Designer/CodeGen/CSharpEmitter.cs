@@ -281,4 +281,46 @@ public readonly record struct PreviewRegion(
     int Width,
     int Height,
     int Depth,
-    float Step);
+    float Step)
+{
+    /// <summary>Creates a 2D sampling region around a fixed world-space centre.</summary>
+    public static PreviewRegion Centered2D(
+        float centerX,
+        float centerY,
+        int width,
+        int height,
+        float step)
+        => new(
+            FirstSampleFromCenter(centerX, width, step),
+            FirstSampleFromCenter(centerY, height, step),
+            0f,
+            width,
+            height,
+            1,
+            step);
+
+    /// <summary>Creates a 3D sampling region around a fixed world-space centre.</summary>
+    public static PreviewRegion Centered3D(
+        float centerX,
+        float centerY,
+        float centerZ,
+        int width,
+        int height,
+        int depth,
+        float step)
+        => new(
+            FirstSampleFromCenter(centerX, width, step),
+            FirstSampleFromCenter(centerY, height, step),
+            FirstSampleFromCenter(centerZ, depth, step),
+            width,
+            height,
+            depth,
+            step);
+
+    /// <summary>Returns the midpoint of an axis whose first sample, count, and spacing are known.</summary>
+    public static float CenterFromFirstSample(float firstSample, int sampleCount, float step)
+        => firstSample + (((sampleCount - 1) * step) * 0.5f);
+
+    private static float FirstSampleFromCenter(float center, int sampleCount, float step)
+        => center - (((sampleCount - 1) * step) * 0.5f);
+}

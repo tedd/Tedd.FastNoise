@@ -326,17 +326,17 @@
                     <GroupBox Header="Region">
                         <StackPanel>
                             <DockPanel Margin="0,0,0,4">
-                                <TextBlock Text="Origin X" Width="80" Style="{StaticResource FieldLabel}" />
-                                <TextBox Text="{Binding OriginX, StringFormat=0.##, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="Center X" Width="80" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding CenterX, StringFormat=0.##, UpdateSourceTrigger=PropertyChanged}" />
                             </DockPanel>
                             <DockPanel Margin="0,0,0,4">
-                                <TextBlock Text="Origin Y" Width="80" Style="{StaticResource FieldLabel}" />
-                                <TextBox Text="{Binding OriginY, StringFormat=0.##, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="Center Y" Width="80" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding CenterY, StringFormat=0.##, UpdateSourceTrigger=PropertyChanged}" />
                             </DockPanel>
                             <DockPanel Margin="0,0,0,4"
                                        Visibility="{Binding IsVolume, Converter={StaticResource BoolToVisibility}}">
-                                <TextBlock Text="Origin Z" Width="80" Style="{StaticResource FieldLabel}" />
-                                <TextBox Text="{Binding OriginZ, StringFormat=0.##, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="Center Z" Width="80" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding CenterZ, StringFormat=0.##, UpdateSourceTrigger=PropertyChanged}" />
                             </DockPanel>
                             <DockPanel Margin="0,0,0,4">
                                 <TextBlock Text="2D size" Width="80" Style="{StaticResource FieldLabel}" />

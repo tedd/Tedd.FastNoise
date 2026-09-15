@@ -25,7 +25,7 @@ namespace Tedd.FastNoise.Designer.Presets;
 public sealed class DesignDocument
 {
     /// <summary>Format version, so a future reader can tell what it is looking at.</summary>
-    public int Version { get; set; } = 1;
+    public int Version { get; set; } = 2;
 
     /// <summary>The layers, coarsest first.</summary>
     public List<LayerDocument> Layers { get; set; } = [];
@@ -176,14 +176,26 @@ public sealed class ViewDocument
     /// <summary>Colour mapping.</summary>
     public RampKind Ramp { get; set; } = RampKind.Terrain;
 
-    /// <summary>World X of the first sample.</summary>
-    public float OriginX { get; set; }
+    /// <summary>World X at the centre of the preview.</summary>
+    public float CenterX { get; set; }
 
-    /// <summary>World Y of the first sample.</summary>
-    public float OriginY { get; set; }
+    /// <summary>World Y at the centre of the preview.</summary>
+    public float CenterY { get; set; }
 
-    /// <summary>World Z of the first sample.</summary>
-    public float OriginZ { get; set; }
+    /// <summary>World Z at the centre of the preview.</summary>
+    public float CenterZ { get; set; }
+
+    /// <summary>Version 1 world X of the first sample. Read only for migration.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public float? OriginX { get; set; }
+
+    /// <summary>Version 1 world Y of the first sample. Read only for migration.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public float? OriginY { get; set; }
+
+    /// <summary>Version 1 world Z of the first sample. Read only for migration.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public float? OriginZ { get; set; }
 
     /// <summary>World units between samples.</summary>
     public float Step { get; set; } = 1f;
