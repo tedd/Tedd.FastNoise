@@ -339,27 +339,31 @@ dotnet test src/Tedd.FastNoise.Tests -c Release -f net11.0 -p:EnableNet11=true  
 
 ## Releasing
 
-Two workflows, with a clean split between checking and shipping.
+Three workflows separate verification, package deployment and site deployment.
 
 `ci.yml` runs on every push and pull request and publishes nothing. It builds and tests on Linux,
 on ARM64 and on Windows -- three instruction sets, because bit-identical output across backends is
 a promise this library makes and one machine cannot check it -- plus a non-blocking .NET 11 preview
 run.
 
-`deploy.yml` runs only on a push to the **`deploy`** branch, and is the only thing that ships:
+`deploy.yml` runs only on a push to the **`deploy`** branch and ships:
 
-- the NuGet package, if `<Version>` in the csproj changed since the last publish
+- the next automatically versioned NuGet package, using GitHub OIDC trusted publishing
 - a GitHub release carrying the self-contained Windows designer
-- the documentation site to GitHub Pages, with its gallery rendered by the library at build time
 
-So the release procedure is: merge to `master`, watch CI go green, bump `<Version>`, then
+`pages.yml` also runs from **`deploy`**. It renders every 2D and 3D gallery image with the checked-out
+library and deploys `docs/` through GitHub Pages.
+
+The `<Version>` value supplies the major and minor release line. Each new deploy workflow run adds
+its stable run number to the patch component; rerunning the same workflow retains the same version.
+The release procedure is therefore: merge to `main`, watch CI complete, then
 
 ```bash
-git push origin master:deploy
+git push origin main:deploy
 ```
 
-Two secrets and one setting are needed: `NUGET_API_KEY` in the repository secrets, and Pages
-configured with **GitHub Actions** as its source.
+NuGet.org must trust repository `tedd/Tedd.FastNoise` and workflow file `deploy.yml`. No persistent
+NuGet API key is stored. GitHub Pages must use **GitHub Actions** as its source.
 
 ---
 

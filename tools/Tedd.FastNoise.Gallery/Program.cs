@@ -14,7 +14,7 @@ namespace Tedd.FastNoise.Gallery;
 /// </remarks>
 internal static class Program
 {
-    private const int Size = 420;
+    private const int Size = 560;
 
     private static int Main(string[] args)
     {
@@ -31,6 +31,21 @@ internal static class Program
             Console.WriteLine($"{name,-22} {Size}x{Size} in {clock.Elapsed.TotalMilliseconds:0.0} ms");
         }
 
+        Stopwatch volumeClock = Stopwatch.StartNew();
+        const int volumeEdge = 48;
+        float[] volume = new NoiseGenerator(73013)
+        {
+            NoiseType = NoiseType.OpenSimplex2,
+            FractalType = FractalType.FBm,
+            Octaves = 4,
+            Frequency = 0.035f,
+        }.Create(new GridRegion3D(-24, -24, -24, volumeEdge, volumeEdge, volumeEdge));
+
+        (int width, int height, byte[] pixels) = VoxelRenderer.Render(volume, volumeEdge, threshold: 0.08f);
+        Png.Write(Path.Combine(output, "volume-3d.png"), width, height, pixels);
+        volumeClock.Stop();
+        Console.WriteLine($"{"volume-3d",-22} {width}x{height} in {volumeClock.Elapsed.TotalMilliseconds:0.0} ms");
+
         Console.WriteLine($"Wrote gallery to {Path.GetFullPath(output)}");
         return 0;
     }
@@ -43,7 +58,23 @@ internal static class Program
             FractalType = FractalType.FBm,
             Octaves = 5,
             Frequency = 0.01f,
-        }.Create(new GridRegion2D(0, 0, Size, Size)), Palette.Grey);
+        }.Create(new GridRegion2D(0, 0, Size, Size)), Palette.Aqua);
+
+        yield return ("perlin", () => new NoiseGenerator(8080)
+        {
+            NoiseType = NoiseType.Perlin,
+            FractalType = FractalType.FBm,
+            Octaves = 5,
+            Frequency = 0.009f,
+        }.Create(new GridRegion2D(0, 0, Size, Size)), Palette.Aqua);
+
+        yield return ("value", () => new NoiseGenerator(606)
+        {
+            NoiseType = NoiseType.Value,
+            FractalType = FractalType.FBm,
+            Octaves = 4,
+            Frequency = 0.012f,
+        }.Create(new GridRegion2D(0, 0, Size, Size)), Palette.Aqua);
 
         yield return ("ridged", () => new NoiseGenerator(4242)
         {
@@ -51,7 +82,7 @@ internal static class Program
             FractalType = FractalType.Ridged,
             Octaves = 6,
             Frequency = 0.006f,
-        }.Create(new GridRegion2D(0, 0, Size, Size)), Palette.Grey);
+        }.Create(new GridRegion2D(0, 0, Size, Size)), Palette.Aqua);
 
         yield return ("cellular", () => new NoiseGenerator(7)
         {
@@ -59,7 +90,7 @@ internal static class Program
             CellularDistanceFunction = CellularDistanceFunction.Euclidean,
             CellularReturnType = CellularReturnType.Distance2Sub,
             Frequency = 0.03f,
-        }.Create(new GridRegion2D(0, 0, Size, Size)), Palette.Grey);
+        }.Create(new GridRegion2D(0, 0, Size, Size)), Palette.Aqua);
 
         yield return ("layered-world", BuildWorld, Palette.Terrain);
 
@@ -137,7 +168,7 @@ internal static class Program
 
     private enum Palette
     {
-        Grey,
+        Aqua,
         Terrain,
     }
 
@@ -148,7 +179,7 @@ internal static class Program
         for (int index = 0; index < field.Length; index++)
         {
             float unit = Math.Clamp((field[index] + 1f) * 0.5f, 0f, 1f);
-            (byte r, byte g, byte b) = palette == Palette.Terrain ? Terrain(unit) : (Grey(unit), Grey(unit), Grey(unit));
+            (byte r, byte g, byte b) = palette == Palette.Terrain ? Terrain(unit) : Aqua(unit);
 
             rgb[(index * 3) + 0] = r;
             rgb[(index * 3) + 1] = g;
@@ -158,7 +189,12 @@ internal static class Program
         return rgb;
     }
 
-    private static byte Grey(float unit) => (byte)(unit * 255f);
+    private static (byte, byte, byte) Aqua(float unit) => unit switch
+    {
+        < 0.42f => Mix((10, 28, 37), (14, 86, 91), unit / 0.42f),
+        < 0.68f => Mix((14, 86, 91), (36, 166, 151), (unit - 0.42f) / 0.26f),
+        _ => Mix((36, 166, 151), (226, 247, 239), (unit - 0.68f) / 0.32f),
+    };
 
     private static (byte, byte, byte) Terrain(float unit) => unit switch
     {

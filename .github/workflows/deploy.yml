@@ -1,12 +1,8 @@
 name: Deploy
 
-# The only workflow that publishes anything. Push to `deploy` and it ships:
-#   * the NuGet package, if the version in the csproj changed
-#   * a GitHub release carrying the designer app
-#   * the documentation site to GitHub Pages
-#
-# Everything is verified first, and each publishing step is a separate job so a
-# failure in one does not half-ship the others.
+# Push to `deploy` to publish the next automatically versioned NuGet package and
+# a matching GitHub release of the designer. Pages is handled independently by
+# pages.yml so a package failure cannot block documentation deployment.
 on:
   push:
     branches: [deploy]
@@ -14,13 +10,11 @@ on:
 
 permissions:
   contents: write
-  pages: write
   id-token: write
 
-# Two deploys racing each other would fight over the Pages deployment and the
-# release tag. Queue them instead, and never cancel one midway.
+# Two deploys racing each other would contend for the same version and tag.
 concurrency:
-  group: deploy
+  group: package-deploy
   cancel-in-progress: false
 
 jobs:
@@ -28,8 +22,8 @@ jobs:
     name: verify
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
       - run: dotnet test src/Tedd.FastNoise.Tests -c Release
@@ -41,19 +35,29 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
 
-      - name: Read the package version
+      - name: Set automatic package version
         id: version
         shell: pwsh
         run: |
-          $xml = [xml](Get-Content src/Tedd.FastNoise/Tedd.FastNoise.csproj)
-          $version = $xml.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
-          "version=$version" >> $env:GITHUB_OUTPUT
-          Write-Host "Version is $version"
+          $projectPath = 'src/Tedd.FastNoise/Tedd.FastNoise.csproj'
+          $project = [xml](Get-Content -LiteralPath $projectPath)
+          $versionNode = $project.SelectSingleNode('/Project/PropertyGroup/Version')
+          if ($null -eq $versionNode) {
+            throw "No Version element found in $projectPath."
+          }
+
+          $baseVersion = [version]$versionNode.InnerText
+          # A workflow rerun retains its version; each new deploy run advances the patch.
+          $packageVersion = '{0}.{1}.{2}' -f $baseVersion.Major, $baseVersion.Minor, ($baseVersion.Build + [int]$env:GITHUB_RUN_NUMBER)
+          $versionNode.InnerText = $packageVersion
+          $project.Save((Resolve-Path -LiteralPath $projectPath))
+          "version=$packageVersion" >> $env:GITHUB_OUTPUT
+          Write-Host "Publishing Tedd.FastNoise $packageVersion"
 
       - run: dotnet pack src/Tedd.FastNoise -c Release -o artifacts/packages
 
@@ -88,49 +92,87 @@ jobs:
     name: publish to nuget
     needs: package
     runs-on: windows-latest
+    permissions:
+      contents: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
 
-      # Pinned to a commit, not to @v1 or @v2. There is no v2 tag on the action, and v1 still points
-      # at a 2022 commit that predates the fix for its `dotnet dotnet nuget push` bug -- so @v1 fails
-      # every run and @v2 does not resolve at all. This SHA is "Fixed duplicate dotnet dotnet" on
-      # main. Move to @v2 once that tag exists.
-      #
-      # PROJECT_FILE_PATH is given explicitly rather than relying on PUBLISH_ALL_PROJECTS, because
-      # that setting looks for GeneratePackageOnBuild and this project does not set it -- the search
-      # would find nothing and silently publish nothing.
+      - name: Apply package version
+        shell: pwsh
+        env:
+          PACKAGE_VERSION: ${{ needs.package.outputs.version }}
+        run: |
+          $projectPath = 'src/Tedd.FastNoise/Tedd.FastNoise.csproj'
+          $project = [xml](Get-Content -LiteralPath $projectPath)
+          $versionNode = $project.SelectSingleNode('/Project/PropertyGroup/Version')
+          if ($null -eq $versionNode) {
+            throw "No Version element found in $projectPath."
+          }
+          $versionNode.InnerText = $env:PACKAGE_VERSION
+          $project.Save((Resolve-Path -LiteralPath $projectPath))
+
+      # NuGet.org validates this workflow through OIDC and returns a one-hour API key.
+      # No long-lived NuGet credential is stored in GitHub.
+      - name: Log in to NuGet.org with OIDC
+        id: nuget_login
+        uses: NuGet/login@v1
+        with:
+          user: tedd
+
       - name: Publish on version change
-        id: publish
+        id: publish_nuget
+        continue-on-error: true
+        # publish-nuget-neo has no v2 tag. Pin the current v2 implementation on main;
+        # v1 refers to the obsolete implementation that emits `dotnet dotnet nuget push`.
         uses: tedd/publish-nuget-neo@1a65ed85a859c9f4905b61c58afe6b1dcbb74ae4
         with:
-          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
+          NUGET_KEY: ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           PROJECT_FILE_PATH: src/Tedd.FastNoise/Tedd.FastNoise.csproj
+          PACKAGE_NAME: Tedd.FastNoise
           NUGET_SOURCE: https://api.nuget.org
           INCLUDE_SYMBOLS: true
           TAG_COMMIT: true
           TAG_FORMAT: v*
-          LOG_LEVEL: DEBUG
+          REBUILD_PROJECT: false
+          LOG_LEVEL: INFO
 
-      # The action reports "Command failed" and discards what nuget.org actually said, which turns
-      # an expired or wrongly scoped API key into an unreadable failure. Retry the push directly on
-      # failure purely to surface the real message; it cannot publish anything the action did not
-      # already publish, and it never fails the job on its own.
-      - name: Show what nuget.org actually said
-        if: failure()
-        continue-on-error: true
-        shell: bash
+      # The current action suppresses dotnet's server response when a push fails. A direct retry
+      # preserves the diagnostic, handles a transient failure, and completes the tag operation.
+      - name: Retry failed publish
+        if: steps.publish_nuget.outcome == 'failure'
+        shell: pwsh
+        env:
+          NUGET_KEY: ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
+          PACKAGE_VERSION: ${{ needs.package.outputs.version }}
         run: |
-          echo "The publish step failed. Repeating the push directly so the server's reply is visible:"
-          dotnet nuget push src/Tedd.FastNoise/Tedd.FastNoise.*.nupkg --source https://api.nuget.org/v3/index.json --api-key "${{ secrets.NUGET_API_KEY }}" --skip-duplicate || true
-          echo
-          echo "A 403 here means the API key is expired, or is scoped to package names that do not"
-          echo "match Tedd.FastNoise. A new package ID needs a key with 'Push new packages and"
-          echo "package versions' and a glob that covers it, such as Tedd.* or *."
+          $packages = @(
+            Get-Item -LiteralPath "src/Tedd.FastNoise/Tedd.FastNoise.$env:PACKAGE_VERSION.nupkg"
+            Get-Item -LiteralPath "src/Tedd.FastNoise/Tedd.FastNoise.$env:PACKAGE_VERSION.snupkg"
+          )
+          foreach ($package in $packages) {
+            dotnet nuget push $package.FullName --source https://api.nuget.org/v3/index.json --api-key $env:NUGET_KEY --skip-duplicate
+            if ($LASTEXITCODE -ne 0) {
+              throw "NuGet publish failed for $($package.Name) with exit code $LASTEXITCODE."
+            }
+          }
+
+          $tag = "v$env:PACKAGE_VERSION"
+          if (-not (git tag --list $tag)) {
+            git tag $tag
+            if ($LASTEXITCODE -ne 0) {
+              throw "Creating tag $tag failed."
+            }
+          }
+          git push origin $tag
+          if ($LASTEXITCODE -ne 0) {
+            throw "Pushing tag $tag failed."
+          }
 
   release:
     name: publish the app
@@ -156,30 +198,3 @@ jobs:
             No .NET installation required.
           files: release/*
           make_latest: true
-
-  site:
-    name: publish the site
-    needs: package
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 10.0.x
-
-      # The gallery is rendered by the library it documents, so the images cannot
-      # drift away from what the code actually produces.
-      - name: Render the gallery
-        run: dotnet run -c Release --project tools/Tedd.FastNoise.Gallery -- docs/gallery
-
-      - uses: actions/configure-pages@v5
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
-
-      - id: deployment
-        uses: actions/deploy-pages@v4

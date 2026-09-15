@@ -1,270 +1,308 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tedd.FastNoise — deterministic coherent noise for voxel worlds</title>
-<meta name="description" content="Perlin, OpenSimplex2, Value and Cellular noise for .NET, built for bulk generation. SIMD and multi-core volume fills that are bit-identical across every backend.">
-<link rel="stylesheet" href="style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%235b9cf8'/></svg>">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7faf9">
+  <meta name="description" content="Tedd.FastNoise is a deterministic .NET coherent-noise library for bulk 2D terrain and 3D voxel generation using scalar, SIMD, and parallel execution.">
+  <title>Tedd.FastNoise — deterministic bulk noise for .NET</title>
+  <link rel="icon" href="assets/noise-mark.svg" type="image/svg+xml">
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-<header class="hero">
-  <div class="wrap">
-    <h1>Tedd.FastNoise</h1>
-    <p class="tagline">
-      Deterministic coherent noise for voxel worlds and terrain, built for bulk generation rather than
-      one sample at a time.
-    </p>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Tedd.FastNoise home">
+      <img src="assets/noise-mark.svg" width="34" height="34" alt="">
+      <span>TEDD<span class="brand-slash">/</span>FASTNOISE</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#algorithms">Algorithms</a>
+      <a href="#execution">Execution</a>
+      <a href="#composition">Composition</a>
+      <a href="#api">API</a>
+      <a href="#designer">Designer</a>
+      <a class="nav-cta" href="#install">Install</a>
+    </nav>
+  </header>
 
-    <div class="badges">
-      <a href="https://www.nuget.org/packages/Tedd.FastNoise/"><img src="https://img.shields.io/nuget/v/Tedd.FastNoise.svg?style=flat-square&amp;color=5b9cf8" alt="NuGet version"></a>
-      <a href="https://github.com/tedd/Tedd.FastNoise/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/tedd/Tedd.FastNoise/ci.yml?style=flat-square&amp;label=build" alt="Build status"></a>
-      <img src="https://img.shields.io/badge/.NET-10%20%7C%2011-5b9cf8?style=flat-square" alt="Targets .NET 10 and 11">
-    </div>
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> .NET 10 · 2D and 3D · deterministic output</p>
+        <h1>Fill terrain tiles.<br><em>Fill voxel volumes.</em></h1>
+        <p class="lede">Tedd.FastNoise computes coherent noise directly into contiguous <code>Span&lt;float&gt;</code> buffers. The same kernels execute as scalar code, hardware-width SIMD, or SIMD across multiple cores, with bit-identical output.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#install"><span>Install from NuGet</span><span aria-hidden="true">↓</span></a>
+          <a class="button secondary" href="https://github.com/tedd/Tedd.FastNoise">Read the source</a>
+        </div>
+        <ul class="hero-checks" aria-label="Library properties">
+          <li>OpenSimplex2, Perlin, Value, and Cellular kernels</li>
+          <li>fBm, ridged, and ping-pong fractals</li>
+          <li>Layer fusion and sample-aware level of detail</li>
+        </ul>
+      </div>
 
-    <div class="actions">
-      <a class="button primary" href="https://www.nuget.org/packages/Tedd.FastNoise/">
-        Get the package
-        <span class="sub">dotnet add package Tedd.FastNoise</span>
-      </a>
-      <a class="button" href="https://github.com/tedd/Tedd.FastNoise/releases/latest/download/Tedd.FastNoise.Designer-win-x64.zip">
-        Download the designer
-        <span class="sub">Windows, self-contained</span>
-      </a>
-      <a class="button" href="https://github.com/tedd/Tedd.FastNoise">Source on GitHub</a>
-    </div>
-  </div>
-</header>
+      <figure class="hero-sample reveal">
+        <div class="sample-bar"><span></span><span></span><span></span><b>OpenSimplex2 · 48³ field · threshold 0.08</b></div>
+        <img src="gallery/volume-3d.png" alt="Isometric rendering of a thresholded 48 by 48 by 48 OpenSimplex2 noise volume" width="960" height="880">
+        <figcaption><strong>Actual 3D output.</strong> Generated during the Pages build by one <code>GridRegion3D</code> fill, then thresholded and projected as exposed voxels.</figcaption>
+      </figure>
+    </section>
 
-<section id="what">
-  <div class="wrap">
-    <h2>What it is</h2>
-    <p class="lede">
-      The algorithms started as a port of
-      <a href="https://github.com/Auburn/FastNoiseLite">FastNoiseLite</a>, with the generation loop
-      rebuilt around filling buffers.
-    </p>
+    <section class="proof-strip" aria-label="Implementation summary">
+      <p><strong>6 kernels</strong><span>OpenSimplex2/S, Perlin, Value/Cubic, Cellular</span></p>
+      <p><strong>2D + 3D</strong><span>Single samples, grids, and volumes</span></p>
+      <p><strong>X-fastest</strong><span>Contiguous output and vector lanes</span></p>
+      <p><strong>Exact equality</strong><span>Scalar, SIMD, parallel, x86, and ARM</span></p>
+    </section>
 
-    <p>
-      A noise library that only offers <code>GetNoise(x, y, z)</code> forces you to call it once per
-      voxel. That throws away the two things that make bulk generation fast: sixteen lanes of a
-      vector register doing the same arithmetic on adjacent coordinates, and the fact that a chunk's
-      worth of samples is independent work that can be spread across cores. Neither is available to
-      a function that returns one float.
-    </p>
+    <section class="contract section-shell" id="api">
+      <div class="section-intro reveal">
+        <div>
+          <p class="eyebrow">Primary contract</p>
+          <h2>A region in.<br>A flat buffer out.</h2>
+        </div>
+        <p><code>NoiseGenerator</code> stores the signal configuration. <code>GridRegion2D</code> and <code>GridRegion3D</code> specify the first sample, sample count, and world-space step. <code>Fill</code> writes values in X-major order without allocating.</p>
+      </div>
 
-    <pre><span class="k">var</span> noise = <span class="k">new</span> <span class="t">NoiseGenerator</span>(seed: 1337)
+      <div class="code-layout reveal">
+        <pre aria-label="C sharp example that fills one voxel column"><code><span class="kw">var</span> densityNoise = <span class="kw">new</span> <span class="type">NoiseGenerator</span>(seed: <span class="num">1337</span>)
 {
-    NoiseType   = <span class="t">NoiseType</span>.OpenSimplex2,
-    FractalType = <span class="t">FractalType</span>.FBm,
-    Octaves     = 5,
-    Frequency   = 0.005f,
+    NoiseType  = <span class="type">NoiseType</span>.OpenSimplex2,
+    FractalType = <span class="type">FractalType</span>.FBm,
+    Octaves    = <span class="num">5</span>,
+    Frequency  = <span class="num">0.005f</span>,
 };
 
-<span class="c">// One 16x16x256 world column, vectorised across every core.</span>
-<span class="k">var</span> density = <span class="k">new float</span>[16 * 256 * 16];
-noise.Fill(density, <span class="k">new</span> <span class="t">GridRegion3D</span>(chunkX * 16, 0, chunkZ * 16, 16, 256, 16));</pre>
+<span class="kw">var</span> region = <span class="type">GridRegion3D</span>.Chunk(
+    chunkX, <span class="num">0</span>, chunkZ, chunkSize: <span class="num">16</span>);
 
-    <div class="cards">
-      <div class="card">
-        <h3>Every backend gives identical bytes</h3>
-        <p>
-          Scalar, SIMD and parallel fills are bit-for-bit equal, on x86 and on ARM, at any vector
-          width. A client with AVX-512 and a server on the scalar fallback agree on where the ground
-          is — and the test suite asserts exact equality, not closeness.
-        </p>
+<span class="kw">var</span> density = <span class="kw">new</span> <span class="type">float</span>[region.SampleCount];
+densityNoise.Fill(density, region); <span class="comment">// Auto backend</span>
+
+<span class="comment">// x + width * (y + height * z)</span>
+<span class="type">float</span> voxel = density[x + <span class="num">16</span> * (y + <span class="num">16</span> * z)];</code></pre>
+
+        <aside class="memory-card">
+          <p class="memory-label">Destination layout</p>
+          <div class="memory-cells" aria-hidden="true">
+            <span>x0</span><span>x1</span><span>x2</span><span>x3</span><span>x4</span><span>x5</span><span>x6</span><span>x7</span>
+          </div>
+          <p>Adjacent X coordinates occupy adjacent elements. A vector register therefore receives consecutive X samples and stores one contiguous result vector. Y and Z are broadcast coordinates.</p>
+          <dl>
+            <div><dt>2D index</dt><dd><code>x + width * y</code></dd></div>
+            <div><dt>3D index</dt><dd><code>x + width * (y + height * z)</code></dd></div>
+            <div><dt>Allocation</dt><dd><code>Fill</code>: none</dd></div>
+          </dl>
+        </aside>
       </div>
-      <div class="card">
-        <h3>A port that was checked</h3>
-        <p>
-          The kernels were restructured to vectorise, and every such rewrite can change a value by an
-          ULP unnoticed. An unmodified copy of FastNoiseLite is vendored as a test oracle and every
-          kernel is compared against it exactly. It caught two real bugs.
-        </p>
+    </section>
+
+    <section class="samples section-shell" id="samples">
+      <div class="section-intro reveal">
+        <div>
+          <p class="eyebrow">Generated fields</p>
+          <h2>The kernels have different spectra and artifacts.</h2>
+        </div>
+        <p>These images are not stock textures. The Pages workflow builds the current library, fills each field, and writes the PNG files. Equal seeds reproduce equal samples.</p>
       </div>
-      <div class="card">
-        <h3>Layer stacks that fuse</h3>
-        <p>
-          Continents, mountains, detail, masks. Compiling a stack flattens it so a fill runs every
-          layer against coordinates held in registers, instead of writing a buffer per layer and
-          reading them all back.
-        </p>
+
+      <div class="sample-grid">
+        <figure class="signal-card reveal">
+          <img src="gallery/opensimplex2.png" alt="Five octave OpenSimplex2 fractional Brownian motion field" width="560" height="560" loading="lazy">
+          <figcaption><span>01 / isotropic gradient</span><strong>OpenSimplex2 + fBm</strong><p>Five octaves. General terrain and 3D density.</p></figcaption>
+        </figure>
+        <figure class="signal-card reveal">
+          <img src="gallery/perlin.png" alt="Five octave Perlin fractional Brownian motion field" width="560" height="560" loading="lazy">
+          <figcaption><span>02 / cubic lattice gradient</span><strong>Perlin + fBm</strong><p>Lower kernel cost; mild axial structure.</p></figcaption>
+        </figure>
+        <figure class="signal-card reveal">
+          <img src="gallery/value.png" alt="Four octave Value noise field" width="560" height="560" loading="lazy">
+          <figcaption><span>03 / lattice values</span><strong>Value + fBm</strong><p>No gradient-table lookup. Suitable before thresholding or quantization.</p></figcaption>
+        </figure>
+        <figure class="signal-card reveal">
+          <img src="gallery/cellular.png" alt="Cellular noise using second-nearest minus nearest distance" width="560" height="560" loading="lazy">
+          <figcaption><span>04 / feature points</span><strong>Cellular Distance2Sub</strong><p>Cell boundaries, cracks, regions, and cave partitions.</p></figcaption>
+        </figure>
+        <figure class="signal-card reveal">
+          <img src="gallery/ridged.png" alt="Six octave ridged OpenSimplex2 field" width="560" height="560" loading="lazy">
+          <figcaption><span>05 / transformed octaves</span><strong>Ridged OpenSimplex2</strong><p>Absolute-value folding converts octave minima into sharp ridges.</p></figcaption>
+        </figure>
+        <figure class="signal-card reveal">
+          <img src="gallery/layered-world.png" alt="Terrain field composed from continent, mountain, and surface layers" width="560" height="560" loading="lazy">
+          <figcaption><span>06 / compiled stack</span><strong>Layered terrain</strong><p>Continents, ridges, and surface variation evaluated in one fill.</p></figcaption>
+        </figure>
       </div>
-      <div class="card">
-        <h3>Zoom levels that cost what they should</h3>
-        <p>
-          Octaves finer than the sample grid contribute aliasing, not detail — and the aliasing
-          changes as the camera moves, so distant terrain boils. Level-of-detail culling drops them,
-          which is both cheaper and more stable.
-        </p>
+    </section>
+
+    <section class="algorithms section-shell" id="algorithms">
+      <div class="section-intro reveal">
+        <div>
+          <p class="eyebrow">Implemented algorithms</p>
+          <h2>Kernel selection is an engineering trade-off.</h2>
+        </div>
+        <p>All kernels support 2D and 3D sampling. “Wide” below means the bulk path is instantiated over <code>System.Numerics.Vector&lt;T&gt;</code>. Actual lane width is selected by the runtime and CPU.</p>
       </div>
-    </div>
-  </div>
-</section>
 
-<section id="gallery">
-  <div class="wrap">
-    <h2>Gallery</h2>
-    <p class="lede">Rendered by the library itself, as part of building this page.</p>
+      <div class="table-shell reveal" role="region" aria-label="Noise algorithm comparison" tabindex="0">
+        <table>
+          <thead><tr><th>Kernel</th><th>Construction</th><th>Bulk path</th><th>Operational characteristics</th></tr></thead>
+          <tbody>
+            <tr><td><code>OpenSimplex2</code></td><td>Simplex-lattice gradients</td><td><span class="status yes">Wide</span></td><td>No preferred Cartesian direction; default for 3D density fields.</td></tr>
+            <tr><td><code>OpenSimplex2S</code></td><td>Expanded simplex kernel</td><td><span class="status no">Scalar</span></td><td>Smoother response and more corners. Parallel rows remain available; SIMD is disabled because lanes select different branch chains.</td></tr>
+            <tr><td><code>Perlin</code></td><td>Cubic-lattice gradients</td><td><span class="status yes">Wide</span></td><td>Lower cost than simplex noise. Axis alignment can appear in 3D fields.</td></tr>
+            <tr><td><code>Value</code></td><td>Cubic-Hermite interpolation</td><td><span class="status yes">Wide</span></td><td>Lowest-cost kernel. No gradient table; lattice structure is more visible.</td></tr>
+            <tr><td><code>ValueCubic</code></td><td>Cubic interpolation over lattice values</td><td><span class="status yes">Wide</span></td><td>Smooth low-frequency output. Reads 16 lattice values in 2D and 64 in 3D.</td></tr>
+            <tr><td><code>Cellular</code></td><td>Nearest feature points</td><td><span class="status yes">Wide</span></td><td>Euclidean, squared Euclidean, Manhattan, or hybrid distance; seven return modes from cell value to distance ratios.</td></tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="gallery">
-      <figure>
-        <img src="gallery/opensimplex2.png" alt="OpenSimplex2 fractional Brownian motion, five octaves">
-        <figcaption><strong>OpenSimplex2, fBm</strong> — five octaves. The general-purpose default.</figcaption>
-      </figure>
-      <figure>
-        <img src="gallery/ridged.png" alt="Ridged multifractal noise, six octaves">
-        <figcaption><strong>Ridged</strong> — six octaves. Mountain ranges and eroded rock.</figcaption>
-      </figure>
-      <figure>
-        <img src="gallery/cellular.png" alt="Cellular noise showing cell boundaries">
-        <figcaption><strong>Cellular</strong> — second-nearest minus nearest. Cracks, caves, region edges.</figcaption>
-      </figure>
-      <figure>
-        <img src="gallery/layered-world.png" alt="A world built from three stacked noise layers">
-        <figcaption><strong>A layered world</strong> — continents, ridged mountains, surface grain.</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
+      <div class="algorithm-details">
+        <article class="technical-card reveal"><span>Fractal accumulation</span><h3>fBm</h3><p>Adds octaves at increasing frequency and decreasing amplitude. Configure octave count, lacunarity, gain, and weighted strength.</p></article>
+        <article class="technical-card reveal"><span>Fractal accumulation</span><h3>Ridged</h3><p>Folds each octave around zero and inverts it. The former minima become narrow, high-valued ridges.</p></article>
+        <article class="technical-card reveal"><span>Fractal accumulation</span><h3>Ping-pong</h3><p>Repeatedly folds the octave signal through a bounded interval. Produces bands, terraces, and repeated strata.</p></article>
+        <article class="technical-card reveal"><span>Coordinate transform</span><h3>Domain warp</h3><p>OpenSimplex2, reduced simplex, or basic-grid warps; progressive and independent octave modes. The current warp API operates on individual 2D or 3D coordinates.</p></article>
+      </div>
+    </section>
 
-<section id="zoom">
-  <div class="wrap">
-    <h2>Pulling back should smooth, not shuffle</h2>
-    <p class="lede">
-      The same eight-octave world, sampled at four spacings. Nothing about the world changes; only
-      how far apart the samples are.
-    </p>
+    <section class="execution section-shell" id="execution">
+      <div class="execution-heading reveal">
+        <p class="eyebrow">Bulk execution</p>
+        <h2>Where the throughput comes from.</h2>
+        <p>The implementation reduces dispatch, temporary memory, and cache-line contention. It does not depend on unsafe numerical shortcuts; fused multiply-add is intentionally excluded to preserve exact cross-backend output.</p>
+      </div>
 
-    <div class="gallery">
-      <figure>
-        <img src="gallery/lod-1.png" alt="Eight-octave terrain sampled once per world unit">
-        <figcaption><strong>1 unit per sample</strong> &mdash; every octave, full detail.</figcaption>
-      </figure>
-      <figure>
-        <img src="gallery/lod-64.png" alt="The same terrain sampled every 64 units, band-limited">
-        <figcaption><strong>64 units</strong> &mdash; the fine octaves are gone. Same coastlines, a fraction of the work.</figcaption>
-      </figure>
-      <figure>
-        <img src="gallery/lod-1024.png" alt="The same terrain sampled every 1024 units: flat">
-        <figcaption><strong>1024 units</strong> &mdash; nothing in this world is that big, so the honest answer is its mean.</figcaption>
-      </figure>
-      <figure>
-        <img src="gallery/lod-off-4096.png" alt="The same terrain sampled every 4096 units without level of detail: pure noise">
-        <figcaption><strong>4096 units, level of detail off</strong> &mdash; what point-sampling a field finer than the grid actually gives you.</figcaption>
-      </figure>
-    </div>
+      <ol class="pipeline" aria-label="Bulk fill pipeline">
+        <li class="reveal"><span>01</span><div><h3>Resolve one fill plan</h3><p><code>Auto</code> selects scalar, SIMD, or parallel SIMD from sample count, hardware vector support, and kernel capability. Configuration is snapshotted before row execution.</p></div></li>
+        <li class="reveal"><span>02</span><div><h3>Partition complete rows</h3><p>Rows are contiguous ranges in the destination. Parallel workers receive disjoint row groups, so workers do not write the same cache line.</p></div></li>
+        <li class="reveal"><span>03</span><div><h3>Construct X-coordinate vectors</h3><p>A ramp generates <code>originX + n × step</code> for all lanes. Y and Z remain broadcast values. No matrix transpose is required.</p></div></li>
+        <li class="reveal"><span>04</span><div><h3>Execute one generic kernel body</h3><p>The scalar and vector implementations instantiate the same generic arithmetic over different operation sets. The scalar path has one lane; the vector path uses the hardware width.</p></div></li>
+        <li class="reveal"><span>05</span><div><h3>Store contiguous vectors</h3><p>Full vectors are written directly into the caller’s span. A scalar tail handles row widths that are not multiples of the current lane count.</p></div></li>
+      </ol>
 
-    <p style="margin-top:24px">
-      That last one is the point. It is not a coarse view of the landscape, it is white noise: every
-      sample is an independent draw from a field the grid cannot represent. Move the camera and it
-      does not flatten, it <em>boils</em> &mdash; the peaks stay, in different places. Band-limiting is
-      what turns it back into terrain.
-    </p>
-  </div>
-</section>
+      <div class="backend-grid">
+        <article class="backend-card reveal"><h3><code>Scalar</code></h3><p>Portable lane width of one. Used explicitly, on non-vector hardware, and for OpenSimplex2S.</p></article>
+        <article class="backend-card reveal"><h3><code>Simd</code></h3><p>Single-threaded <code>Vector&lt;float&gt;</code>. Suitable when the buffer is large enough to amortize setup but caller-level scheduling already owns parallelism.</p></article>
+        <article class="backend-card reveal"><h3><code>Parallel</code></h3><p>Row ranges execute through <code>Parallel.For</code>. Default threshold is 16,384 samples to avoid thread-pool overhead on small fills.</p></article>
+        <article class="backend-card reveal"><h3><code>Gpu</code></h3><p>Dispatch point for an external <code>INoiseAccelerator</code>. Without a registered accelerator, execution falls back through Parallel → SIMD → Scalar. No GPU package is currently shipped.</p></article>
+      </div>
 
-<section id="layers">
-  <div class="wrap">
-    <h2>Building a world in layers</h2>
-    <p class="lede">
-      Each layer is an independently tunable generator. The stack is what fuses them into one pass.
-    </p>
+      <div class="determinism-band reveal">
+        <div><p class="eyebrow">Determinism</p><h3>Equal floats, not approximately equal floats.</h3></div>
+        <p>Backend agreement tests compare complete output buffers with exact equality. Scalar and SIMD share kernel source; operation order is fixed; fused multiply-add is not used. This prevents a threshold such as <code>density &gt; 0</code> from selecting different voxels on clients with different CPUs.</p>
+      </div>
+    </section>
 
-    <pre><span class="k">var</span> stack = <span class="k">new</span> <span class="t">NoiseStack</span> { Lod = <span class="t">LodPolicy</span>.Automatic <span class="k">with</span> { CullLayers = <span class="k">true</span> } };
+    <section class="composition section-shell" id="composition">
+      <div class="section-intro reveal">
+        <div>
+          <p class="eyebrow">Composition</p>
+          <h2>Compile layers into one executor.</h2>
+        </div>
+        <p><code>NoiseStack.Compile()</code> copies generator settings into a flat immutable plan. During a fill, each active layer consumes the current coordinate vector and blends into a register-resident accumulator.</p>
+      </div>
 
-stack.Add(<span class="k">new</span> <span class="t">NoiseLayer</span>
+      <pre class="wide-code reveal" aria-label="C sharp layered terrain example"><code><span class="kw">var</span> stack = <span class="kw">new</span> <span class="type">NoiseStack</span>
 {
-    Source      = <span class="k">new</span> <span class="t">NoiseGenerator</span>(1) { Frequency = 0.0002f, FractalType = <span class="t">FractalType</span>.FBm, Octaves = 4 },
-    FeatureSize = 2000f,
-    Name        = <span class="s">"continents"</span>,
+    Lod = <span class="type">LodPolicy</span>.Automatic <span class="kw">with</span> { CullLayers = <span class="kw">true</span> },
+};
+
+stack.Add(<span class="kw">new</span> <span class="type">NoiseLayer</span>
+{
+    Source = <span class="kw">new</span> <span class="type">NoiseGenerator</span>(<span class="num">1</span>) { Frequency = <span class="num">0.0002f</span>, FractalType = <span class="type">FractalType</span>.FBm, Octaves = <span class="num">4</span> },
+    FeatureSize = <span class="num">2000f</span>,
+    Name = <span class="str">"continents"</span>,
 });
 
-stack.Add(<span class="k">new</span> <span class="t">NoiseLayer</span>
+stack.Add(<span class="kw">new</span> <span class="type">NoiseLayer</span>
 {
-    Source      = <span class="k">new</span> <span class="t">NoiseGenerator</span>(2) { Frequency = 0.002f, FractalType = <span class="t">FractalType</span>.Ridged, Octaves = 5 },
-    Blend       = <span class="t">LayerBlend</span>.Add,
-    Amplitude   = 0.4f,
-    FeatureSize = 200f,
-    Name        = <span class="s">"mountains"</span>,
+    Source = <span class="kw">new</span> <span class="type">NoiseGenerator</span>(<span class="num">2</span>) { Frequency = <span class="num">0.002f</span>, FractalType = <span class="type">FractalType</span>.Ridged, Octaves = <span class="num">5</span> },
+    Blend = <span class="type">LayerBlend</span>.Add,
+    Amplitude = <span class="num">0.4f</span>,
+    FeatureSize = <span class="num">200f</span>,
+    Name = <span class="str">"mountains"</span>,
 });
 
-<span class="c">// Immutable, thread-safe, and flattened. Hand it to workers.</span>
-<span class="k">var</span> world = stack.Compile();
+<span class="kw">var</span> world = stack.Compile(); <span class="comment">// immutable and thread-safe</span>
+world.Fill(heights,  <span class="kw">new</span> <span class="type">GridRegion2D</span>(<span class="num">0</span>, <span class="num">0</span>, <span class="num">512</span>, <span class="num">512</span>, Step: <span class="num">1f</span>));
+world.Fill(overview, <span class="kw">new</span> <span class="type">GridRegion2D</span>(<span class="num">0</span>, <span class="num">0</span>, <span class="num">512</span>, <span class="num">512</span>, Step: <span class="num">512f</span>));</code></pre>
 
-world.Fill(heights, <span class="k">new</span> <span class="t">GridRegion2D</span>(0, 0, 512, 512, step: 1f));      <span class="c">// walking: all layers</span>
-world.Fill(overview, <span class="k">new</span> <span class="t">GridRegion2D</span>(0, 0, 512, 512, step: 512f));   <span class="c">// orbit: continents only</span></pre>
+      <div class="composition-notes reveal">
+        <p><strong>Blend operators</strong><span>Add, Subtract, Multiply, Min, Max, Replace, and Lerp.</span></p>
+        <p><strong>Memory traffic</strong><span>One output write per sample; the stack does not allocate one field buffer per layer.</span></p>
+        <p><strong>Thread model</strong><span>The compiled stack is immutable and can be shared by chunk-generation workers.</span></p>
+      </div>
+    </section>
 
-    <p>
-      Blends are <code>Add</code>, <code>Subtract</code>, <code>Multiply</code>, <code>Min</code>,
-      <code>Max</code>, <code>Replace</code> and <code>Lerp</code>. The first layer to survive culling
-      initialises the accumulator.
-    </p>
-  </div>
-</section>
+    <section class="lod section-shell" id="lod">
+      <div class="section-intro reveal">
+        <div>
+          <p class="eyebrow">Level of detail</p>
+          <h2>Do not evaluate frequencies the sample grid cannot represent.</h2>
+        </div>
+        <p><code>LodPolicy</code> uses sample spacing, base frequency, lacunarity, and a configurable Nyquist factor to select octave count. It can also reject complete layers by declared feature size.</p>
+      </div>
 
-<section id="designer">
-  <div class="wrap">
-    <h2>The designer</h2>
-    <p class="lede">
-      A Windows app for building a stack visually: live 2D map, rotatable 3D heightmap, rotatable
-      voxel volume, zoom sweep, and the C# to reproduce whatever is on screen.
-    </p>
+      <div class="lod-grid">
+        <figure class="reveal"><img src="gallery/lod-1.png" alt="Eight octave terrain at one world unit per sample" width="560" height="560" loading="lazy"><figcaption><strong>Step 1</strong><span>All configured octaves are representable.</span></figcaption></figure>
+        <figure class="reveal"><img src="gallery/lod-64.png" alt="The same terrain at 64 world units per sample with fine octaves removed" width="560" height="560" loading="lazy"><figcaption><strong>Step 64</strong><span>Fine octaves and the surface layer are removed.</span></figcaption></figure>
+        <figure class="reveal"><img src="gallery/lod-1024.png" alt="The same terrain at 1024 world units per sample approaching its mean" width="560" height="560" loading="lazy"><figcaption><strong>Step 1024</strong><span>The base octave fades toward the field mean.</span></figcaption></figure>
+        <figure class="reveal"><img src="gallery/lod-off-4096.png" alt="Aliased full-detail terrain sampled at 4096 world units per sample" width="560" height="560" loading="lazy"><figcaption><strong>Step 4096, LOD disabled</strong><span>Fine signal aliases into unrelated sample values.</span></figcaption></figure>
+      </div>
 
-    <img class="shot" src="designer.png" alt="The Tedd.FastNoise designer showing a layered terrain map, layer settings and generated C# code">
+      <div class="equation reveal">
+        <code>wavelength<sub>i</sub> = 1 / (frequency × lacunarity<sup>i</sup>)</code>
+        <span>Keep octave <var>i</var> only while its wavelength satisfies the configured samples-per-wavelength limit.</span>
+      </div>
+    </section>
 
-    <p style="margin-top:24px">
-      <a class="button primary" href="https://github.com/tedd/Tedd.FastNoise/releases/latest/download/Tedd.FastNoise.Designer-win-x64.zip">Download for Windows</a>
-    </p>
-    <p style="color:var(--muted);font-size:14px">
-      Self-contained: no .NET installation required. Unzip and run
-      <code>Tedd.FastNoise.Designer.exe</code>.
-    </p>
-  </div>
-</section>
+    <section class="designer section-shell" id="designer">
+      <div class="designer-copy reveal">
+        <p class="eyebrow">Configuration tool</p>
+        <h2>Inspect the field before integrating it.</h2>
+        <p>The Windows designer edits every generator and stack parameter, renders a 2D field, a lit heightmap, or a thresholded 3D volume, and emits the corresponding C# configuration.</p>
+        <ul>
+          <li>Fixed world-space centre while sample spacing changes</li>
+          <li>Live fill time and sample throughput</li>
+          <li>Active-layer and active-octave inspection</li>
+          <li>Self-contained Windows x64 release</li>
+        </ul>
+        <a class="button primary" href="https://github.com/tedd/Tedd.FastNoise/releases/latest/download/Tedd.FastNoise.Designer-win-x64.zip">Download designer</a>
+      </div>
+      <figure class="designer-window reveal">
+        <div class="sample-bar"><span></span><span></span><span></span><b>Tedd.FastNoise.Designer</b></div>
+        <img src="designer.png" alt="Tedd.FastNoise designer showing a terrain preview, layer controls, and generated C sharp" width="1920" height="1080" loading="lazy">
+      </figure>
+    </section>
 
-<section id="performance">
-  <div class="wrap">
-    <h2>Performance</h2>
-    <p class="lede">
-      Measured, not asserted. Every claim here comes from the benchmark project in the repository,
-      against the frozen 2020 implementation in <code>archive/v1</code> and against FastNoiseLite
-      called per sample.
-    </p>
+    <section class="install section-shell" id="install">
+      <div class="install-card reveal">
+        <div>
+          <p class="eyebrow">Package</p>
+          <h2>Install Tedd.FastNoise.</h2>
+          <p>Targets .NET 10. The package contains the managed library, XML documentation, and deterministic symbols.</p>
+        </div>
+        <div class="install-command"><code>dotnet add package Tedd.FastNoise</code><button type="button" data-copy="dotnet add package Tedd.FastNoise">Copy</button></div>
+        <div class="install-links"><a href="https://www.nuget.org/packages/Tedd.FastNoise/">NuGet package</a><a href="https://github.com/tedd/Tedd.FastNoise">GitHub repository</a><a href="https://github.com/tedd/Tedd.FastNoise/tree/main/src/Tedd.FastNoise.Benchmark">Benchmark source</a></div>
+      </div>
 
-    <!-- PERFORMANCE_TABLE -->
+      <div class="scope-note reveal">
+        <h3>Current scope</h3>
+        <p>Bulk grid and volume generation, compiled layer stacks, SIMD and parallel CPU execution, per-point domain warp, and a pluggable accelerator interface are implemented. A GPU accelerator package and bulk domain-warp fill are not currently shipped.</p>
+      </div>
+    </section>
+  </main>
 
-    <p style="margin-top:24px">
-      Reproduce with
-      <code>dotnet run -c Release --project src/Tedd.FastNoise.Benchmark -- --filter "*"</code>.
-    </p>
-  </div>
-</section>
-
-<section id="install">
-  <div class="wrap">
-    <h2>Install</h2>
-    <pre>dotnet add package Tedd.FastNoise</pre>
-    <p>
-      Targets .NET 10. .NET 11 is validated in CI and enabled with
-      <code>-p:EnableNet11=true</code> until it ships.
-    </p>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <p>
-      Tedd.FastNoise is LGPL 2.1. It incorporates
-      <a href="https://github.com/Auburn/FastNoiseLite">FastNoiseLite</a> by Jordan Peck under the
-      MIT licence — see
-      <a href="https://github.com/tedd/Tedd.FastNoise/blob/master/THIRD-PARTY-NOTICES.md">THIRD-PARTY-NOTICES.md</a>
-      for what is used and where.
-    </p>
-  </div>
-</footer>
-
+  <footer>
+    <a class="brand" href="#top"><img src="assets/noise-mark.svg" width="28" height="28" alt=""><span>TEDD<span class="brand-slash">/</span>FASTNOISE</span></a>
+    <p>LGPL-2.1. FastNoiseLite-derived code is identified in the third-party notices.</p>
+    <div><a href="https://github.com/tedd/Tedd.FastNoise/blob/main/LICENSE">License</a><a href="https://github.com/tedd/Tedd.FastNoise/blob/main/THIRD-PARTY-NOTICES.md">Notices</a><a href="https://github.com/tedd/Tedd.FastNoise/actions">Builds</a></div>
+  </footer>
 </body>
 </html>
