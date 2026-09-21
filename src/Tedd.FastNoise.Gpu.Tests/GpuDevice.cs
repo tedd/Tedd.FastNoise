@@ -21,11 +21,15 @@ internal sealed unsafe class GpuDevice : IDisposable
     internal VulkanNoiseProducer Producer { get; private set; } = null!;
     internal VulkanNoiseProducer.Output Output { get; private set; } = null!;
     internal string DeviceName { get; private set; } = "";
+    internal PhysicalDevice PhysicalDevice { get; private set; }
+    internal Device Device => _device;
+    internal Buffer Buffer => _buffer;
+    internal ulong OutputOffset => _offset;
     // Descriptor starts inside the allocation to exercise nonzero output offsets.
     private ulong _offset;
     private const ulong Capacity = 4 * 1024 * 1024;
 
-    internal GpuDevice()
+    internal GpuDevice(bool enableFloat64 = false)
     {
         try
         {
@@ -49,13 +53,18 @@ internal sealed unsafe class GpuDevice : IDisposable
                 if (family != uint.MaxValue) break;
             }
             if (family == uint.MaxValue) throw new InvalidOperationException("No Vulkan compute device.");
+            PhysicalDevice = physical;
             Vk.GetPhysicalDeviceProperties(physical, out var physicalProperties);
             DeviceName = System.Runtime.InteropServices.Marshal.PtrToStringUTF8((nint)physicalProperties.DeviceName)!;
             _offset = Math.Max(256ul, physicalProperties.Limits.MinStorageBufferOffsetAlignment);
             float priority = 1;
             var queueInfo = new DeviceQueueCreateInfo
             { SType = StructureType.DeviceQueueCreateInfo, QueueFamilyIndex = family, QueueCount = 1, PQueuePriorities = &priority };
-            var deviceInfo = new DeviceCreateInfo { SType = StructureType.DeviceCreateInfo, QueueCreateInfoCount = 1, PQueueCreateInfos = &queueInfo };
+            Vk.GetPhysicalDeviceFeatures(physical, out var availableFeatures);
+            if (enableFloat64 && !availableFeatures.ShaderFloat64) throw new NotSupportedException("GPU graph tests require shaderFloat64.");
+            var enabledFeatures = new PhysicalDeviceFeatures { ShaderFloat64 = enableFloat64 };
+            var deviceInfo = new DeviceCreateInfo { SType = StructureType.DeviceCreateInfo, QueueCreateInfoCount = 1, PQueueCreateInfos = &queueInfo,
+                PEnabledFeatures = &enabledFeatures };
             Check(Vk.CreateDevice(physical, in deviceInfo, null, out _device));
             Vk.GetDeviceQueue(_device, family, 0, out _queue);
             var poolInfo = new CommandPoolCreateInfo
@@ -106,6 +115,18 @@ internal sealed unsafe class GpuDevice : IDisposable
         Check(Vk.QueueWaitIdle(_queue));
         foreach (byte b in new ReadOnlySpan<byte>(_mapped, (int)_offset)) Assert.Equal(0xcd, b);
         return new ReadOnlySpan<uint>((byte*)_mapped + _offset, wordCount).ToArray();
+    }
+
+    internal void WriteDoubles(ulong offset, ReadOnlySpan<double> values)
+    {
+        if (offset < _offset || offset + (ulong)values.Length * 8 > Capacity + _offset) throw new ArgumentOutOfRangeException(nameof(offset));
+        values.CopyTo(new Span<double>((byte*)_mapped + offset, values.Length));
+    }
+
+    internal void WriteBytes(ulong offset, ReadOnlySpan<byte> values)
+    {
+        if (offset < _offset || offset + (ulong)values.Length > Capacity + _offset) throw new ArgumentOutOfRangeException(nameof(offset));
+        values.CopyTo(new Span<byte>((byte*)_mapped + offset, values.Length));
     }
 
     private static void Check(Result result)

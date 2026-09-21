@@ -225,6 +225,10 @@ public sealed class CompiledNoiseStack
         _ => sampleCount >= ParallelThreshold,
     };
 
+    // The procedural compiler expands the same resolved plans so imported stacks retain their
+    // original normalization, octave fade, blend order and layer-culling semantics.
+    internal ResolvedLayer[] ResolveForProcedural(float step) => Resolve(step);
+
     /// <summary>
     /// Applies the level-of-detail policy for a given sample spacing, and caches the result.
     /// </summary>

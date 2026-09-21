@@ -64,6 +64,30 @@ may restrict the maximum side. `Step` controls sample spacing and octave culling
 world origin when a LOD node covers multiple base chunks. `GridRegion3D.Chunk` instead interprets
 chunk indices on a grid whose chunk width is `chunkSize * step`.
 
+## Compiled procedural graphs
+
+`VulkanGraphProducer` specializes a `CompiledProceduralGraph` into GLSL and optimized SPIR-V at
+construction. `BindGridOutput` with `RecordGrid` generates interleaved double output records from
+world coordinates; `Bind` with `Record` evaluates records already resident in GPU buffers.
+Reuse producers and bindings, and retain all resources until submitted work completes.
+
+`VulkanGraphTerrainProducer` accepts a column graph, a voxel graph, a planetary axis/sign/radius
+and six four-word palette faces per material. The column graph receives datum X/Y/Z. The voxel
+graph receives the column outputs followed by face-local elevation, and returns a material index.
+Index zero is empty. Column scratch, classification and packed bricks remain on GPU. `Bind`
+optionally accepts packed skylight bytes in Z-fastest order; without them `Record` supplies uniform
+sky. With `skyIncludesHalo: true`, supply `(side + 2)^3` raw skylight bytes for coordinates `-1..side`;
+the shader derives occupied-cell exposure as the maximum of the centre and six axial neighbours.
+Otherwise supply `side^3` already-derived exposure bytes. `Record` takes the first sample's world coordinates: callers implementing centre-sampled LOD
+must include their half-voxel offset. `RequiredBytes` and `RequiredScratchBytes` specify capacities.
+
+The graph producers require `shaderFloat64` to be enabled when creating the logical device;
+unsupported devices must use an application-selected fallback. Float64 power is unsupported.
+Noise kernels support the algorithms listed below; noise lattice coordinates must fit signed
+32-bit indices at every octave. Arithmetic order is preserved, but cross-device bit equivalence
+is not guaranteed. Applications using threshold-sensitive terrain should validate their graph
+and target devices against their authoritative CPU generator.
+
 ## Float fields
 
 ```csharp

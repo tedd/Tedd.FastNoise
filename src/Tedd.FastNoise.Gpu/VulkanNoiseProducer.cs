@@ -252,14 +252,18 @@ public sealed unsafe class VulkanNoiseProducer : IDisposable
         _vk.CmdPipelineBarrier(commands, source, target, 0, 1, in barrier, 0, null, 0, null);
     }
 
-    internal static byte[] CompileShader()
+    internal static byte[] CompileShader() => CompileSource(CreateNoiseSource() + ReadShader("producer"));
+
+    internal static string ReadShader(string name)
     {
-        string Read(string name)
-        {
-            using var stream = typeof(VulkanNoiseProducer).Assembly.GetManifestResourceStream("Tedd.FastNoise.Gpu.Shaders." + name + ".glsl")!;
-            using var reader = new StreamReader(stream);
-            return reader.ReadToEnd();
-        }
+        using var stream = typeof(VulkanNoiseProducer).Assembly.GetManifestResourceStream("Tedd.FastNoise.Gpu.Shaders." + name + ".glsl")!;
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
+    }
+
+    // Both graph and fixed-function pipelines consume the same primitive implementation.
+    internal static string CreateNoiseSource()
+    {
         var source = new StringBuilder("#version 450\n");
         AppendTable(source, "gradients2", Tables.Gradients2D);
         AppendTable(source, "gradients3", Tables.Gradients3D);
@@ -272,7 +276,12 @@ public sealed unsafe class VulkanNoiseProducer : IDisposable
         source.Append("#define CPU_G2 ").Append(g2.ToString("R", CultureInfo.InvariantCulture)).Append('\n');
         source.Append("#define CPU_C1 ").Append(c1.ToString("R", CultureInfo.InvariantCulture)).Append('\n');
         source.Append("#define CPU_C2 ").Append(c2.ToString("R", CultureInfo.InvariantCulture)).Append('\n');
-        source.Append(Read("ops")).Append(Read("kernels")).Append(Read("producer"));
+        source.Append(ReadShader("ops")).Append(ReadShader("kernels"));
+        return source.ToString();
+    }
+
+    internal static byte[] CompileSource(string source, bool optimize = false)
+    {
         using var context = new ShadercContext();
         using var shaderc = new Shaderc(context);
         var compiler = shaderc.CompilerInitialize();
@@ -281,8 +290,8 @@ public sealed unsafe class VulkanNoiseProducer : IDisposable
         {
             if (compiler == null || options == null) throw new InvalidOperationException("Could not initialize shaderc.");
             // Preserve the explicit scalar operation order; ops.glsl also emits NoContraction.
-            shaderc.CompileOptionsSetOptimizationLevel(options, OptimizationLevel.Zero);
-            byte[] utf8 = Encoding.UTF8.GetBytes(source.ToString());
+            shaderc.CompileOptionsSetOptimizationLevel(options, optimize ? OptimizationLevel.Performance : OptimizationLevel.Zero);
+            byte[] utf8 = Encoding.UTF8.GetBytes(source);
             fixed (byte* text = utf8)
             {
                 var result = shaderc.CompileIntoSpv(compiler, text, (nuint)utf8.Length, ShaderKind.ComputeShader, "noise.comp", "main", options);

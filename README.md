@@ -195,6 +195,39 @@ Off by default, because with it off the output is bit-identical to FastNoiseLite
 `CompiledNoiseStack.DescribeActiveLayers(step)` tells you what a given zoom level will actually
 evaluate, so you can check a policy does what you meant.
 
+### Procedural graphs
+
+`Tedd.FastNoise.Procedural` represents complete mathematical composites, not just noise stacks.
+Typed inputs, noise, arithmetic, comparisons, conditionals, integer hashes and constant lookups
+form an immutable multi-output program. Compilation folds constants, shares identical expressions
+and removes unreachable nodes. Arithmetic order and binary32/binary64 boundaries remain explicit;
+algebraic reassociation and multiply-add contraction are not enabled.
+
+```csharp
+using Tedd.FastNoise;
+using Tedd.FastNoise.Procedural;
+
+var noise = new NoiseGenerator(1337) { Frequency = 0.003f, FractalType = FractalType.FBm, Octaves = 4 };
+var graph = new ProceduralGraph();
+var x = graph.Input(0, ProceduralType.Float32);
+var y = graph.Input(1, ProceduralType.Float32);
+var z = graph.Input(2, ProceduralType.Float32);
+var height = graph.Noise3D(noise, x, y, z) * graph.Constant(96f) + graph.Constant(64f);
+var terrain = graph.Compile(height - y);
+terrain.Evaluate(new double[] { 10, 20, 30 }, new double[1]);
+```
+
+Retain compiled programs across calls. `Fill` consumes interleaved input records and produces
+interleaved output records using a generated SIMD delegate where available. Scalar execution uses
+a generated delegate; NativeAOT uses the scalar interpreter fallback. `Stack3D` imports an existing
+compiled stack with its LOD plan resolved at the requested spacing. Expose only necessary outputs
+to allow elimination of unused fields. Specialize configuration and LOD constants when building
+the graph; ordinary runtime inputs are not treated as constants.
+
+The GPU package compiles the same graph into specialized GLSL/SPIR-V. Graph construction does
+not make arbitrary C# methods GPU-executable: express their pure operations through graph nodes
+and retain orchestration and stateful work outside the graph.
+
 ### GPU, when you have one
 
 `INoiseAccelerator` is the extension point: register one and `NoiseBackend.Gpu` routes large fills
