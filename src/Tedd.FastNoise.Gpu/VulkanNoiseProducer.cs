@@ -273,7 +273,8 @@ public sealed unsafe class VulkanNoiseProducer : IDisposable
         source.Append("#define CPU_C1 ").Append(c1.ToString("R", CultureInfo.InvariantCulture)).Append('\n');
         source.Append("#define CPU_C2 ").Append(c2.ToString("R", CultureInfo.InvariantCulture)).Append('\n');
         source.Append(Read("ops")).Append(Read("kernels")).Append(Read("producer"));
-        using var shaderc = Shaderc.GetApi();
+        using var context = new ShadercContext();
+        using var shaderc = new Shaderc(context);
         var compiler = shaderc.CompilerInitialize();
         var options = shaderc.CompileOptionsInitialize();
         try
