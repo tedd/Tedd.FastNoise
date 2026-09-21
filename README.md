@@ -228,6 +228,36 @@ The GPU package compiles the same graph into specialized GLSL/SPIR-V. Graph cons
 not make arbitrary C# methods GPU-executable: express their pure operations through graph nodes
 and retain orchestration and stateful work outside the graph.
 
+### Planetary terrain recipes
+
+`ProceduralGraph` is the generic algorithm builder, not a fixed Earth preset. Applications supply
+the seed, layers, relief, climate, biome thresholds and material rules as graph expressions.
+FastNoise owns the typed intermediate representation, mathematical folding, shared-expression
+elimination, LOD-resolved noise and CPU/GPU compilation. No Forcecraft dependency is required.
+
+The [planet recipe sample](samples/Tedd.FastNoise.Gpu.Sample/PlanetRecipe.cs) composes continents,
+ridged mountains, optional detail, moisture, surface materials and sea level. Its column graph
+returns elevation and moisture; its voxel graph consumes those fields and signed elevation to
+select air, stone, grass, sand, snow or water. These are illustrative Earth-like rules, not
+Forcecraft's complete Earth generator. The same pattern accepts an application's own recipe.
+
+```csharp
+// Host policy becomes a specialization constant, not a per-voxel decision.
+var resolvedDetail = graph.Select(graph.Constant(step <= detailCutoff), detail, graph.Constant(0d));
+var elevation = continents * graph.Constant(relief) + resolvedDetail;
+var columns = graph.Compile(elevation, moisture);
+// Reuse columns.Evaluate/Fill on CPU, or pass columns plus a material graph to
+// VulkanGraphTerrainProducer for column reuse and device-resident packed bricks.
+```
+
+Folding removes constant arithmetic and unreachable branches, not just intermediate memory
+traffic. Repeated expressions share one node. Strict floating-point order is retained: the
+compiler does not generally rewrite `(x * a) * b` to `x * (a * b)` or assume `x * 0` is zero.
+CPU delegates and GPU shaders are specialized once per immutable recipe/LOD and then reused.
+Runtime GPU specialization generates GLSL and compiles optimized SPIR-V; it is not a graph
+interpreter running one instruction at a time on the device. Compilation has an up-front cost,
+and fewer operations or transfers do not guarantee a faster complete workload.
+
 ### GPU, when you have one
 
 `INoiseAccelerator` is the extension point: register one and `NoiseBackend.Gpu` routes large fills
@@ -268,8 +298,10 @@ setup, float-field generation, terrain generation at three LODs and packed-brick
 dotnet run -c Release --project samples/Tedd.FastNoise.Gpu.Sample -- artifacts/gpu-sample
 ```
 
-It saves PNG previews and renderer-compatible binary payloads. Readback is used only to inspect
-and save the sample output. For CPU examples, generate the documentation gallery:
+It also executes the composite planetary recipe at three LODs, checks every GPU material against
+the same CPU graph, and saves top-down material maps and inspectable generated GLSL. The graph
+sample requires Vulkan `shaderFloat64`. Readback is used only to validate and save sample output;
+the library's generation path does not require it. For CPU examples, generate the documentation gallery:
 
 ```bash
 dotnet run -c Release --project tools/Tedd.FastNoise.Gallery -- artifacts/gallery
@@ -460,9 +492,10 @@ NuGet API key is stored. GitHub Pages must use **GitHub Actions** as its source.
 
 ## Not done yet
 
-- **GPU coverage.** The Vulkan producer supports individual OpenSimplex2, Perlin and Value
-  generators. Compiled stacks, other noise types and a host-readback `INoiseAccelerator` adapter
-  are not implemented.
+- **GPU coverage.** The Vulkan producers support OpenSimplex2, Perlin and Value, including
+  supported stacks imported through `ProceduralGraph.Stack2D/Stack3D`. Graphs require
+  `shaderFloat64`; Float64 power and other noise types are unsupported on GPU. A host-readback
+  `INoiseAccelerator` adapter is not implemented.
 - **Domain warp in bulk.** `DomainWarp` works per point, via the reference implementation. There is
   no vectorised warp inside the fill loop yet, so warping a whole region means warping coordinates
   yourself and sampling per point.

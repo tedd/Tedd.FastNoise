@@ -6,6 +6,7 @@
     <PackageId>Tedd.FastNoise.Gpu</PackageId>
     <Version>1.0.0</Version>
     <Description>Vulkan compute noise and GPU-resident brick voxel terrain generation.</Description>
+    <PackageReleaseNotes>Runtime-specialized GLSL/SPIR-V for typed procedural graphs, shared-column planetary material generation, palette-based brick packing and optional skylight halos. Graph producers require shaderFloat64. Includes an Earth-like recipe sample with CPU/GPU material validation.</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/tedd/Tedd.FastNoise</PackageProjectUrl>

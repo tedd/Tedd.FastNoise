@@ -3,6 +3,7 @@
 using System;
 using Silk.NET.Vulkan;
 using Tedd.FastNoise.Gpu;
+using Tedd.FastNoise.Procedural;
 using Buffer = Silk.NET.Vulkan.Buffer;
 
 namespace Tedd.FastNoise.Gpu.Sample;
@@ -18,6 +19,8 @@ internal sealed unsafe class HeadlessVulkan : IDisposable
     private Buffer _buffer;
     private DeviceMemory _memory;
     private void* _mapped;
+    private PhysicalDevice _physical;
+    private bool _float64;
     internal VulkanNoiseProducer Producer { get; private set; } = null!;
     internal VulkanNoiseProducer.Output Output { get; private set; } = null!;
     internal string DeviceName { get; private set; } = "";
@@ -40,6 +43,8 @@ internal sealed unsafe class HeadlessVulkan : IDisposable
             uint family = uint.MaxValue;
             foreach (var candidate in devices)
             {
+                Vk.GetPhysicalDeviceFeatures(candidate, out var features);
+                if (!features.ShaderFloat64) continue;
                 uint families = 0;
                 Vk.GetPhysicalDeviceQueueFamilyProperties(candidate, ref families, null);
                 var properties = new QueueFamilyProperties[families];
@@ -48,14 +53,17 @@ internal sealed unsafe class HeadlessVulkan : IDisposable
                     if ((properties[i].QueueFlags & QueueFlags.ComputeBit) != 0) { physical = candidate; family = i; break; }
                 if (family != uint.MaxValue) break;
             }
-            if (family == uint.MaxValue) throw new InvalidOperationException("No Vulkan compute device.");
+            if (family == uint.MaxValue) throw new InvalidOperationException("The graph sample requires a Vulkan compute device with shaderFloat64.");
+            _physical = physical;
+            _float64 = true;
             Vk.GetPhysicalDeviceProperties(physical, out var physicalProperties);
             DeviceName = System.Runtime.InteropServices.Marshal.PtrToStringUTF8((nint)physicalProperties.DeviceName)!;
             _offset = Math.Max(256ul, physicalProperties.Limits.MinStorageBufferOffsetAlignment);
             float priority = 1;
             var queueInfo = new DeviceQueueCreateInfo
             { SType = StructureType.DeviceQueueCreateInfo, QueueFamilyIndex = family, QueueCount = 1, PQueuePriorities = &priority };
-            var deviceInfo = new DeviceCreateInfo { SType = StructureType.DeviceCreateInfo, QueueCreateInfoCount = 1, PQueueCreateInfos = &queueInfo };
+            var enabledFeatures = new PhysicalDeviceFeatures { ShaderFloat64 = true };
+            var deviceInfo = new DeviceCreateInfo { SType = StructureType.DeviceCreateInfo, QueueCreateInfoCount = 1, PQueueCreateInfos = &queueInfo, PEnabledFeatures = &enabledFeatures };
             Check(Vk.CreateDevice(physical, in deviceInfo, null, out _device));
             Vk.GetDeviceQueue(_device, family, 0, out _queue);
             var poolInfo = new CommandPoolCreateInfo
@@ -88,6 +96,20 @@ internal sealed unsafe class HeadlessVulkan : IDisposable
             Output = Producer.BindOutput(_buffer, Capacity, _offset);
         }
         catch { Dispose(); throw; }
+    }
+
+    internal uint[] RunPlanet(CompiledProceduralGraph columns, CompiledProceduralGraph voxels,
+        PlanetOptions options, int side, double step)
+    {
+        using var producer = new VulkanGraphTerrainProducer(Vk, _physical, _device, columns, voxels,
+            verticalAxis: 1, upSign: 1, options.Radius, PlanetRecipe.Palette(), _float64);
+        // Two aligned, disjoint ranges in the reusable buffer; readback covers only packed output.
+        ulong scratchOffset = _offset + Capacity / 2;
+        using var binding = producer.Bind(_buffer, Capacity / 2, _buffer, Capacity / 2,
+            scratchOffset: scratchOffset, outputOffset: _offset);
+        return Run(cmd => producer.Record(cmd, binding, -128 + step / 2,
+            options.Radius - 128 + step / 2, -128 + step / 2, side, step),
+            checked((int)(producer.RequiredBytes(side) / 4)));
     }
 
     internal uint[] Run(Action<CommandBuffer> record, int wordCount)

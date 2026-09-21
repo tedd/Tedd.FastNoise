@@ -19,6 +19,8 @@ dotnet run -c Release --project samples/Tedd.FastNoise.Gpu.Sample -- artifacts/g
 ```
 
 The sample saves a float-field image, terrain previews at three LODs, and packed binary payloads.
+It also composes an Earth-like planetary recipe, verifies GPU material indices against its CPU
+graphs and saves material maps and generated GLSL. Graph execution requires `shaderFloat64`.
 
 ## Record terrain
 
@@ -71,6 +73,13 @@ construction. `BindGridOutput` with `RecordGrid` generates interleaved double ou
 world coordinates; `Bind` with `Record` evaluates records already resident in GPU buffers.
 Reuse producers and bindings, and retain all resources until submitted work completes.
 
+Build recipes with `Tedd.FastNoise.Procedural.ProceduralGraph` from the CPU package. The application
+supplies parameters, layers and material rules; FastNoise folds constants, shares expressions,
+removes unreachable branches and generates the kernels. Supported compiled noise stacks can be
+imported with `Stack2D` or `Stack3D`. See the standalone
+[planet recipe](https://github.com/tedd/Tedd.FastNoise/blob/main/samples/Tedd.FastNoise.Gpu.Sample/PlanetRecipe.cs)
+and its executable host for an example without any Forcecraft assemblies.
+
 `VulkanGraphTerrainProducer` accepts a column graph, a voxel graph, a planetary axis/sign/radius
 and six four-word palette faces per material. The column graph receives datum X/Y/Z. The voxel
 graph receives the column outputs followed by face-local elevation, and returns a material index.
@@ -101,8 +110,8 @@ The shader supports OpenSimplex2, Perlin and Value, all three 3D rotation settin
 FBm, Ridged and PingPong fractals with 1–128 octaves. Unsupported requests throw before recording.
 `Supports` checks algorithm/fractal support; dispatch also validates dimensions, parameters and
 capacity. Coordinates must remain within the signed 32-bit noise lattice at every octave;
-requests outside the conservatively checked range are rejected. Compiled stacks and domain warp
-require a separate implementation.
+requests outside the conservatively checked range are rejected. For composed stacks use graph
+producers with `ProceduralGraph.Stack2D/Stack3D`; domain warp is not supported by this GPU API.
 
 `CreateRequest` snapshots generator settings and resolves LOD on the CPU. Noise evaluation,
 material classification and brick compaction execute on the GPU. GPU arithmetic preserves the
@@ -132,9 +141,8 @@ reserved even when the used payload is small. Empty bricks consume no cell words
 consume two words. No allocation counter or scratch data lies outside the renderer's payload.
 
 Forcecraft integration must provide a GPU-buffer volume handle, its device address, extent,
-world origin, voxel spacing and acceleration-structure bounds. Its current `VoxelVolumeData`
-upload API accepts CPU data, so format compatibility alone does not connect this producer to the
-chunk lifecycle. The host must select generation only for chunks known to be unmodified, key
+world origin, voxel spacing and acceleration-structure bounds. Format compatibility alone does
+not connect a producer to the chunk lifecycle. The host must select generation only for chunks known to be unmodified, key
 caches by generator version/seed/region/LOD, and discard stale GPU results when an edit arrives.
 Collision and authoritative gameplay still require their own CPU/world data. LOD filtering
 smooths noise; it does not enforce identical occupancy across LOD levels or construct transitions.

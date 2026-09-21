@@ -1,7 +1,8 @@
-// Demonstrates 2D float fills and GPU voxel generation over one fixed world region at three LODs.
+// Demonstrates float fills, density terrain and composed planetary material graphs at three LODs.
 // Readback and CPU projection exist only to inspect the packed result and save documentation images.
 using System;
 using System.IO;
+using System.Linq;
 using Tedd.FastNoise.Gallery;
 
 namespace Tedd.FastNoise.Gpu.Sample;
@@ -53,6 +54,7 @@ internal static class Program
                 Console.WriteLine($"{side}^3, step {spacing}: {request.Octaves} octaves, " +
                     $"{solidCells} solid cells, {usedWords * 4:N0} used / {capacityWords * 4:N0} reserved bytes");
             }
+            RunPlanetSample(gpu, output);
             Console.WriteLine($"Wrote field, terrain previews and packed payloads to {Path.GetFullPath(output)}");
             return 0;
         }
@@ -61,6 +63,55 @@ internal static class Program
             Console.Error.WriteLine(error.Message);
             return 1;
         }
+    }
+
+    private static void RunPlanetSample(HeadlessVulkan gpu, string output)
+    {
+        var options = new PlanetOptions();
+        foreach (int side in new[] { 32, 16, 8 })
+        {
+            float step = 256f / side;
+            var (columns, voxels) = PlanetRecipe.Build(options, step);
+            uint[] words = gpu.RunPlanet(columns, voxels, options, side, step);
+            var column = new double[2];
+            var expected = new double[1];
+            var pixels = new byte[side * side * 3];
+            int checkedCells = 0;
+            for (int x = 0; x < side; x++) for (int z = 0; z < side; z++)
+            {
+                columns.Evaluate([-128 + (x + .5) * step, options.Radius, -128 + (z + .5) * step], column);
+                uint topMaterial = 0;
+                for (int y = 0; y < side; y++)
+                {
+                    voxels.Evaluate([column[0], column[1], -128 + (y + .5) * step], expected);
+                    uint material = Material(words, side, x, y, z);
+                    if (material != (uint)expected[0]) throw new InvalidOperationException($"Planet CPU/GPU mismatch at {side}: {x},{y},{z}.");
+                    if (material != 0) topMaterial = material;
+                    checkedCells++;
+                }
+                uint color = PlanetRecipe.Colors[topMaterial];
+                int pixel = (z * side + x) * 3;
+                pixels[pixel] = (byte)color; pixels[pixel + 1] = (byte)(color >> 8); pixels[pixel + 2] = (byte)(color >> 16);
+            }
+            string name = $"gpu-planet-{side}";
+            Png.Write(Path.Combine(output, name + ".png"), side, side, pixels);
+            using (var file = new BinaryWriter(File.Create(Path.Combine(output, name + ".bin"))))
+                for (int i = 0; i < words[0] + PlanetRecipe.Colors.Length * 24; i++) file.Write(words[i]);
+            File.WriteAllText(Path.Combine(output, name + ".comp"), VulkanGraphShaderCompiler.GenerateSource(columns));
+            int noiseNodes = columns.Nodes.Count(n => n.Operation == Procedural.ProceduralOperation.Noise3D);
+            Console.WriteLine($"Planet {side}^3: {checkedCells} CPU/GPU materials agree; {noiseNodes} live noise nodes; " +
+                $"{columns.BuilderNodeCount} builder / {columns.Nodes.Count} live column nodes.");
+        }
+    }
+
+    private static uint Material(uint[] words, int side, int x, int y, int z)
+    {
+        int bricks = side / 4;
+        uint entry = words[4 + ((x >> 2) * bricks + (y >> 2)) * bricks + (z >> 2)];
+        if (entry == 0) return 0;
+        uint offset = entry & 0x7fffffffu;
+        if ((entry & 0x80000000u) == 0) offset += (uint)(((x & 3) * 4 + (y & 3)) * 4 + (z & 3)) * 2;
+        return words[offset] & 65535u;
     }
 
     private static float[] DecodePreview(uint[] words, int side, out int solidCells)

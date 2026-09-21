@@ -1,6 +1,6 @@
 # Vulkan field and terrain sample
 
-Requires .NET 10 and a Vulkan compute device/driver. Run from the repository root:
+Requires .NET 10 and a Vulkan compute device/driver with `shaderFloat64`. Run from the repository root:
 
 ```powershell
 dotnet run -c Release --project samples/Tedd.FastNoise.Gpu.Sample -- artifacts/gpu-sample
@@ -13,6 +13,8 @@ The sample creates a headless Vulkan device and reusable storage-buffer binding,
   generated at three resolutions by `RecordTerrain` and projected into a preview image.
 - Matching `.bin` files: little-endian uint32 payloads, trimmed to their used length, following
   Forcecraft10's production brick-directory format. These are renderer payloads, not saved worlds.
+- `gpu-planet-32.png`, `gpu-planet-16.png`, `gpu-planet-8.png`: top-down material maps from a
+  composite Earth-like recipe, with matching packed `.bin` payloads and column-kernel `.comp` files.
 
 The printed device name identifies the implementation that executed compute work. Vulkan software
 devices also work; the sample does not fall back to the FastNoise CPU implementation. Readback is
@@ -23,6 +25,19 @@ consume the result directly after synchronization. The library itself neither re
 device selection, buffer allocation, command submission and host visibility. Each submission
 completes before the buffer is reused or disposed. The image helpers are shared with the gallery.
 
-The terrain rule is a height-biased 3D density field with one opaque material. It does not implement
-Forcecraft's terrain rules or choose which chunks are pristine. See the
+The `gpu-terrain` rule is a height-biased 3D density field with one opaque material. `PlanetRecipe.cs`
+separately builds column and material graphs from `PlanetOptions`: continental fBm, ridged mountains,
+LOD-selected detail, moisture, soil, snow and sea level. Change these application-owned parameters
+or compose other algorithms through `ProceduralGraph`. The optimizer and generated CPU/GPU executors
+are library APIs, not sample code. The recipe has no dependency on Forcecraft.
+
+Every generated planet cell is checked against CPU evaluation of the same graphs; mismatches fail
+the process. The console reports live graph/noise nodes, showing removal of the detail branch beyond
+its cutoff. `.comp` files expose generated column GLSL. Materials use indices 0–5 (air, stone, grass,
+sand, snow, water); all non-air materials, including water, use opaque cubes for this demonstration.
+The +Y cube-face datum is `PlanetOptions.Radius`; sampling origins include half a voxel at every LOD.
+
+Neither example implements Forcecraft's complete Earth recipe, authoritative fluids, edit tracking
+or pristine-chunk selection. Runtime shader compilation has a cold cost; retain producers in a real
+renderer instead of recreating them as this short-lived demonstration does. See the
 [GPU API guide](../../src/Tedd.FastNoise.Gpu/README.md) for renderer integration and format details.

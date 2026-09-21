@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7faf9">
-  <meta name="description" content="Bulk coherent noise for .NET: deterministic scalar, SIMD and parallel CPU fills, plus Vulkan compute noise and compact voxel terrain with level of detail.">
+  <meta name="description" content="Compose procedural terrain algorithms with mathematical folding, scalar/SIMD CPU execution and runtime-specialized Vulkan kernels for GPU-resident planetary terrain.">
   <title>Tedd.FastNoise — deterministic bulk noise for .NET</title>
   <link rel="icon" href="assets/noise-mark.svg" type="image/svg+xml">
   <script>document.documentElement.classList.add('js')</script>
@@ -36,7 +36,7 @@
       <div class="hero-copy">
         <p class="eyebrow"><span></span> .NET 10 · CPU and Vulkan · 2D and 3D</p>
         <h1>Fill terrain tiles.<br><em>Fill voxel volumes.</em></h1>
-        <p class="lede">Fill CPU buffers with bit-identical scalar, SIMD or parallel noise. Generate float fields and compact voxel terrain directly into GPU buffers with the optional Vulkan producer.</p>
+        <p class="lede">Compose noise, relief and material rules into optimized algorithm graphs. Execute on the CPU or generate specialized Vulkan kernels that write terrain directly into GPU buffers.</p>
         <div class="hero-actions">
           <a class="button primary" href="#install"><span>Install from NuGet</span><span aria-hidden="true">↓</span></a>
           <a class="button secondary" href="https://github.com/tedd/Tedd.FastNoise">Read the source</a>
@@ -44,7 +44,7 @@
         <ul class="hero-checks" aria-label="Library properties">
           <li>OpenSimplex2, Perlin, Value, and Cellular kernels</li>
           <li>fBm, ridged, and ping-pong fractals</li>
-          <li>Layer fusion and sample-aware level of detail</li>
+          <li>Mathematical folding and sample-aware level of detail</li>
           <li>GPU-resident noise fields and compact voxel bricks</li>
         </ul>
       </div>
@@ -230,10 +230,38 @@ producer.RecordTerrain(commandBuffer, output, request,
       </div>
       <div class="gpu-guide reveal">
         <p>The examples cover the same 256-world-unit cube. The runnable sample executes Vulkan compute, reads back the packed cells and projects them into these images. These previews were generated locally on an NVIDIA GeForce RTX 4090; rendering engines can consume the same format directly on the GPU.</p>
-        <p>OpenSimplex2, Perlin and Value support None, fBm, Ridged and PingPong fractals. GPU output is tested against CPU values, but cross-device bit equivalence is not guaranteed. Compiled stacks and domain warp use the CPU API.</p>
-        <p>The voxel layout matches Forcecraft10's production brick directory. It contains one opaque material; game-specific terrain rules, lighting, pristine-chunk selection and edit invalidation remain host responsibilities.</p>
+        <p>OpenSimplex2, Perlin and Value support None, fBm, Ridged and PingPong fractals. Compose these generators and import resolved stacks through <code>ProceduralGraph</code>. GPU output is tested against CPU values, but cross-device bit equivalence is not guaranteed. Domain warp remains a CPU operation.</p>
+        <p>The voxel layout matches Forcecraft10's production brick directory. <code>VulkanNoiseProducer</code> supplies one opaque material; <code>VulkanGraphTerrainProducer</code> selects host-defined palette materials through column and voxel graphs. Lighting propagation, pristine-chunk selection and edit invalidation remain host responsibilities.</p>
         <div class="install-command"><code>dotnet run -c Release --project samples/Tedd.FastNoise.Gpu.Sample</code><button type="button" data-copy="dotnet run -c Release --project samples/Tedd.FastNoise.Gpu.Sample">Copy</button></div>
         <p><a href="https://github.com/tedd/Tedd.FastNoise/tree/main/samples/Tedd.FastNoise.Gpu.Sample">Complete runnable sample</a> · <a href="https://github.com/tedd/Tedd.FastNoise/blob/main/src/Tedd.FastNoise.Gpu/README.md">GPU API and buffer layout</a> · <a href="gallery/gpu-field.png">2D Vulkan field sample</a></p>
+      </div>
+    </section>
+
+    <section class="composition section-shell" id="procedural">
+      <div class="section-intro reveal">
+        <div><p class="eyebrow">Algorithm graphs</p><h2>Your planetary recipe.<br>Shared optimized kernels.</h2></div>
+        <p><code>ProceduralGraph</code> composes typed arithmetic, noise, comparisons, selection and table lookups. Supply the seed, layers, climate and material rules; FastNoise owns folding, specialization and CPU/GPU compilation. No game-engine dependency is required.</p>
+      </div>
+      <pre class="wide-code reveal" aria-label="C sharp procedural graph specialization"><code><span class="comment">// All values below are typed edges from the same graph.</span>
+<span class="kw">var</span> resolvedDetail = graph.Select(
+    graph.Constant(step &lt;= detailCutoff), detail, graph.Constant(<span class="num">0d</span>));
+<span class="kw">var</span> elevation = continents * graph.Constant(relief) + resolvedDetail;
+<span class="kw">var</span> columns = graph.Compile(elevation, moisture);
+<span class="comment">// CPU: columns.Evaluate / Fill.
+// GPU: use columns and a material graph with VulkanGraphTerrainProducer.</span></code></pre>
+      <div class="composition-notes reveal">
+        <p><strong>Less arithmetic</strong><span>Fold constants, share repeated expressions and eliminate unused outputs or constant branches. Floating-point operations retain their order; algebraic reassociation is not assumed.</span></p>
+        <p><strong>Specialize once</strong><span>Generated CPU delegates and optimized GLSL/SPIR-V specialize an immutable recipe and LOD. Reuse them to amortize compilation. GPU graphs require shaderFloat64.</span></p>
+        <p><strong>Keep data resident</strong><span>A column kernel shares relief and climate across vertical cells; a material kernel classifies and packs bricks. Intermediate fields remain on the GPU.</span></p>
+      </div>
+      <div class="gpu-samples">
+        <figure class="reveal"><img src="gallery/gpu-planet-32.png" width="320" height="320" style="image-rendering:pixelated" alt="Top-down material map of composed planetary terrain at 32 cubed cells" loading="lazy"><figcaption><strong>32³ cells · step 8</strong><span>Continents, mountains, moisture and detail.</span></figcaption></figure>
+        <figure class="reveal"><img src="gallery/gpu-planet-16.png" width="320" height="320" style="image-rendering:pixelated" alt="The same planetary material region at 16 cubed cells" loading="lazy"><figcaption><strong>16³ cells · step 16</strong><span>Identical recipe, LOD-resolved noise.</span></figcaption></figure>
+        <figure class="reveal"><img src="gallery/gpu-planet-8.png" width="320" height="320" style="image-rendering:pixelated" alt="Coarse planetary material map at eight cubed cells" loading="lazy"><figcaption><strong>8³ cells · step 32</strong><span>Detail branch eliminated before execution.</span></figcaption></figure>
+      </div>
+      <div class="gpu-guide reveal">
+        <p>The runnable <a href="https://github.com/tedd/Tedd.FastNoise/blob/main/samples/Tedd.FastNoise.Gpu.Sample/PlanetRecipe.cs">planet recipe</a> composes continental fBm, ridged mountains, optional detail, moisture, soil, snow and sea level. These are illustrative Earth-like rules, not a fixed Earth preset or a complete game world. Applications supply their own parameters and layering.</p>
+        <p>The sample produces these material maps through Vulkan, checks every cell against the same CPU graphs, and writes inspectable GLSL. Water is an opaque material in this demonstration. Fewer operations or transfers do not by themselves guarantee better end-to-end performance.</p>
       </div>
     </section>
 
@@ -342,7 +370,7 @@ world.Fill(overview, <span class="kw">new</span> <span class="type">GridRegion2D
 
       <div class="scope-note reveal">
         <h3>Current scope</h3>
-        <p>Bulk grid and volume generation, compiled layer stacks, SIMD and parallel CPU execution, per-point domain warp, and a pluggable accelerator interface are implemented. The optional Vulkan producer supports OpenSimplex2, Perlin and Value noise plus compact voxel output. Bulk domain-warp fill and GPU compiled stacks are not implemented.</p>
+        <p>Bulk noise fills, compiled layer stacks, typed procedural graphs with mathematical folding, SIMD CPU execution and per-point domain warp are available. The Vulkan package generates fields and multi-material bricks from specialized graphs using OpenSimplex2, Perlin and Value. Graphs require shaderFloat64; Float64 power, other GPU noise algorithms and bulk domain-warp fill are unsupported.</p>
       </div>
     </section>
   </main>

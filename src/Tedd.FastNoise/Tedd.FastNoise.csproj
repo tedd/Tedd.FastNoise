@@ -23,7 +23,7 @@
     <PackageProjectUrl>https://github.com/tedd/Tedd.FastNoise</PackageProjectUrl>
     <RepositoryUrl>https://github.com/tedd/Tedd.FastNoise.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Perlin, OpenSimplex2, Value and Cellular noise for 2D and 3D; fBm, ridged and ping-pong fractals; domain warping; fused layer stacks; sample-aware level of detail; and single-point, grid, volume and parallel APIs. Scalar, SIMD and parallel backends produce bit-identical output.</PackageReleaseNotes>
+    <PackageReleaseNotes>Typed procedural algorithm graphs with constant folding, common-expression elimination, dead-branch specialization, generated scalar/SIMD executors and a NativeAOT interpreter fallback. Compose planetary recipes and import LOD-resolved noise stacks; compile the same graphs to device-resident terrain with Tedd.FastNoise.Gpu.</PackageReleaseNotes>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
