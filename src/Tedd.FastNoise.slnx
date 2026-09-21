@@ -1,8 +1,11 @@
 <Solution>
+  <Project Path="../samples/Tedd.FastNoise.Gpu.Sample/Tedd.FastNoise.Gpu.Sample.csproj" />
   <Project Path="../archive/v1/Tedd.FastNoise.V1/Tedd.FastNoise.V1.csproj" />
   <Project Path="Tedd.FastNoise.Benchmark/Tedd.FastNoise.Benchmark.csproj" />
   <Project Path="Tedd.FastNoise.Designer/Tedd.FastNoise.Designer.csproj" />
   <Project Path="Tedd.FastNoise.Designer.Tests/Tedd.FastNoise.Designer.Tests.csproj" />
   <Project Path="Tedd.FastNoise.Tests/Tedd.FastNoise.Tests.csproj" />
+  <Project Path="Tedd.FastNoise.Gpu/Tedd.FastNoise.Gpu.csproj" />
+  <Project Path="Tedd.FastNoise.Gpu.Tests/Tedd.FastNoise.Gpu.Tests.csproj" />
   <Project Path="Tedd.FastNoise/Tedd.FastNoise.csproj" />
 </Solution>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7faf9">
-  <meta name="description" content="Tedd.FastNoise is a deterministic .NET coherent-noise library for bulk 2D terrain and 3D voxel generation using scalar, SIMD, and parallel execution.">
+  <meta name="description" content="Bulk coherent noise for .NET: deterministic scalar, SIMD and parallel CPU fills, plus Vulkan compute noise and compact voxel terrain with level of detail.">
   <title>Tedd.FastNoise — deterministic bulk noise for .NET</title>
   <link rel="icon" href="assets/noise-mark.svg" type="image/svg+xml">
   <script>document.documentElement.classList.add('js')</script>
@@ -22,6 +22,7 @@
     <nav aria-label="Primary navigation">
       <a href="#algorithms">Algorithms</a>
       <a href="#execution">Execution</a>
+      <a href="#gpu">GPU terrain</a>
       <a href="#composition">Composition</a>
       <a href="#api">API</a>
       <a href="#designer">Designer</a>
@@ -33,9 +34,9 @@
     <section class="hero" id="top">
       <div class="hero-grid" aria-hidden="true"></div>
       <div class="hero-copy">
-        <p class="eyebrow"><span></span> .NET 10 · 2D and 3D · deterministic output</p>
+        <p class="eyebrow"><span></span> .NET 10 · CPU and Vulkan · 2D and 3D</p>
         <h1>Fill terrain tiles.<br><em>Fill voxel volumes.</em></h1>
-        <p class="lede">Tedd.FastNoise computes coherent noise directly into contiguous <code>Span&lt;float&gt;</code> buffers. The same kernels execute as scalar code, hardware-width SIMD, or SIMD across multiple cores, with bit-identical output.</p>
+        <p class="lede">Fill CPU buffers with bit-identical scalar, SIMD or parallel noise. Generate float fields and compact voxel terrain directly into GPU buffers with the optional Vulkan producer.</p>
         <div class="hero-actions">
           <a class="button primary" href="#install"><span>Install from NuGet</span><span aria-hidden="true">↓</span></a>
           <a class="button secondary" href="https://github.com/tedd/Tedd.FastNoise">Read the source</a>
@@ -44,6 +45,7 @@
           <li>OpenSimplex2, Perlin, Value, and Cellular kernels</li>
           <li>fBm, ridged, and ping-pong fractals</li>
           <li>Layer fusion and sample-aware level of detail</li>
+          <li>GPU-resident noise fields and compact voxel bricks</li>
         </ul>
       </div>
 
@@ -175,7 +177,7 @@ densityNoise.Fill(density, region); <span class="comment">// Auto backend</span>
       <div class="execution-heading reveal">
         <p class="eyebrow">Bulk execution</p>
         <h2>Where the throughput comes from.</h2>
-        <p>The implementation reduces dispatch, temporary memory, and cache-line contention. It does not depend on unsafe numerical shortcuts; fused multiply-add is intentionally excluded to preserve exact cross-backend output.</p>
+        <p>The CPU implementation reduces dispatch, temporary memory, and cache-line contention. Fused multiply-add is intentionally excluded to preserve exact agreement across CPU backends.</p>
       </div>
 
       <ol class="pipeline" aria-label="Bulk fill pipeline">
@@ -190,12 +192,48 @@ densityNoise.Fill(density, region); <span class="comment">// Auto backend</span>
         <article class="backend-card reveal"><h3><code>Scalar</code></h3><p>Portable lane width of one. Used explicitly, on non-vector hardware, and for OpenSimplex2S.</p></article>
         <article class="backend-card reveal"><h3><code>Simd</code></h3><p>Single-threaded <code>Vector&lt;float&gt;</code>. Suitable when the buffer is large enough to amortize setup but caller-level scheduling already owns parallelism.</p></article>
         <article class="backend-card reveal"><h3><code>Parallel</code></h3><p>Row ranges execute through <code>Parallel.For</code>. Default threshold is 16,384 samples to avoid thread-pool overhead on small fills.</p></article>
-        <article class="backend-card reveal"><h3><code>Gpu</code></h3><p>Dispatch point for an external <code>INoiseAccelerator</code>. Without a registered accelerator, execution falls back through Parallel → SIMD → Scalar. No GPU package is currently shipped.</p></article>
+        <article class="backend-card reveal"><h3><code>Gpu</code></h3><p>The host-buffer enum routes through a registered <code>INoiseAccelerator</code>, falling back to CPU when unavailable. GPU-resident generation uses the separate <code>VulkanNoiseProducer</code> command-buffer API below.</p></article>
       </div>
 
       <div class="determinism-band reveal">
         <div><p class="eyebrow">Determinism</p><h3>Equal floats, not approximately equal floats.</h3></div>
         <p>Backend agreement tests compare complete output buffers with exact equality. Scalar and SIMD share kernel source; operation order is fixed; fused multiply-add is not used. This prevents a threshold such as <code>density &gt; 0</code> from selecting different voxels on clients with different CPUs.</p>
+      </div>
+    </section>
+
+    <section class="gpu section-shell" id="gpu">
+      <div class="section-intro reveal">
+        <div><p class="eyebrow">Vulkan compute</p><h2>Generate terrain where it is rendered.</h2></div>
+        <p><code>Tedd.FastNoise.Gpu</code> writes into caller-owned storage buffers. <code>RecordNoise</code> produces float32 fields; <code>RecordTerrain</code> evaluates density, classifies cells and packs voxel bricks without requiring CPU readback.</p>
+      </div>
+      <div class="composition-notes reveal">
+        <p><strong>LOD-resolved requests</strong><span><code>CreateRequest</code> snapshots settings and filters octaves for the world-space sample spacing.</span></p>
+        <p><strong>Compact 4³ bricks</strong><span>Empty bricks have no cell payload. Uniform bricks store one cell; mixed bricks store 64.</span></p>
+        <p><strong>Renderer-owned resources</strong><span>Reuse your Vulkan device, command buffers and allocations. The producer records work and memory barriers.</span></p>
+      </div>
+      <pre class="wide-code reveal" aria-label="C sharp GPU terrain example"><code><span class="comment">// Use the renderer's Vulkan device and an allocated output buffer.</span>
+<span class="kw">using var</span> producer = <span class="kw">new</span> <span class="type">VulkanNoiseProducer</span>(vk, physicalDevice, device);
+<span class="kw">using var</span> output = producer.BindOutput(buffer, <span class="type">VoxelTerrainSettings</span>.RequiredBytes(<span class="num">32</span>));
+<span class="kw">var</span> noise = <span class="kw">new</span> <span class="type">NoiseGenerator</span>(<span class="num">1337</span>)
+{
+    NoiseType = <span class="type">NoiseType</span>.OpenSimplex2, FractalType = <span class="type">FractalType</span>.FBm,
+    Frequency = <span class="num">0.01f</span>, Octaves = <span class="num">6</span>, Lod = <span class="type">LodPolicy</span>.Automatic,
+};
+<span class="kw">var</span> request = noise.CreateRequest(<span class="kw">new</span> <span class="type">GridRegion3D</span>(-<span class="num">128</span>, -<span class="num">128</span>, -<span class="num">128</span>, <span class="num">32</span>, <span class="num">32</span>, <span class="num">32</span>, Step: <span class="num">8</span>));
+producer.RecordTerrain(commandBuffer, output, request,
+    <span class="kw">new</span> <span class="type">VoxelTerrainSettings</span>(Height: <span class="num">0</span>, Amplitude: <span class="num">180</span>));
+<span class="comment">// Submit, render, and keep resources alive until GPU work completes.</span></code></pre>
+      <div class="gpu-samples">
+        <figure class="reveal"><img src="gallery/gpu-terrain-32.png" width="960" height="880" alt="Vulkan-generated terrain sampled at 32 cubed voxels, eight world units per cell" loading="lazy"><figcaption><strong>32³ cells · step 8</strong><span>Three surviving noise octaves.</span></figcaption></figure>
+        <figure class="reveal"><img src="gallery/gpu-terrain-16.png" width="960" height="880" alt="The same world region sampled at 16 cubed voxels, sixteen world units per cell" loading="lazy"><figcaption><strong>16³ cells · step 16</strong><span>Two surviving noise octaves.</span></figcaption></figure>
+        <figure class="reveal"><img src="gallery/gpu-terrain-8.png" width="960" height="880" alt="The same world region sampled at eight cubed voxels, thirty-two world units per cell" loading="lazy"><figcaption><strong>8³ cells · step 32</strong><span>One surviving noise octave.</span></figcaption></figure>
+      </div>
+      <div class="gpu-guide reveal">
+        <p>The examples cover the same 256-world-unit cube. The runnable sample executes Vulkan compute, reads back the packed cells and projects them into these images. Site builds use Mesa's Vulkan software device; rendering engines can consume the same format directly on the GPU.</p>
+        <p>OpenSimplex2, Perlin and Value support None, fBm, Ridged and PingPong fractals. GPU output is tested against CPU values, but cross-device bit equivalence is not guaranteed. Compiled stacks and domain warp use the CPU API.</p>
+        <p>The voxel layout matches Forcecraft10's production brick directory. It contains one opaque material; game-specific terrain rules, lighting, pristine-chunk selection and edit invalidation remain host responsibilities.</p>
+        <div class="install-command"><code>dotnet run -c Release --project samples/Tedd.FastNoise.Gpu.Sample</code><button type="button" data-copy="dotnet run -c Release --project samples/Tedd.FastNoise.Gpu.Sample">Copy</button></div>
+        <p><a href="https://github.com/tedd/Tedd.FastNoise/tree/main/samples/Tedd.FastNoise.Gpu.Sample">Complete runnable sample</a> · <a href="https://github.com/tedd/Tedd.FastNoise/blob/main/src/Tedd.FastNoise.Gpu/README.md">GPU API and buffer layout</a> · <a href="gallery/gpu-field.png">2D Vulkan field sample</a></p>
       </div>
     </section>
 
@@ -292,9 +330,19 @@ world.Fill(overview, <span class="kw">new</span> <span class="type">GridRegion2D
         <div class="install-links"><a href="https://www.nuget.org/packages/Tedd.FastNoise/">NuGet package</a><a href="https://github.com/tedd/Tedd.FastNoise">GitHub repository</a><a href="https://github.com/tedd/Tedd.FastNoise/tree/main/src/Tedd.FastNoise.Benchmark">Benchmark source</a></div>
       </div>
 
+      <div class="install-card reveal">
+        <div>
+          <p class="eyebrow">Optional GPU package</p>
+          <h2>Install Tedd.FastNoise.Gpu.</h2>
+          <p>Vulkan compute for .NET 10, including the CPU library and Silk.NET bindings. Requires a Vulkan compute device and driver.</p>
+        </div>
+        <div class="install-command"><code>dotnet add package Tedd.FastNoise.Gpu</code><button type="button" data-copy="dotnet add package Tedd.FastNoise.Gpu">Copy</button></div>
+        <div class="install-links"><a href="https://www.nuget.org/packages/Tedd.FastNoise.Gpu/">GPU NuGet package</a><a href="#gpu">GPU examples</a><a href="https://github.com/tedd/Tedd.FastNoise/tree/main/samples/Tedd.FastNoise.Gpu.Sample">Runnable sample source</a></div>
+      </div>
+
       <div class="scope-note reveal">
         <h3>Current scope</h3>
-        <p>Bulk grid and volume generation, compiled layer stacks, SIMD and parallel CPU execution, per-point domain warp, and a pluggable accelerator interface are implemented. A GPU accelerator package and bulk domain-warp fill are not currently shipped.</p>
+        <p>Bulk grid and volume generation, compiled layer stacks, SIMD and parallel CPU execution, per-point domain warp, and a pluggable accelerator interface are implemented. The optional Vulkan producer supports OpenSimplex2, Perlin and Value noise plus compact voxel output. Bulk domain-warp fill and GPU compiled stacks are not implemented.</p>
       </div>
     </section>
   </main>

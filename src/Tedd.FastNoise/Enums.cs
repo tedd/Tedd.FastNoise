@@ -181,7 +181,7 @@ public enum NoiseBackend
     Parallel = 3,
 
     /// <summary>
-    /// GPU compute, provided by the optional <c>Tedd.FastNoise.Gpu</c> package. Degrades to
+    /// Host-buffer GPU compute through a registered <see cref="INoiseAccelerator"/>. Degrades to
     /// <see cref="Parallel"/> when no accelerator is registered or the fill is too small to pay
     /// for the round trip.
     /// </summary>

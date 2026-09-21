@@ -32,6 +32,13 @@ jobs:
       - name: Render 2D and 3D samples
         run: dotnet run -c Release --project tools/Tedd.FastNoise.Gallery -- docs/gallery
 
+      # Hosted runners use Mesa's Vulkan software device to execute the same compute sample.
+      - name: Install Vulkan compute runtime
+        run: sudo apt-get update && sudo apt-get install -y libvulkan1 mesa-vulkan-drivers
+
+      - name: Render Vulkan terrain samples
+        run: dotnet run -c Release --project samples/Tedd.FastNoise.Gpu.Sample -- docs/gallery
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v5

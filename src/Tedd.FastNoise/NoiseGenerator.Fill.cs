@@ -7,6 +7,22 @@ namespace Tedd.FastNoise;
 
 public sealed partial class NoiseGenerator
 {
+    /// <summary>Captures a validated, LOD-resolved request for a device-resident 2D producer.</summary>
+    public NoiseFillRequest2D CreateRequest(in GridRegion2D region)
+    {
+        region.Validate(checked(region.Width * region.Height));
+        (int octaves, float fade) = Lod.Resolve(_frequency, _lacunarity, _octaves, region.Step);
+        return BuildRequest2D(region, octaves, fade);
+    }
+
+    /// <summary>Captures a validated, LOD-resolved request for a device-resident 3D producer.</summary>
+    public NoiseFillRequest3D CreateRequest(in GridRegion3D region)
+    {
+        region.Validate(checked(region.Width * region.Height * region.Depth));
+        (int octaves, float fade) = Lod.Resolve(_frequency, _lacunarity, _octaves, region.Step);
+        return BuildRequest3D(region, octaves, fade);
+    }
+
     /// <summary>
     /// Sample count from which <see cref="NoiseBackend.Auto"/> starts using every core.
     /// </summary>

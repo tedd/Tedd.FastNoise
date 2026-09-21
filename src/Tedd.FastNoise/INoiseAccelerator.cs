@@ -114,15 +114,14 @@ public readonly record struct NoiseFillRequest3D
 /// </summary>
 /// <remarks>
 /// <para>
-/// Implemented by the optional <c>Tedd.FastNoise.Gpu</c> package. The core library never requires
-/// one: with no accelerator registered, <see cref="NoiseBackend.Gpu"/> silently means
+/// A host-buffer accelerator extension point. Device-resident producers in <c>Tedd.FastNoise.Gpu</c>
+/// use an explicit command-buffer API instead. With no accelerator registered, <see cref="NoiseBackend.Gpu"/> silently means
 /// <see cref="NoiseBackend.Parallel"/>.
 /// </para>
 /// <para>
 /// <b>Implementers must produce the same values the CPU does.</b> Not approximately -- exactly.
 /// A world generated on a machine with a GPU and a machine without has to be the same world, or
-/// the feature is a liability. The test suite runs the shipped accelerator against the CPU path
-/// sample for sample.
+/// the feature is a liability. Implementations must verify CPU agreement sample for sample.
 /// </para>
 /// <para>
 /// <see cref="TryFill2D"/> returning <see langword="false"/> is a normal outcome, not an error:

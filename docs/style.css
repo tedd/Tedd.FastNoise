@@ -147,6 +147,17 @@ td:first-child code { color: #15343a; font-weight: 600; white-space: nowrap; }
 .determinism-band > p { margin: 0; color: #afc4c5; }
 
 .composition { background: #eef6f3; }
+.gpu { background: #fff; }
+.gpu .wide-code { margin-top: 1.5rem; }
+.gpu-samples { max-width: 1500px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem auto; }
+.gpu-samples figure { margin: 0; border: 1px solid var(--line); background: var(--soft); }
+.gpu-samples img { display: block; width: 100%; height: auto; }
+.gpu-samples figcaption { padding: 1.2rem; }
+.gpu-samples strong, .gpu-samples span { display: block; }
+.gpu-samples span { color: var(--muted); font-size: .82rem; }
+.gpu-guide { max-width: 1500px; margin: 0 auto; color: var(--muted); }
+.gpu-guide a { color: var(--ink); text-decoration: underline; }
+.install-card + .install-card { margin-top: 1.5rem; }
 .wide-code { max-width: 1500px; margin: 0 auto; }
 .composition-notes { max-width: 1500px; display: grid; grid-template-columns: repeat(3, 1fr); margin: 1rem auto 0; border: 1px solid var(--line); background: #fff; }
 .composition-notes p { min-height: 130px; display: flex; flex-direction: column; margin: 0; padding: 1.5rem; border-right: 1px solid var(--line); }
@@ -208,7 +219,7 @@ footer a:hover { color: var(--aqua); }
 @media (max-width: 850px) {
   .site-header { height: auto; min-height: 68px; padding-block: .7rem; }
   nav { gap: .9rem; }
-  nav a:nth-child(-n+5) { display: none; }
+  nav a:not(.nav-cta) { display: none; }
   .hero { padding-top: 5rem; }
   h1 { font-size: clamp(3.2rem, 14vw, 5.8rem); }
   .proof-strip { grid-template-columns: 1fr 1fr; }
@@ -235,6 +246,7 @@ footer a:hover { color: var(--aqua); }
   .hero-copy > h1, .hero-copy > .lede, .hero-copy > .eyebrow { max-width: 340px; }
   .hero-sample { width: min(100%, 340px); justify-self: start; }
   .proof-strip, .sample-grid, .algorithm-details, .backend-grid, .lod-grid { grid-template-columns: 1fr; }
+  .gpu-samples { grid-template-columns: 1fr; }
   .proof-strip p { min-height: 78px; border-right: 0; border-bottom: 1px solid var(--line); }
   .proof-strip p:last-child { border-bottom: 0; }
   .memory-cells span { font-size: .5rem; }

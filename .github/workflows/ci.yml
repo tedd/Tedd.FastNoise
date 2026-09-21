@@ -24,8 +24,11 @@ jobs:
       - run: dotnet build src/Tedd.FastNoise -c Release
       - run: dotnet build src/Tedd.FastNoise.Benchmark -c Release
       - run: dotnet build tools/Tedd.FastNoise.Gallery -c Release
+      - run: dotnet build samples/Tedd.FastNoise.Gpu.Sample -c Release
       - run: dotnet test src/Tedd.FastNoise.Tests -c Release
+      - run: dotnet test src/Tedd.FastNoise.Gpu.Tests -c Release
       - run: dotnet pack src/Tedd.FastNoise -c Release -o artifacts/packages
+      - run: dotnet pack src/Tedd.FastNoise.Gpu -c Release -o artifacts/packages
       - uses: actions/upload-artifact@v4
         with:
           name: packages
@@ -55,6 +58,7 @@ jobs:
       - run: dotnet build src/Tedd.FastNoise.slnx -c Release
       - run: dotnet test src/Tedd.FastNoise.Designer.Tests -c Release --no-build
       - run: dotnet test src/Tedd.FastNoise.Tests -c Release --no-build
+      - run: dotnet test src/Tedd.FastNoise.Gpu.Tests -c Release --no-build
 
   preview:
     name: test (.NET 11 preview)

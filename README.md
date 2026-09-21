@@ -37,6 +37,14 @@ noise.Fill(density, new GridRegion3D(chunkX * 16, 0, chunkZ * 16, 16, 256, 16));
 dotnet add package Tedd.FastNoise
 ```
 
+For Vulkan compute generation into GPU buffers:
+
+```bash
+dotnet add package Tedd.FastNoise.Gpu
+```
+
+The GPU package includes the CPU library as a dependency. The CPU package needs no graphics driver.
+
 Targets .NET 10. .NET 11 is validated in CI and enabled with `-p:EnableNet11=true` until it ships.
 
 ---
@@ -63,7 +71,7 @@ the speed is.
 
 ## What you get
 
-### Every backend produces identical bytes
+### Every CPU backend produces identical bytes
 
 Scalar, SIMD and parallel fills are bit-for-bit equal, on x86 and on ARM, at any vector width. This
 is a hard guarantee, and the test suite asserts it directly rather than checking values are close.
@@ -194,9 +202,45 @@ to it. With none registered, `Gpu` silently means `Parallel`, and an accelerator
 individual fill (too small, unsupported configuration) and get the CPU path instead. The fallback
 chain is `Gpu → Parallel → Simd → Scalar`, and every link is tested.
 
-**Status:** the interface, the dispatch and the fallback are implemented and tested. The
-`Tedd.FastNoise.Gpu` package that implements it is not written yet. See
-[Not done yet](#not-done-yet).
+For GPU-resident output, the optional [Tedd.FastNoise.Gpu](src/Tedd.FastNoise.Gpu/README.md)
+project provides a Vulkan compute producer. `RecordNoise` writes float fields; `RecordTerrain`
+writes compact voxel bricks compatible with Forcecraft10's production renderer. Both use
+caller-owned devices, command buffers and storage buffers, with no required readback.
+
+Create a LOD-resolved request with `noise.CreateRequest(region)` and pass it to the producer.
+OpenSimplex2, Perlin and Value support None, FBm, Ridged and PingPong fractals. This explicit GPU
+API is separate from `NoiseBackend.Gpu`; cross-device GPU bit equivalence is not guaranteed.
+
+```csharp
+// Reuse the renderer's Vulkan device and a StorageBuffer | TransferDst output buffer.
+// Retain these objects until submitted GPU work has completed.
+using var producer = new VulkanNoiseProducer(vk, physicalDevice, device);
+using var output = producer.BindOutput(buffer, VoxelTerrainSettings.RequiredBytes(32));
+var request = noise.CreateRequest(new GridRegion3D(0, 0, 0, 32, 32, 32, Step: 8));
+producer.RecordTerrain(commandBuffer, output, request,
+    new VoxelTerrainSettings(Height: 64, Amplitude: 96));
+```
+
+Use `Tedd.FastNoise.Gpu` for the Vulkan types above. A terrain cell is solid where
+`noise * Amplitude + Height - worldY * VerticalScale > 0`. The output uses a directory of 4³
+bricks, omits empty bricks and stores uniform bricks as one cell. It provides one opaque material;
+the host supplies chunk eligibility, world rules, rendering and resource synchronization.
+
+### Runnable samples
+
+The [Vulkan sample](samples/Tedd.FastNoise.Gpu.Sample/README.md) includes complete headless device
+setup, float-field generation, terrain generation at three LODs and packed-brick decoding:
+
+```bash
+dotnet run -c Release --project samples/Tedd.FastNoise.Gpu.Sample -- artifacts/gpu-sample
+```
+
+It saves PNG previews and renderer-compatible binary payloads. Readback is used only to inspect
+and save the sample output. For CPU examples, generate the documentation gallery:
+
+```bash
+dotnet run -c Release --project tools/Tedd.FastNoise.Gallery -- artifacts/gallery
+```
 
 ---
 
@@ -311,11 +355,14 @@ dotnet run -c Release --project src/Tedd.FastNoise.Designer
 
 ```
 src/Tedd.FastNoise/            the library
+src/Tedd.FastNoise.Gpu/        optional Vulkan noise and compact voxel producer
+src/Tedd.FastNoise.Gpu.Tests/  shader compilation, GPU agreement and payload tests
 src/Tedd.FastNoise.Tests/      xUnit, including the vendored reference used as the oracle
 src/Tedd.FastNoise.Benchmark/  BenchmarkDotNet
 src/Tedd.FastNoise.Designer/   the WPF designer
 src/Tedd.FastNoise.Designer.Tests/  Windows-only designer geometry tests
 tools/Tedd.FastNoise.Gallery/  renders the sample images for the documentation site
+samples/Tedd.FastNoise.Gpu.Sample/  runnable Vulkan field and terrain examples
 docs/                          the GitHub Pages site
 archive/v1/                    the 2020 implementation, frozen
 ```
@@ -348,11 +395,11 @@ run.
 
 `deploy.yml` runs only on a push to the **`deploy`** branch and ships:
 
-- the next automatically versioned NuGet package, using GitHub OIDC trusted publishing
+- matching versions of `Tedd.FastNoise` and `Tedd.FastNoise.Gpu`, using GitHub OIDC trusted publishing
 - a GitHub release carrying the self-contained Windows designer
 
 `pages.yml` also runs from **`deploy`**. It renders every 2D and 3D gallery image with the checked-out
-library and deploys `docs/` through GitHub Pages.
+library, executes the Vulkan sample on Mesa's software device, and deploys `docs/` through GitHub Pages.
 
 The `<Version>` value supplies the major and minor release line. Each new deploy workflow run adds
 its stable run number to the patch component; rerunning the same workflow retains the same version.
@@ -362,18 +409,16 @@ The release procedure is therefore: merge to `main`, watch CI complete, then
 git push origin main:deploy
 ```
 
-NuGet.org must trust repository `tedd/Tedd.FastNoise` and workflow file `deploy.yml`. No persistent
+NuGet.org must trust repository `tedd/Tedd.FastNoise` and workflow file `deploy.yml` for both packages. No persistent
 NuGet API key is stored. GitHub Pages must use **GitHub Actions** as its source.
 
 ---
 
 ## Not done yet
 
-- **`Tedd.FastNoise.Gpu`.** The accelerator interface, dispatch and fallback are implemented and
-  tested; the package that implements `INoiseAccelerator` against a GPU is not written. The hard
-  part is not the kernel, it is keeping GPU output bit-identical to the CPU so the determinism
-  guarantee survives — an accelerator that cannot manage that should decline the work rather than
-  silently produce a slightly different world.
+- **GPU coverage.** The Vulkan producer supports individual OpenSimplex2, Perlin and Value
+  generators. Compiled stacks, other noise types and a host-readback `INoiseAccelerator` adapter
+  are not implemented.
 - **Domain warp in bulk.** `DomainWarp` works per point, via the reference implementation. There is
   no vectorised warp inside the fill loop yet, so warping a whole region means warping coordinates
   yourself and sampling per point.

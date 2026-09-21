@@ -27,6 +27,8 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - run: dotnet test src/Tedd.FastNoise.Tests -c Release
+      - run: dotnet test src/Tedd.FastNoise.Gpu.Tests -c Release
+      - run: dotnet build samples/Tedd.FastNoise.Gpu.Sample -c Release
 
   package:
     name: package
@@ -56,10 +58,15 @@ jobs:
           $packageVersion = '{0}.{1}.{2}' -f $baseVersion.Major, $baseVersion.Minor, ($baseVersion.Build + [int]$env:GITHUB_RUN_NUMBER)
           $versionNode.InnerText = $packageVersion
           $project.Save((Resolve-Path -LiteralPath $projectPath))
+          $gpuPath = 'src/Tedd.FastNoise.Gpu/Tedd.FastNoise.Gpu.csproj'
+          $gpuProject = [xml](Get-Content -LiteralPath $gpuPath)
+          $gpuProject.SelectSingleNode('/Project/PropertyGroup/Version').InnerText = $packageVersion
+          $gpuProject.Save((Resolve-Path -LiteralPath $gpuPath))
           "version=$packageVersion" >> $env:GITHUB_OUTPUT
           Write-Host "Publishing Tedd.FastNoise $packageVersion"
 
       - run: dotnet pack src/Tedd.FastNoise -c Release -o artifacts/packages
+      - run: dotnet pack src/Tedd.FastNoise.Gpu -c Release -o artifacts/packages
 
       # Self-contained so the download runs on a machine with no .NET installed,
       # which is the whole point of shipping a designer to people evaluating the library.
@@ -89,12 +96,9 @@ jobs:
           path: artifacts/release/*
 
   nuget:
-    name: publish to nuget
+    name: publish CPU and GPU packages
     needs: package
     runs-on: windows-latest
-    permissions:
-      contents: write
-      id-token: write
     steps:
       - uses: actions/checkout@v5
         with:
@@ -102,81 +106,48 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: artifacts/packages
 
-      - name: Apply package version
-        shell: pwsh
-        env:
-          PACKAGE_VERSION: ${{ needs.package.outputs.version }}
-        run: |
-          $projectPath = 'src/Tedd.FastNoise/Tedd.FastNoise.csproj'
-          $project = [xml](Get-Content -LiteralPath $projectPath)
-          $versionNode = $project.SelectSingleNode('/Project/PropertyGroup/Version')
-          if ($null -eq $versionNode) {
-            throw "No Version element found in $projectPath."
-          }
-          $versionNode.InnerText = $env:PACKAGE_VERSION
-          $project.Save((Resolve-Path -LiteralPath $projectPath))
-
-      # NuGet.org validates this workflow through OIDC and returns a one-hour API key.
-      # No long-lived NuGet credential is stored in GitHub.
+      # Publish the exact artifacts produced by the package job, with one shared version.
       - name: Log in to NuGet.org with OIDC
         id: nuget_login
         uses: NuGet/login@v1
         with:
           user: tedd
 
-      - name: Publish on version change
-        id: publish_nuget
-        continue-on-error: true
-        # publish-nuget-neo has no v2 tag. Pin the current v2 implementation on main;
-        # v1 refers to the obsolete implementation that emits `dotnet dotnet nuget push`.
-        uses: tedd/publish-nuget-neo@1a65ed85a859c9f4905b61c58afe6b1dcbb74ae4
-        with:
-          NUGET_KEY: ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
-          PROJECT_FILE_PATH: src/Tedd.FastNoise/Tedd.FastNoise.csproj
-          PACKAGE_NAME: Tedd.FastNoise
-          NUGET_SOURCE: https://api.nuget.org
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: true
-          TAG_FORMAT: v*
-          REBUILD_PROJECT: false
-          LOG_LEVEL: INFO
-
-      # The current action suppresses dotnet's server response when a push fails. A direct retry
-      # preserves the diagnostic, handles a transient failure, and completes the tag operation.
-      - name: Retry failed publish
-        if: steps.publish_nuget.outcome == 'failure'
+      - name: Publish packages and symbols
         shell: pwsh
         env:
           NUGET_KEY: ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           PACKAGE_VERSION: ${{ needs.package.outputs.version }}
         run: |
-          $packages = @(
-            Get-Item -LiteralPath "src/Tedd.FastNoise/Tedd.FastNoise.$env:PACKAGE_VERSION.nupkg"
-            Get-Item -LiteralPath "src/Tedd.FastNoise/Tedd.FastNoise.$env:PACKAGE_VERSION.snupkg"
-          )
-          foreach ($package in $packages) {
-            dotnet nuget push $package.FullName --source https://api.nuget.org/v3/index.json --api-key $env:NUGET_KEY --skip-duplicate
-            if ($LASTEXITCODE -ne 0) {
-              throw "NuGet publish failed for $($package.Name) with exit code $LASTEXITCODE."
+          foreach ($id in @('Tedd.FastNoise', 'Tedd.FastNoise.Gpu')) {
+            foreach ($extension in @('nupkg', 'snupkg')) {
+              $package = Get-Item -LiteralPath "artifacts/packages/$id.$env:PACKAGE_VERSION.$extension"
+              dotnet nuget push $package.FullName --source https://api.nuget.org/v3/index.json --api-key $env:NUGET_KEY --skip-duplicate
+              if ($LASTEXITCODE -ne 0) { throw "Publishing $($package.Name) failed." }
             }
           }
 
+      - name: Tag the published version
+        shell: pwsh
+        env:
+          PACKAGE_VERSION: ${{ needs.package.outputs.version }}
+        run: |
           $tag = "v$env:PACKAGE_VERSION"
           if (-not (git tag --list $tag)) {
             git tag $tag
-            if ($LASTEXITCODE -ne 0) {
-              throw "Creating tag $tag failed."
-            }
+            if ($LASTEXITCODE -ne 0) { throw "Creating $tag failed." }
           }
           git push origin $tag
-          if ($LASTEXITCODE -ne 0) {
-            throw "Pushing tag $tag failed."
-          }
+          if ($LASTEXITCODE -ne 0) { throw "Pushing $tag failed." }
 
   release:
     name: publish the app
-    needs: package
+    needs: [package, nuget]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4

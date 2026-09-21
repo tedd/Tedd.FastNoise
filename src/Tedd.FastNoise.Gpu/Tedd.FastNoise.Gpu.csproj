@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Tedd.FastNoise.Gpu</PackageId>
+    <Version>1.0.0</Version>
+    <Description>Vulkan compute noise and GPU-resident brick voxel terrain generation.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/tedd/Tedd.FastNoise</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tedd/Tedd.FastNoise.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>noise;vulkan;gpu;compute;voxel;terrain;procedural;lod</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Tedd.FastNoise/Tedd.FastNoise.csproj" />
+    <PackageReference Include="Silk.NET.Vulkan" Version="2.23.0" />
+    <PackageReference Include="Silk.NET.Shaderc" Version="2.23.0" />
+    <PackageReference Include="Silk.NET.Shaderc.Native" Version="2.23.0" />
+    <EmbeddedResource Include="Shaders/*.glsl" />
+    <None Include="../../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="/" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <InternalsVisibleTo Include="Tedd.FastNoise.Gpu.Tests" />
+  </ItemGroup>
+</Project>
