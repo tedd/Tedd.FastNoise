@@ -9,19 +9,16 @@ namespace Tedd.FastNoise.Gpu;
 
 internal sealed class ShadercContext : INativeContext
 {
-    private nint _handle = NativeLibrary.Load(
+    // shaderc and its C++ runtime can retain thread-local cleanup callbacks after compilation.
+    // Keep one module reference for the process lifetime, as the .NET P/Invoke loader does.
+    private static readonly nint Handle = NativeLibrary.Load(
         OperatingSystem.IsWindows() ? "shaderc_shared.dll" :
         OperatingSystem.IsMacOS() ? "libshaderc_shared.dylib" : "libshaderc_shared.so",
         typeof(Shaderc).Assembly, null);
 
-    public nint GetProcAddress(string proc, int? slot = null) => NativeLibrary.GetExport(_handle, proc);
+    public nint GetProcAddress(string proc, int? slot = null) => NativeLibrary.GetExport(Handle, proc);
     public bool TryGetProcAddress(string proc, out nint address, int? slot = null) =>
-        NativeLibrary.TryGetExport(_handle, proc, out address);
+        NativeLibrary.TryGetExport(Handle, proc, out address);
 
-    public void Dispose()
-    {
-        if (_handle == 0) return;
-        NativeLibrary.Free(_handle);
-        _handle = 0;
-    }
+    public void Dispose() { }
 }
