@@ -1,11 +1,8 @@
 name: Deploy
 
-# Push to `deploy` to publish the next automatically versioned NuGet package and
-# a matching GitHub release of the designer. Pages is handled independently by
-# pages.yml so a package failure cannot block documentation deployment.
+# Dispatch after local validation to publish both packages and the designer.
+# Pages publishes independently when the deploy branch changes.
 on:
-  push:
-    branches: [deploy]
   workflow_dispatch:
 
 permissions:
@@ -18,21 +15,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  verify:
-    name: verify
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: 10.0.x
-      - run: dotnet test src/Tedd.FastNoise.Tests -c Release
-      - run: dotnet test src/Tedd.FastNoise.Gpu.Tests -c Release
-      - run: dotnet build samples/Tedd.FastNoise.Gpu.Sample -c Release
-
   package:
     name: package
-    needs: verify
     runs-on: windows-latest
     outputs:
       version: ${{ steps.version.outputs.version }}

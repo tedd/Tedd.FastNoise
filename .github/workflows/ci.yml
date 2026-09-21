@@ -1,11 +1,7 @@
 name: CI
 
-# Quality gate only. Nothing here publishes anything -- see deploy.yml, which is
-# the single place that pushes a package, a release or the site.
+# Optional cross-platform verification. Routine release validation runs locally.
 on:
-  push:
-    branches: [main, master, deploy]
-  pull_request:
   workflow_dispatch:
 
 permissions:

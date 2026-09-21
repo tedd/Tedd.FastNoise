@@ -45,7 +45,7 @@ dotnet add package Tedd.FastNoise.Gpu
 
 The GPU package includes the CPU library as a dependency. The CPU package needs no graphics driver.
 
-Targets .NET 10. .NET 11 is validated in CI and enabled with `-p:EnableNet11=true` until it ships.
+Targets .NET 10. Optional .NET 11 preview validation uses `-p:EnableNet11=true` until it ships.
 
 ---
 
@@ -386,27 +386,38 @@ dotnet test src/Tedd.FastNoise.Tests -c Release -f net11.0 -p:EnableNet11=true  
 
 ## Releasing
 
-Three workflows separate verification, package deployment and site deployment.
+Run validation locally before publishing. With PowerShell 7, the .NET 10 SDK and a Vulkan compute
+device, this command builds, tests, packs both libraries and refreshes the website samples:
 
-`ci.yml` runs on every push and pull request and publishes nothing. It builds and tests on Linux,
-on ARM64 and on Windows -- three instruction sets, because bit-identical output across backends is
-a promise this library makes and one machine cannot check it -- plus a non-blocking .NET 11 preview
-run.
+```powershell
+pwsh -File tools/Validate-Release.ps1 -Gpu -Gallery
+```
 
-`deploy.yml` runs only on a push to the **`deploy`** branch and ships:
+It includes the Windows designer tests on Windows. Omit `-Gallery` to preserve the existing images;
+omit both switches for CPU and shader compilation checks without a Vulkan device. Validate GPU
+changes with `-Gpu` before release. Review and commit the generated `docs/gallery/*.png` files with
+the source changes. Binary sample payloads remain local.
+
+`ci.yml` is manual-only, for occasional Linux, ARM64, Windows and .NET 11 preview verification.
+Pushes and pull requests do not start hosted tests. Routine validation and sample generation run
+locally; the deployment workflows only package and publish.
+
+Manually dispatch `deploy.yml` from the **`deploy`** branch to ship:
 
 - matching versions of `Tedd.FastNoise` and `Tedd.FastNoise.Gpu`, using GitHub OIDC trusted publishing
 - a GitHub release carrying the self-contained Windows designer
 
-`pages.yml` also runs from **`deploy`**. It renders every 2D and 3D gallery image with the checked-out
-library, executes the Vulkan sample on Mesa's software device, and deploys `docs/` through GitHub Pages.
+`pages.yml` publishes the committed `docs/` files when documentation changes reach **`deploy`**.
+It installs no .NET or Vulkan runtime and generates no samples on hosted runners. Documentation
+updates therefore do not require a package release.
 
 The `<Version>` value supplies the major and minor release line. Each new deploy workflow run adds
 its stable run number to the patch component; rerunning the same workflow retains the same version.
-The release procedure is therefore: merge to `main`, watch CI complete, then
+After local validation and merging to `main`, publish the site and dispatch the package release:
 
 ```bash
 git push origin main:deploy
+gh workflow run deploy.yml --ref deploy
 ```
 
 NuGet.org must trust repository `tedd/Tedd.FastNoise` and workflow file `deploy.yml` for both packages. No persistent
