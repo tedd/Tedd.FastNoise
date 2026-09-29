@@ -1,16 +1,16 @@
 {
-  "title": "3D gradient hot-path investigation",
-  "generatedAt": "2026-09-29T19:00:05+02:00",
-  "status": "complete",
-  "scope": "Steady-state SIMD generation of a 16×256×16, four-octave 3D voxel field on .NET 10/x64 AVX2.",
-  "question": "Can the dominant 3D gradient calculation reduce random table traffic by at least 5% without changing noise outputs or materially regressing unaffected kernels?",
+  "title": "3D gradient hot-path investigation and ten-hypothesis extension",
+  "generatedAt": "2026-09-29T21:19:00+02:00",
+  "status": "partial",
+  "scope": "Steady-state point sampling and SIMD/parallel bulk generation of 16×256×16 and 32×256×32 four-octave 3D fields on .NET 10/x64 AVX2.",
+  "question": "Can shared 3D kernel changes improve both point and bulk APIs by at least 3% without output changes or material regression, and is additional bulk parallelism needed?",
   "primaryMetric": "microseconds per 100,000 gradient vectors",
   "summary": {
     "baseline": 1368.0,
     "final": 783.6,
     "unit": "µs/100k vectors",
     "changePercent": -42.7,
-    "headline": "Packed gradient codes reduced the isolated 3D gradient cost by 42.7%; the complete 3D Perlin caller improved by 30.6%."
+    "headline": "The prior packed-gradient optimization remains retained. Ten additional hypotheses yielded no further retained change: the sole viable candidate did not establish a consistent 3% gain across point and bulk APIs."
   },
   "scorecards": [
     {
@@ -49,7 +49,10 @@
     {"label": "Measurement lock", "value": "C:\\Users\\tedd\\.codex\\locks\\performance-measurement.lock; all builds, tests, traces, disassembly, and timings serialized"},
     {"label": "Epoch 1", "value": "Default BenchmarkDotNet/tiered PGO; rejected for whole-caller acceptance after tier-transition bimodality"},
     {"label": "Epoch 2", "value": "Explicit 100-call warmup, 250 ms background-JIT window, 20 stabilization calls, 30 observations"},
-    {"label": "FullOpts diagnostic", "value": "DOTNET_ReadyToRun=0 and DOTNET_TieredCompilation=0; two candidate repeats around one baseline"}
+    {"label": "FullOpts diagnostic", "value": "DOTNET_ReadyToRun=0 and DOTNET_TieredCompilation=0; two candidate repeats around one baseline"},
+    {"label": "Extension baseline", "value": "99c2c69d25b120b674d09f4e5dc3aad8b8ca2501; original eight hypotheses committed on main; H-009 variant temporarily applied and reverted"},
+    {"label": "Extension epoch", "value": "2026-09-29; .NET 10.0.12, AVX2; point/serial affinity 0x10; parallel all cores and diagnostic 0x55555555; 20 observations per process, 20+10 warmups"},
+    {"label": "Acceptance change", "value": "User lowered the minimum useful complete-API effect from 5% to 3% for simple changes. This begins a new decision epoch; earlier results are not relabeled retroactively."}
   ],
   "hotspots": [
     {
@@ -75,24 +78,24 @@
       "boundary": "Hashing.GradCoord3 and VectorOps gathers",
       "evidence": "Three AVX2 float gathers per gradient; six per OpenSimplex2 Sample3 call",
       "catalogue": "optimize-code: M6, C3, C4",
-      "hypothesisIds": ["H-001", "H-002", "H-003"],
-      "disposition": "Two complementary changes retained; software-gather alternative rejected"
+      "hypothesisIds": ["H-001", "H-002", "H-003", "H-014", "H-015"],
+      "disposition": "Two complementary changes retained; AVX2 decode already generated; prefetch lacks a miss mechanism"
     },
     {
       "name": "Grid traversal, bounds, and buffer traffic",
       "boundary": "GridFill.Rows3 and destination stores",
       "evidence": "1.60% baseline exclusive CPU; contiguous writes; no allocation in kernel",
       "catalogue": "optimize-code: M1-M5, M7",
-      "hypothesisIds": ["H-004", "H-008"],
-      "disposition": "No material candidate under the 5% threshold"
+      "hypothesisIds": ["H-004", "H-008", "H-017"],
+      "disposition": "No generally repeated output block suitable for exact copying"
     },
     {
       "name": "Dependency, branch, and instruction behavior",
       "boundary": "Two-lattice OpenSimplex2 Sample3 body",
       "evidence": "2,294-byte FullOpts body, one predictable pass branch, 0x4A0-byte frame",
       "catalogue": "optimize-code: C1, C2, C4",
-      "hypothesisIds": ["H-002", "H-005"],
-      "disposition": "Signed-term reconstruction retained; manual unrolling ruled below materiality"
+      "hypothesisIds": ["H-002", "H-005", "H-009", "H-010", "H-011", "H-012", "H-013", "H-016"],
+      "disposition": "H-009 is inconclusive across complete APIs; H-010/011 below threshold; H-012/013 fail the semantic or performance screen; H-016 lacks shared-work evidence"
     },
     {
       "name": "Dispatch, inlining, and specialization",
@@ -107,8 +110,8 @@
       "boundary": "Single-threaded SIMD target plus RowScheduler parallel wrapper",
       "evidence": "No collection lookup/storage path in the kernel; parallel rows have disjoint output ownership",
       "catalogue": "optimize-code: S1-S5, T1-T4",
-      "hypothesisIds": [],
-      "disposition": "Not applicable to the selected single-threaded kernel; no contention evidence"
+      "hypothesisIds": ["H-018"],
+      "disposition": "Bulk already uses row-parallel SIMD above a configurable threshold; only worker-boundary cache lines can be shared"
     }
   ],
   "series": [
@@ -164,6 +167,35 @@
           ]
         }
       ]
+    },
+    {
+      "title": "H-009 complete point API, 65,536 samples",
+      "description": "Four consecutive FullOpts processes under one performance lock. Bars are medians of 20 calls; whiskers show all observed calls. Candidate A is compared with baseline A, and candidate B with baseline B.",
+      "unit": "µs/65,536 points",
+      "lowerIsBetter": true,
+      "rounds": ["Candidate A", "Baseline A", "Baseline B", "Candidate B"],
+      "rows": [
+        {
+          "label": "OpenSimplex2",
+          "detail": "H-009 point sampling",
+          "measurements": [
+            {"median": 20578.2, "min": 20466.8, "max": 37151.2, "n": 20},
+            {"median": 21301.35, "min": 21264.0, "max": 21494.1, "n": 20},
+            {"median": 21133.3, "min": 21023.5, "max": 24589.1, "n": 20},
+            {"median": 20565.3, "min": 20486.5, "max": 21383.9, "n": 20}
+          ]
+        },
+        {
+          "label": "Value control",
+          "detail": "Unchanged kernel and point API",
+          "measurements": [
+            {"median": 9217.6, "min": 9170.5, "max": 9805.9, "n": 20},
+            {"median": 9197.3, "min": 9167.3, "max": 9387.0, "n": 20},
+            {"median": 9201.15, "min": 9170.2, "max": 9337.4, "n": 20},
+            {"median": 9187.95, "min": 9171.4, "max": 9245.8, "n": 20}
+          ]
+        }
+      ]
     }
   ],
   "effectGroups": [
@@ -189,10 +221,14 @@
       "prediction": "At least 5% lower median gradient time and complete 3D caller time.",
       "falsification": "Less than 5% repeatable gain, changed outputs, or a material control regression.",
       "change": "Added GradientCodes3D and integer gather support; GradCoord3 decodes one packed code.",
+      "changeScope": "moderate",
+      "maintainability": "One compact lookup representation replaces three parallel float tables in the hot path; generic and AVX2 gather implementations both remain covered.",
+      "codeComments": "The packed-code layout is documented at its declaration and decode site.",
       "result": "Isolated operation improved 42.7%; FullOpts Perlin improved 30.6%; all correctness tests passed.",
       "effectPercent": -42.7,
       "state": "retained",
       "decision": "Adopted",
+      "decisionRationale": "Large isolated and complete-caller gains survived controls and output tests; the representation cost is bounded.",
       "evidence": ["raw/h001-gradient-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.Gradient3DStrategy-report.csv", "disassembly/candidate-open-simplex-2-sample3.asm.txt"],
       "risks": ["AVX2-specific magnitude; software fallback is correctness-tested but not separately benchmarked on ARM/AVX-512 hardware."]
     },
@@ -204,9 +240,13 @@
       "prediction": "Preserve H-001's gather reduction without increasing the OpenSimplex2 frame or code size.",
       "falsification": "A larger frame/code body, output mismatch, or loss of caller benefit.",
       "change": "Decode gradient signs with FlipSign on xd/yd/zd and select only the zero component.",
+      "changeScope": "local",
+      "maintainability": "The sign decoding is localized within GradCoord3 and avoids redundant coefficient construction.",
+      "codeComments": "The packed-code decode comment explains the sign and zero-axis fields.",
       "result": "Final FullOpts body is 2,290 bytes with a 0x4A0 frame versus baseline 2,294 bytes/0x4A0; six float gathers became two integer gathers per Sample3 call.",
       "state": "retained",
       "decision": "Adopted",
+      "decisionRationale": "Preserved the gather benefit while keeping generated code size and frame stable.",
       "evidence": ["disassembly/baseline-open-simplex-2-sample3.asm.txt", "disassembly/candidate-open-simplex-2-sample3.asm.txt"],
       "risks": []
     },
@@ -217,10 +257,14 @@
       "prediction": "Lower GatherStrategy time than the shipped AVX2 path.",
       "falsification": "Software gather is slower beyond noise.",
       "change": "No library change; compared existing VectorOps.GatherSoftware control.",
+      "changeScope": "local",
+      "maintainability": "Benchmark-only comparison; no production-code burden was incurred.",
+      "codeComments": "No library implementation or comment was added.",
       "result": "Software gather was 934.0 µs versus 356.9 µs for hardware gather (2.62× slower).",
       "effectPercent": 161.7,
       "state": "rejected",
       "decision": "Rejected",
+      "decisionRationale": "The measured software path is substantially slower on the target AVX2 host.",
       "evidence": ["raw/baseline-bdn/gather/results/Tedd.FastNoise.Benchmark.Benchmarks.GatherStrategy-report.csv"],
       "risks": []
     },
@@ -288,6 +332,161 @@
       "decision": "Already eliminated",
       "evidence": ["disassembly/baseline-open-simplex-2-sample3.asm.txt"],
       "risks": []
+    },
+    {
+      "id": "H-009",
+      "parentId": "H-001",
+      "claim": "Replace initial sign conversion and multiplication by absolute value in OpenSimplex2 Sample3.",
+      "mechanism": "C4/C3: remove three integer-to-float conversions and three vector multiplies after the nearest-lattice signs are known.",
+      "prediction": "At least 3% lower complete point and bulk time with unchanged output and no material parallel regression.",
+      "falsification": "Any output difference, less than 3% repeatable complete-API gain, or a material regression in parallel bulk.",
+      "change": "Temporarily replaced three expressions with TOps.Abs; reverted after the full-API experiments remained confounded.",
+      "changeScope": "local",
+      "maintainability": "Three local expressions simplify; no new API or state is required. The candidate was reverted pending decisive complete-API timing.",
+      "codeComments": "No comment was needed for the self-explanatory absolute-value expressions; the source variant is preserved as a patch.",
+      "result": "Isolated SIMD mechanism improved 403.5→147.2 µs/100k vectors. Point API improved about 3–5% in quiet rounds; SIMD bulk and parallel bulk were multimodal, with a 5–17% apparent parallel regression in some rounds. No adoption claim is justified.",
+      "state": "inconclusive",
+      "decision": "Recheck on quiet host",
+      "decisionRationale": "The revised 3% criterion is not established consistently across the complete point and bulk APIs; especially parallel outcomes conflict.",
+      "evidence": ["raw/h009-h013-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.OpenSimplex3InitialMagnitude-report.csv", "raw/h009-interleaved-point-bulk.csv", "raw/h009-interleaved-large-point-bulk.csv", "raw/h009-interleaved-large-fixed-parallel.csv", "disassembly/h009-candidate-simd-sample3.asm.txt"],
+      "risks": ["Uncoordinated host load caused bimodal complete-fill timings. The temporary change has been reverted."]
+    },
+    {
+      "id": "H-010",
+      "parentId": "H-009",
+      "claim": "Flip the sign bit instead of converting an integer sign and multiplying the second-lattice offset.",
+      "mechanism": "C4: replace conversion and multiply with an XOR sign operation.",
+      "prediction": "At least 3% lower isolated signed-offset cost before complete-API promotion.",
+      "falsification": "The isolated effect is within dispersion or exceptional sign values change results.",
+      "change": "Benchmark-only alternative; no library edit.",
+      "changeScope": "local",
+      "maintainability": "A local sign-bit operation would be simple, but exceptional-sign handling would add complexity.",
+      "codeComments": "No production comment was added because the candidate was not promoted.",
+      "result": "112.4 versus 113.5 µs/100k vectors (about 1%); standard deviations 6.1 and 4.5 µs. The isolated effect is below the revised threshold and not distinguishable from noise.",
+      "state": "rejected",
+      "decision": "Rejected",
+      "decisionRationale": "The isolated gain is below 3% and within dispersion, so complete-API promotion is unwarranted.",
+      "evidence": ["raw/h009-h013-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.OpenSimplex3SignedOffset-report.csv"],
+      "risks": ["Non-finite coordinates can produce integer signs other than ±1; XOR would not equal multiplication then."]
+    },
+    {
+      "id": "H-011",
+      "parentId": "H-009",
+      "claim": "Construct selected face-neighbor ±1 offsets by sign-bit XOR instead of integer-to-float conversion.",
+      "mechanism": "C4: remove conversion from the neighbor-coordinate path.",
+      "prediction": "At least 3% lower isolated selected-offset cost.",
+      "falsification": "The isolated effect is within dispersion or exceptional sign values break equivalence.",
+      "change": "Benchmark-only alternative; no library edit.",
+      "changeScope": "local",
+      "maintainability": "A local XOR would be simple only if the sign invariant were guaranteed; it is not for exceptional inputs.",
+      "codeComments": "No production comment was added because the candidate was not promoted.",
+      "result": "114.9 versus 117.5 µs/100k vectors (about 2.2%); 4.8–9.5 µs standard deviations. No reproducible 3% gain.",
+      "state": "rejected",
+      "decision": "Rejected",
+      "decisionRationale": "The isolated result neither reaches 3% nor clears measurement dispersion.",
+      "evidence": ["raw/h009-h013-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.OpenSimplex3SignedUnit-report.csv"],
+      "risks": ["Exceptional signs are not guaranteed to be ±1."]
+    },
+    {
+      "id": "H-012",
+      "claim": "Drop the Y>X comparison from the face-neighbor selection because X was already excluded.",
+      "mechanism": "C2/C3: remove one vector comparison and mask dependency.",
+      "prediction": "At least 3% lower selection cost while preserving all point and bulk outputs.",
+      "falsification": "Any coordinate, including NaN, changes selected lattice corner.",
+      "change": "Benchmark-only three-comparison alternative; no library edit.",
+      "changeScope": "local",
+      "maintainability": "One fewer comparison would simplify the source, but restoring NaN behavior would erase that simplification.",
+      "codeComments": "No production comment was added because the candidate is semantically invalid.",
+      "result": "The finite-input microbenchmark improved 254.1→220.8 µs/100k vectors, but it is not equivalent for NaN. For ax=0.1, ay=NaN, az=0.2, the original selects Z while the candidate selects Y.",
+      "state": "rejected",
+      "decision": "Semantically invalid",
+      "decisionRationale": "A finite-only gain cannot justify changing the single-sample and bulk exceptional-input contract.",
+      "evidence": ["raw/h009-h013-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.OpenSimplex3LeanSelection-report.csv"],
+      "risks": ["Changing exceptional-input behavior violates the existing scalar/SIMD contract."]
+    },
+    {
+      "id": "H-013",
+      "claim": "Clamp negative attenuation to zero before computing its quartic contribution.",
+      "mechanism": "C2/C4: replace compare-and-blend after multiplication by a vector Max before multiplication.",
+      "prediction": "At least 3% lower isolated attenuation cost with bit-identical outputs.",
+      "falsification": "No repeatable gain or any exceptional-input difference.",
+      "change": "Benchmark-only alternative; no library edit.",
+      "changeScope": "local",
+      "maintainability": "The clamp is local, but any repair for NaN propagation would complicate the kernel.",
+      "codeComments": "No production comment was added because the candidate is slower and semantically invalid.",
+      "result": "Candidate mean 123.8 versus 116.1 µs/100k vectors; baseline was bimodal. With negative attenuation and NaN gradient, the original selects zero while the clamped variant propagates NaN.",
+      "state": "rejected",
+      "decision": "Rejected",
+      "decisionRationale": "The isolated result is slower and the candidate changes exceptional-input outputs.",
+      "evidence": ["raw/h009-h013-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.OpenSimplex3Attenuation-report.csv"],
+      "risks": ["Exceptional-input behavior changes."]
+    },
+    {
+      "id": "H-014",
+      "parentId": "H-001",
+      "claim": "An explicit AVX2 packed-bitmask path may eliminate generic-vector decode overhead.",
+      "mechanism": "C3/R2: use AVX2 gather, XOR and blend intrinsics directly in the hot gradient path.",
+      "prediction": "At least 3% lower complete point and bulk time through fewer native instructions.",
+      "falsification": "The existing generic path already lowers to the same AVX2 instructions.",
+      "change": "None; inspected optimized Sample3 disassembly.",
+      "result": "The current path already contains VPGATHERDD, VPCMPEQD, VPAND, VPXOR and VBLENDVPS with no virtual dispatch. A fixed-width rewrite lacks a distinct eliminated operation on this host.",
+      "state": "not-applicable",
+      "decision": "Already generated",
+      "evidence": ["disassembly/candidate-open-simplex-2-sample3.asm.txt"],
+      "risks": ["Explicit AVX2 would add a separate ISA path and portability cost."]
+    },
+    {
+      "id": "H-015",
+      "parentId": "H-001",
+      "claim": "Prefetching the packed gradient-code table before the gather may hide memory latency.",
+      "mechanism": "M6/C3: issue prefetch intrinsics ahead of indexed table access.",
+      "prediction": "At least 3% lower complete point and bulk time from fewer demand-load stalls.",
+      "falsification": "The table is cache resident or the index is unavailable far enough ahead to hide latency.",
+      "change": "None; inspected table size and dependency order.",
+      "result": "The entire 64×4-byte table is 256 bytes; the random index is produced immediately before the gather. No miss evidence or independent lookahead exists. Cache residency is probable but was not measured; a prefetch is unjustified without a demonstrated miss mechanism.",
+      "state": "not-applicable",
+      "decision": "No miss mechanism",
+      "evidence": ["disassembly/candidate-open-simplex-2-sample3.asm.txt"],
+      "risks": []
+    },
+    {
+      "id": "H-016",
+      "claim": "A stencil of adjacent samples could reuse lattice work across a spatial block.",
+      "mechanism": "C1/M7: cache shared lattice gradients or hashes across neighboring grid points.",
+      "prediction": "At least 3% lower complete point and bulk time after cache maintenance costs.",
+      "falsification": "Point calls lack adjacent-sample context or rotated multi-octave cells provide insufficient reuse.",
+      "change": "None; inspected point and row-fill call boundaries.",
+      "result": "GetNoise samples an independent coordinate with no persistent traversal state. A stencil would apply only to a bulk traversal unless a new stateful point API were introduced; it does not meet the required shared point/bulk change.",
+      "state": "not-applicable",
+      "decision": "Bulk-only mechanism",
+      "evidence": [],
+      "risks": ["New persistent cache would change object state, memory cost, and concurrency semantics."]
+    },
+    {
+      "id": "H-017",
+      "claim": "Block-copy repeated output regions instead of evaluating every sample.",
+      "mechanism": "M7: replace repeated computation with a contiguous copy.",
+      "prediction": "At least 3% lower point and bulk time with exactly equal values.",
+      "falsification": "Adjacent coordinates do not generally have identical noise outputs.",
+      "change": "None; inspected coordinate-dependent transforms and the exact-output contract.",
+      "result": "Each coordinate passes through rotation, multiple octaves and lattice gradients. There is no exact repeated block to copy; approximation or tiling would change outputs, and a single point has no block destination.",
+      "state": "not-applicable",
+      "decision": "No repeated output",
+      "evidence": [],
+      "risks": []
+    },
+    {
+      "id": "H-018",
+      "claim": "Adding worker threads or aligning row partitions removes a material large-fill limit or false-sharing cost.",
+      "mechanism": "T1/C3: schedule independent row ranges and avoid cross-worker cache-line ownership.",
+      "prediction": "At least 3% lower large bulk time; point sampling has no independent work within one call.",
+      "falsification": "Bulk already uses all available workers and sharing is confined to worker boundaries.",
+      "change": "No algorithm change; corrected the internal comment about possible boundary-line sharing.",
+      "result": "NoiseGenerator.Fill already selects RowScheduler.Parallel above ParallelThreshold=16384; 65,536-sample OpenSimplex2 fills measured about 3.9 ms SIMD versus 0.5 ms parallel. At most one cache line per adjacent worker range can be shared; no contention hotspot was observed.",
+      "state": "not-applicable",
+      "decision": "Already parallel",
+      "evidence": ["raw/h009-h018-baseline-point-bulk.csv"],
+      "risks": ["Nested parallelism can increase scheduling cost when callers already partition work."]
     }
   ],
   "retainedChanges": [
@@ -296,12 +495,16 @@
     "Apply sign bits directly to coordinate terms, eliminating two random gathers and three coefficient multiplies per gradient.",
     "Add a reusable Gradient3DStrategy benchmark and exhaustive table-encoding correctness test."
   ],
-  "decisions": [],
+  "decisions": [
+    "H-009 remains unretained. The user accepts a simple 3% gain, but the two point rounds span 2.7–3.4%; bulk and parallel measurements were confounded by uncoordinated host load. Re-run the preserved variant when the host is quiet before adopting it."
+  ],
   "correctness": [
     "Complete solution tests: 263 passed, 8 GPU-hardware tests skipped by existing environment guards, 0 failed.",
     "The new exhaustive test verifies all 64 packed codes reconstruct all three reference-table components exactly.",
     "Existing compatibility and backend-agreement tests compare scalar/SIMD results to the vendored FastNoiseLite reference across algorithms, rotations, fractals, and coordinates.",
-    "Controlled caller checksums were unchanged for OpenSimplex2, Perlin, Value, and Cellular across every baseline/candidate run."
+    "Controlled caller checksums were unchanged for OpenSimplex2, Perlin, Value, and Cellular across every baseline/candidate run.",
+    "H-009 candidate passed the full solution suite: 263 passed, 8 guarded GPU skips, 0 failed. Point, SIMD bulk and parallel bulk checksums matched baseline for both volume sizes.",
+    "H-009 exceptional-input probe compared 207 output bit patterns across scalar point and scalar/SIMD/parallel bulk; baseline and candidate matched exactly."
   ],
   "generatedCode": [
     {
@@ -310,6 +513,13 @@
       "before": "Six VGATHERDPS instructions; 2,294-byte body; 0x4A0 stack frame.",
       "after": "Two VPGATHERDD instructions; 2,290-byte body; 0x4A0 stack frame.",
       "artifact": "disassembly/candidate-open-simplex-2-sample3.asm.txt"
+    },
+    {
+      "hypothesisId": "H-009",
+      "summary": "The temporary absolute-value candidate removed three VMULPS instructions from the optimized SIMD Sample3 body.",
+      "before": "2,290-byte SIMD body and 1,613-byte scalar body.",
+      "after": "2,254-byte SIMD body and 1,574-byte scalar body; candidate reverted after complete-API evidence remained inconclusive.",
+      "artifact": "disassembly/h009-candidate-simd-sample3.asm.txt"
     }
   ],
   "validityThreats": [
@@ -317,14 +527,18 @@
     "OpenSimplex2 FullOpts candidate repeats differed substantially (1.6% to 23.2% faster); only the conservative repeat is used in its scorecard. Tiered-PGO epoch-2 repeats were 7.4% and 12.0% faster.",
     "Magnitude is established on one Zen 3 AVX2 host. The portable scalar fallback passed correctness tests, but performance on ARM, AVX-512, and non-AVX2 x64 remains unmeasured.",
     "EventPipe sampling attributes heavily inlined work to large callers; percentages locate the kernel but do not distinguish individual instructions.",
-    "FullOpts disables deployment tiering to stabilize code generation; separate tiered-PGO measurements were retained to bound deployment behavior."
+    "FullOpts disables deployment tiering to stabilize code generation; separate tiered-PGO measurements were retained to bound deployment behavior.",
+    "The extension host had uncoordinated foreground/background activity. In the 262,144-sample interleaved run, an unchanged Perlin SIMD control shifted from 15.7 to 25.4 ms and OpenSimplex2 SIMD distributions became strongly multimodal. Even fixed-affinity parallel runs had one unstable baseline round. A 3% adoption decision is therefore not robust.",
+    "H-010 through H-013 are isolated SIMD screens; their rejected or invalid outcomes were not promoted to complete-API timing. H-014 through H-018 were ruled out by optimized code, table size/dependency, API boundaries, exact-output requirements, or existing scheduler behavior; they are not measured speedup claims."
   ],
   "reproduction": [
     "python C:\\Users\\tedd\\.codex\\skills\\scientific-method-performance\\scripts\\run_with_performance_lock.py --cwd D:\\SourceCode\\Tedd.FastNoise -- powershell -NoProfile -ExecutionPolicy Bypass -File \"D:\\SourceCode\\Tedd.FastNoise\\Research\\2026-09-29 noise-hot-path-1\\raw\\run-h001-microbenchmark.ps1\"",
     "Run raw/run-h001-controlled-caller.ps1 with -Label <name> and optional -FullOpts for complete-caller repetitions.",
     "Run profiling/run-profile.ps1 under the performance lock for EventPipe hotspot evidence.",
     "Run disassembly/run-baseline-disassembly.ps1 under the performance lock for optimized native code.",
-    "dotnet test src/Tedd.FastNoise.slnx -c Release --nologo under the performance lock."
+    "dotnet test src/Tedd.FastNoise.slnx -c Release --nologo under the performance lock.",
+    "For the extension, run git apply --unidiff-zero raw/h009-variant.patch on a clean 99c2c69 checkout, then run raw/run-h009-interleaved.ps1 under the performance lock and reverse only that temporary patch after collecting evidence. The script refuses to compare identical builds.",
+    "Run raw/run-h009-h013-mechanisms.ps1 under the performance lock for the five isolated mechanism screens; run raw/run-h009-edge-probe.ps1 with the temporary variant for exceptional-input bit patterns."
   ],
   "artifacts": [
     {"label": "Microbenchmark CSV", "path": "raw/h001-gradient-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.Gradient3DStrategy-report.csv"},
@@ -333,6 +547,13 @@
     {"label": "Candidate hotspot profile", "path": "profiling/candidate-voxel-open-simplex-2-topn.txt"},
     {"label": "Baseline disassembly", "path": "disassembly/baseline-open-simplex-2-sample3.asm.txt"},
     {"label": "Candidate disassembly", "path": "disassembly/candidate-open-simplex-2-sample3.asm.txt"},
-    {"label": "Environment", "path": "raw/dotnet-info.txt"}
+    {"label": "Environment", "path": "raw/dotnet-info.txt"},
+    {"label": "Extension mechanism screens", "path": "raw/h009-h013-bdn/results/"},
+    {"label": "H-009 interleaved point and bulk measurements", "path": "raw/h009-interleaved-point-bulk.csv"},
+    {"label": "H-009 large-volume measurements", "path": "raw/h009-interleaved-large-point-bulk.csv"},
+    {"label": "H-009 fixed-affinity parallel measurements", "path": "raw/h009-interleaved-large-fixed-parallel.csv"},
+    {"label": "H-009 scalar and SIMD disassembly", "path": "disassembly/"},
+    {"label": "H-009 reproducible source variant", "path": "raw/h009-variant.patch"},
+    {"label": "H-009 exceptional-input comparison", "path": "raw/h009-edge-baseline.txt"}
   ]
 }

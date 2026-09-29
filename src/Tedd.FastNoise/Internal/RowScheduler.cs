@@ -9,8 +9,8 @@ namespace Tedd.FastNoise.Internal;
 /// <remarks>
 /// <para>
 /// Rows are the unit of work because a row is contiguous in the destination. Handing each worker a
-/// run of whole rows means no two workers ever touch the same cache line, so there is no false
-/// sharing to tune away.
+/// run of whole rows limits potential cache-line sharing to the boundaries between worker ranges.
+/// An unaligned array start or row width can leave one boundary line shared by adjacent workers.
 /// </para>
 /// <para>
 /// The destination is pinned for the duration of the parallel loop and handed to workers as a

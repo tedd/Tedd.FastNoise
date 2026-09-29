@@ -1,0 +1,1435 @@
+   1: JIT compiled System.AppContext:Setup(ptr,ptr,int) [FullOpts, IL size=68, code size=157]
+   2: JIT compiled System.Collections.Generic.Dictionary`2[System.__Canon,System.__Canon]:.ctor(int,System.Collections.Generic.IEqualityComparer`1[System.__Canon]) [FullOpts, IL size=136, code size=245]
+   3: JIT compiled System.Collections.Generic.Dictionary`2[System.__Canon,System.__Canon]:Initialize(int) [FullOpts, IL size=56, code size=167]
+   4: JIT compiled System.Collections.HashHelpers:GetPrime(int) [FullOpts, IL size=93, code size=188]
+   5: JIT compiled System.Runtime.CompilerServices.GenericsHelpers:Class(nint,nint) [FullOpts, IL size=19, code size=168]
+   6: JIT compiled System.Runtime.CompilerServices.StaticsHelpers:GetGCStaticBase(ptr) [FullOpts, IL size=42, code size=23]
+   7: JIT compiled System.Runtime.CompilerServices.StaticsHelpers:GetGCStaticBaseSlow(ptr) [FullOpts, IL size=33, code size=59]
+   8: JIT compiled System.Runtime.CompilerServices.InitHelpers:InitClassSlow(ptr) [FullOpts, IL size=7, code size=146]
+   9: JIT compiled System.Collections.Generic.EqualityComparer`1[System.__Canon]:.cctor() [FullOpts, IL size=26, code size=94]
+  10: JIT compiled System.RuntimeTypeHandle:GetRuntimeTypeFromHandle(nint) [FullOpts, IL size=59, code size=44]
+  11: JIT compiled System.RuntimeTypeHandle:GetRuntimeTypeFromHandleSlow(nint) [FullOpts, IL size=17, code size=160]
+  12: JIT compiled System.Collections.Generic.ComparerHelpers:CreateDefaultEqualityComparer(System.Type) [FullOpts, IL size=216, code size=416]
+  13: JIT compiled System.Runtime.CompilerServices.CastHelpers:ChkCastClass(ptr,System.Object) [FullOpts, IL size=22, code size=20]
+  14: JIT compiled System.Runtime.CompilerServices.CastHelpers:ChkCastClassSpecial(ptr,System.Object) [FullOpts, IL size=83, code size=82]
+  15: JIT compiled System.Collections.Generic.NonRandomizedStringEqualityComparer:GetStringComparer(System.Object) [FullOpts, IL size=44, code size=273]
+  16: JIT compiled System.Collections.Generic.NonRandomizedStringEqualityComparer:.cctor() [FullOpts, IL size=46, code size=239]
+  17: JIT compiled System.OrdinalCaseSensitiveComparer:.cctor() [FullOpts, IL size=11, code size=47]
+  18: JIT compiled System.OrdinalIgnoreCaseComparer:.cctor() [FullOpts, IL size=11, code size=47]
+  19: JIT compiled System.Runtime.CompilerServices.CastHelpers:ChkCastAny(ptr,System.Object) [FullOpts, IL size=39, code size=167]
+  20: JIT compiled System.Runtime.CompilerServices.CastHelpers:ChkCastAny_NoCacheLookup(ptr,System.Object) [FullOpts, IL size=17, code size=163]
+  21: JIT compiled System.String:Ctor(ptr) [FullOpts, IL size=56, code size=86]
+  22: JIT compiled System.SpanHelpers:IndexOfNullCharacter(ptr) [FullOpts, IL size=1148, code size=392]
+  23: JIT compiled System.String:FastAllocateString(nint) [FullOpts, IL size=20, code size=18]
+  24: JIT compiled System.SpanHelpers:Memmove(byref,byref,nuint) [FullOpts, IL size=489, code size=318]
+  25: JIT compiled System.Collections.Generic.Dictionary`2[System.__Canon,System.__Canon]:TryInsert(System.__Canon,System.__Canon,byte) [FullOpts, IL size=565, code size=775]
+  26: JIT compiled System.Collections.Generic.NonRandomizedStringEqualityComparer+OrdinalComparer:GetHashCode(System.String) [FullOpts, IL size=7, code size=11]
+  27: JIT compiled System.String:GetNonRandomizedHashCode() [FullOpts, IL size=102, code size=107]
+  28: JIT compiled System.Buffer:MemmoveInternal(byref,byref,nuint) [FullOpts, IL size=23, code size=178]
+  29: JIT compiled System.Diagnostics.Tracing.EventSource:InitializeDefaultEventSources() [FullOpts, IL size=75, code size=347]
+  30: JIT compiled System.Runtime.CompilerServices.StaticsHelpers:GetNonGCStaticBase(ptr) [FullOpts, IL size=42, code size=23]
+  31: JIT compiled System.Runtime.CompilerServices.StaticsHelpers:GetNonGCStaticBaseSlow(ptr) [FullOpts, IL size=33, code size=59]
+  32: JIT compiled System.Diagnostics.Tracing.EventSource:.cctor() [FullOpts, IL size=44, code size=72]
+  33: JIT compiled System.AppContext:TryGetSwitch(System.String,byref) [FullOpts, IL size=97, code size=482]
+  34: JIT compiled System.AppContext:GetData(System.String) [FullOpts, IL size=64, code size=228]
+  35: JIT compiled System.Collections.Generic.Dictionary`2[System.__Canon,System.__Canon]:FindValue(System.__Canon) [FullOpts, IL size=297, code size=306]
+  36: JIT compiled System.Diagnostics.Tracing.EventSource:InitializeIsSupported() [FullOpts, IL size=18, code size=47]
+  37: JIT compiled System.Diagnostics.Tracing.EventSource:InitializeIsMeterSupported() [FullOpts, IL size=18, code size=47]
+  38: JIT compiled System.Diagnostics.Tracing.NativeRuntimeEventSource:.cctor() [FullOpts, IL size=11, code size=57]
+  39: JIT compiled System.Diagnostics.Tracing.NativeRuntimeEventSource:.ctor() [FullOpts, IL size=63, code size=187]
+  40: JIT compiled System.Diagnostics.Tracing.EventSource:Initialize(System.Guid,System.String,System.String[]) [FullOpts, IL size=424, code size=1259]
+  41: JIT compiled System.Diagnostics.Tracing.ActivityTracker:.cctor() [FullOpts, IL size=11, code size=43]
+  42: JIT compiled System.Diagnostics.Tracing.NativeRuntimeEventSource:get_ProviderMetadata() [FullOpts, IL size=13, code size=24]
+  43: JIT compiled System.Diagnostics.Tracing.EventSourceInitHelper:TryGetPreregisteredEtwProvider(System.Guid) [FullOpts, IL size=46, code size=239]
+  44: JIT compiled System.Diagnostics.Tracing.EventSourceInitHelper:.cctor() [FullOpts, IL size=31, code size=201]
+  45: JIT compiled System.Collections.Generic.List`1[System.__Canon]:.cctor() [FullOpts, IL size=12, code size=90]
+  46: JIT compiled System.Collections.Generic.Dictionary`2[System.Guid,System.__Canon]:.ctor(int,System.Collections.Generic.IEqualityComparer`1[System.Guid]) [FullOpts, IL size=136, code size=107]
+  47: JIT compiled System.Collections.Generic.Dictionary`2[System.Guid,System.__Canon]:Remove(System.Guid,byref) [FullOpts, IL size=368, code size=489]
+  48: JIT compiled System.Diagnostics.Tracing.EventProvider:.ctor(int) [FullOpts, IL size=48, code size=400]
+  49: JIT compiled System.Runtime.CompilerServices.CastHelpers:IsInstanceOfClass(ptr,System.Object) [FullOpts, IL size=97, code size=86]
+  50: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:Register(System.Guid,System.String) [FullOpts, IL size=92, code size=330]
+  51: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:Callback(ptr,int,byte,long,long,ptr,ptr) [FullOpts, IL size=48, code size=184]
+  52: JIT compiled System.Diagnostics.Tracing.EventProviderImpl:ProviderCallback(System.Diagnostics.Tracing.EventProvider,ptr,int,byte,long,long,ptr) [FullOpts, IL size=72, code size=168]
+  53: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:HandleEnableNotification(System.Diagnostics.Tracing.EventProvider,ptr,byte,long,long,ptr) [FullOpts, IL size=166, code size=443]
+  54: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:GetChangedSessions() [FullOpts, IL size=270, code size=705]
+  55: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:GetSessionInfo(System.Diagnostics.Tracing.EtwEventProvider+SessionInfoCallback,byref) [FullOpts, IL size=272, code size=810]
+  56: JIT compiled System.Runtime.InteropServices.Marshal:AllocHGlobal(nint) [FullOpts, IL size=18, code size=189]
+  57: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:GetSessionInfoCallback(int,long,byref) [FullOpts, IL size=82, code size=203]
+  58: JIT compiled (dynamicClass):IL_STUB_PInvoke(nint) [FullOpts, IL size=32, code size=140]
+  59: JIT compiled System.Collections.Generic.List`1[System.Collections.Generic.KeyValuePair`2[System.Diagnostics.Tracing.EtwEventProvider+SessionInfo,bool]]:.cctor() [FullOpts, IL size=12, code size=45]
+  60: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:IndexOfSessionInList(System.Collections.Generic.List`1[System.Diagnostics.Tracing.EtwEventProvider+SessionInfo],int) [FullOpts, IL size=41, code size=92]
+  61: JIT compiled System.Collections.Generic.List`1[System.Collections.Generic.KeyValuePair`2[System.Diagnostics.Tracing.EtwEventProvider+SessionInfo,bool]]:AddWithResize(System.Collections.Generic.KeyValuePair`2[System.Diagnostics.Tracing.EtwEventProvider+SessionInfo,bool]) [FullOpts, IL size=39, code size=122]
+  62: JIT compiled System.Collections.Generic.List`1[System.Collections.Generic.KeyValuePair`2[System.Diagnostics.Tracing.EtwEventProvider+SessionInfo,bool]]:set_Capacity(int) [FullOpts, IL size=86, code size=124]
+  63: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:TryReadRegistryFilterData(int,byref,byref) [FullOpts, IL size=139, code size=489]
+  64: JIT compiled System.Guid:ToString(System.String,System.IFormatProvider) [FullOpts, IL size=141, code size=220]
+  65: JIT compiled System.Guid:TryFormatCore[char](System.Span`1[char],byref,System.ReadOnlySpan`1[char]) [FullOpts, IL size=134, code size=466]
+  66: JIT compiled System.String:Concat(System.String,System.String,System.String) [FullOpts, IL size=134, code size=314]
+  67: JIT compiled System.String:Concat(System.String,System.String) [FullOpts, IL size=81, code size=210]
+  68: JIT compiled System.Globalization.CultureInfo:.cctor() [FullOpts, IL size=27, code size=122]
+  69: JIT compiled System.Globalization.CultureData:get_Invariant() [FullOpts, IL size=21, code size=85]
+  70: JIT compiled System.Globalization.CultureData:.cctor() [FullOpts, IL size=11, code size=43]
+  71: JIT compiled System.Globalization.CultureData:CreateCultureWithInvariantData() [FullOpts, IL size=696, code size=926]
+  72: JIT compiled System.Globalization.CultureData:.ctor() [FullOpts, IL size=91, code size=76]
+  73: JIT compiled System.Globalization.GlobalizationMode+Settings:.cctor() [FullOpts, IL size=47, code size=554]
+  74: JIT compiled System.Environment:GetEnvironmentVariableCore(System.String) [FullOpts, IL size=116, code size=625]
+  75: JIT compiled System.Globalization.CultureData:get_CultureName() [FullOpts, IL size=56, code size=123]
+  76: JIT compiled System.Globalization.CultureInfo:GetUserDefaultLocaleName() [FullOpts, IL size=43, code size=52]
+  77: JIT compiled System.Globalization.CultureData:GetLocaleInfoEx(System.String,uint) [FullOpts, IL size=34, code size=249]
+  78: JIT compiled System.Number:UInt32ToDecStr(uint) [FullOpts, IL size=22, code size=20]
+  79: JIT compiled System.Number:UInt32ToDecStrForKnownSmallNumber(uint) [FullOpts, IL size=18, code size=88]
+  80: JIT compiled System.Number:.cctor() [FullOpts, IL size=420, code size=805]
+  81: JIT compiled System.Number:<UInt32ToDecStrForKnownSmallNumber>g__CreateAndCacheString|50_0(uint) [FullOpts, IL size=17, code size=71]
+  82: JIT compiled System.Number:UInt32ToDecStr_NoSmallNumberCheck(uint) [FullOpts, IL size=47, code size=223]
+  83: JIT compiled Internal.Win32.Registry:.cctor() [FullOpts, IL size=33, code size=238]
+  84: JIT compiled Internal.Win32.RegistryKey:OpenSubKey(System.String,bool) [FullOpts, IL size=80, code size=227]
+  85: JIT compiled Interop+Advapi32:RegOpenKeyEx(Internal.Win32.SafeHandles.SafeRegistryHandle,System.String,int,int,byref) [FullOpts, IL size=116, code size=479]
+  86: JIT compiled System.Activator:CreateInstance[System.__Canon]() [FullOpts, IL size=67, code size=95]
+  87: JIT compiled System.RuntimeType:IsValueTypeImpl() [FullOpts, IL size=52, code size=43]
+  88: JIT compiled System.RuntimeType:CreateInstanceOfT() [FullOpts, IL size=57, code size=277]
+  89: JIT compiled System.RuntimeType:InitializeCache() [FullOpts, IL size=116, code size=590]
+  90: JIT compiled System.RuntimeTypeHandle:<GetModule>g__GetModuleWorker|48_0(System.RuntimeType) [FullOpts, IL size=23, code size=162]
+  91: JIT compiled System.ModuleHandle:GetModuleType(System.Reflection.RuntimeModule) [FullOpts, IL size=23, code size=188]
+  92: JIT compiled System.RuntimeType+IGenericCacheEntry`1[System.__Canon]:CreateAndCache(System.RuntimeType) [FullOpts, IL size=165, code size=406]
+  93: JIT compiled System.RuntimeType+ActivatorCache:Create(System.RuntimeType) [FullOpts, IL size=7, code size=49]
+  94: JIT compiled System.RuntimeType+ActivatorCache:.ctor(System.RuntimeType) [FullOpts, IL size=238, code size=609]
+  95: JIT compiled System.RuntimeType:CreateInstanceCheckThis() [FullOpts, IL size=79, code size=217]
+  96: JIT compiled System.RuntimeType:get_ContainsGenericParameters() [FullOpts, IL size=20, code size=92]
+  97: JIT compiled System.Type:GetRootElementType() [FullOpts, IL size=21, code size=62]
+  98: JIT compiled System.RuntimeType:HasElementTypeImpl() [FullOpts, IL size=7, code size=48]
+  99: JIT compiled System.RuntimeType:GetCorElementType() [FullOpts, IL size=22, code size=59]
+ 100: JIT compiled System.RuntimeType:get_TypeHandle() [FullOpts, IL size=7, code size=4]
+ 101: JIT compiled System.RuntimeTypeHandle:GetActivationInfo(System.RuntimeType,byref,byref,byref,byref,byref) [FullOpts, IL size=84, code size=288]
+ 102: JIT compiled Internal.Win32.SafeHandles.SafeRegistryHandle:.ctor() [FullOpts, IL size=8, code size=22]
+ 103: JIT compiled System.Runtime.InteropServices.SafeHandle:DangerousAddRef(byref) [FullOpts, IL size=45, code size=61]
+ 104: JIT compiled System.Runtime.InteropServices.SafeHandle:InternalRelease(bool) [FullOpts, IL size=118, code size=184]
+ 105: JIT compiled Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid:get_IsInvalid() [FullOpts, IL size=30, code size=26]
+ 106: JIT compiled System.Runtime.CompilerServices.CastHelpers:IsInstanceOfAny(ptr,System.Object) [FullOpts, IL size=47, code size=182]
+ 107: JIT compiled System.Diagnostics.Tracing.EventProviderImpl:ParseFilterData(byte[]) [FullOpts, IL size=102, code size=369]
+ 108: JIT compiled System.Diagnostics.Tracing.EventSource+OverrideEventProvider:OnControllerCommand(int,System.Collections.Generic.IDictionary`2[System.String,System.String],int) [FullOpts, IL size=52, code size=112]
+ 109: JIT compiled System.Diagnostics.Tracing.EventSource:<Initialize>b__100_0() [FullOpts, IL size=2, code size=4]
+ 110: JIT compiled System.Diagnostics.Tracing.EventSource:SendCommand(System.Diagnostics.Tracing.EventListener,int,int,int,bool,int,long,System.Collections.Generic.IDictionary`2[System.String,System.String]) [FullOpts, IL size=129, code size=372]
+ 111: JIT compiled System.Diagnostics.Tracing.EventListener:get_EventListenersLock() [FullOpts, IL size=31, code size=103]
+ 112: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:SetInformation(int,ptr,uint) [FullOpts, IL size=38, code size=76]
+ 113: JIT compiled (dynamicClass):IL_STUB_PInvoke(long,int,ptr,uint) [FullOpts, IL size=61, code size=159]
+ 114: JIT compiled System.Diagnostics.Tracing.EventSourceInitHelper:TryGetPreregisteredEventPipeProvider(System.String) [FullOpts, IL size=46, code size=172]
+ 115: JIT compiled System.Collections.Generic.Dictionary`2[System.__Canon,System.__Canon]:Remove(System.__Canon,byref) [FullOpts, IL size=368, code size=510]
+ 116: JIT compiled System.Diagnostics.Tracing.EventPipeEventProvider:Register(System.Guid,System.String) [FullOpts, IL size=67, code size=145]
+ 117: JIT compiled System.Diagnostics.Tracing.EventPipeInternal:CreateProvider(System.String,ptr,ptr) [FullOpts, IL size=22, code size=186]
+ 118: JIT compiled System.Diagnostics.Tracing.EventListener:AddEventSource(System.Diagnostics.Tracing.EventSource) [FullOpts, IL size=175, code size=630]
+ 119: JIT compiled System.Diagnostics.Tracing.EventSource:DoCommand(System.Diagnostics.Tracing.EventCommandEventArgs) [FullOpts, IL size=764, code size=1186]
+ 120: JIT compiled System.Diagnostics.Tracing.EventSource:EnsureDescriptorsInitialized() [FullOpts, IL size=291, code size=598]
+ 121: JIT compiled System.Object:GetType() [FullOpts, IL size=18, code size=40]
+ 122: JIT compiled System.Diagnostics.Tracing.EventSource:CreateManifestAndDescriptors(System.Type,System.String,System.Diagnostics.Tracing.EventSource,int) [FullOpts, IL size=1907, code size=4666]
+ 123: JIT compiled System.RuntimeType:GetAttributeFlagsImpl() [FullOpts, IL size=7, code size=5]
+ 124: JIT compiled System.RuntimeType:GetMethods(int) [FullOpts, IL size=21, code size=329]
+ 125: JIT compiled System.RuntimeType:GetMethodCandidates(System.String,int,int,int,System.Type[],bool) [FullOpts, IL size=118, code size=1626]
+ 126: JIT compiled System.RuntimeType:FilterHelper(int,byref,bool,byref,byref,byref) [FullOpts, IL size=86, code size=292]
+ 127: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:GetMemberList(int,System.String,int) [FullOpts, IL size=92, code size=259]
+ 128: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:Populate(System.String,int,int) [FullOpts, IL size=130, code size=542]
+ 129: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:GetListByName(System.String,System.Span`1[byte],int,int) [FullOpts, IL size=167, code size=550]
+ 130: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:PopulateMethods(System.RuntimeType+RuntimeTypeCache+Filter) [FullOpts, IL size=636, code size=2469]
+ 131: JIT compiled System.RuntimeType:get_IsActualInterface() [FullOpts, IL size=38, code size=31]
+ 132: JIT compiled System.SpanHelpers:ClearWithoutReferences(byref,nuint) [FullOpts, IL size=365, code size=241]
+ 133: JIT compiled System.RuntimeType:get_IsActualValueType() [FullOpts, IL size=38, code size=31]
+ 134: JIT compiled System.Reflection.Metadata.MetadataUpdater:.cctor() [FullOpts, IL size=11, code size=151]
+ 135: JIT compiled System.RuntimeType:FilterPreCalculate(bool,bool,bool) [FullOpts, IL size=48, code size=56]
+ 136: JIT compiled System.RuntimeType+ListBuilder`1[System.__Canon]:Add(System.__Canon) [FullOpts, IL size=154, code size=236]
+ 137: JIT compiled System.Runtime.CompilerServices.CastHelpers:StelemRef(System.Object[],nint,System.Object) [FullOpts, IL size=93, code size=94]
+ 138: JIT compiled System.Array:Resize[System.__Canon](byref,int) [FullOpts, IL size=72, code size=254]
+ 139: JIT compiled System.Runtime.CompilerServices.GenericsHelpers:Method(nint,nint) [FullOpts, IL size=19, code size=173]
+ 140: JIT compiled System.RuntimeType:GetParentType() [FullOpts, IL size=51, code size=63]
+ 141: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:Insert(byref,System.String,int) [FullOpts, IL size=246, code size=790]
+ 142: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:MergeWithGlobalListInOrder(System.__Canon[]) [FullOpts, IL size=119, code size=145]
+ 143: JIT compiled System.RuntimeType:FilterApplyMethodBase(System.Reflection.MethodBase,int,int,int,System.Type[]) [FullOpts, IL size=315, code size=399]
+ 144: JIT compiled System.Runtime.CompilerServices.CastHelpers:StelemRef_Helper(byref,ptr,System.Object) [FullOpts, IL size=37, code size=197]
+ 145: JIT compiled System.Runtime.CompilerServices.CastHelpers:IsInstanceOfAny_NoCacheLookup(ptr,System.Object) [FullOpts, IL size=20, code size=174]
+ 146: JIT compiled System.Collections.Generic.Dictionary`2[int,System.Diagnostics.Tracing.EventSource+EventMetadata]:.ctor(int,System.Collections.Generic.IEqualityComparer`1[int]) [FullOpts, IL size=136, code size=107]
+ 147: JIT compiled System.Collections.Generic.Dictionary`2+CollectionsMarshalHelper[int,System.Diagnostics.Tracing.EventSource+EventMetadata]:GetValueRefOrAddDefault(System.Collections.Generic.Dictionary`2[int,System.Diagnostics.Tracing.EventSource+EventMetadata],int,byref) [FullOpts, IL size=567, code size=607]
+ 148: JIT compiled System.Collections.Generic.Dictionary`2[int,System.Diagnostics.Tracing.EventSource+EventMetadata]:Initialize(int) [FullOpts, IL size=56, code size=129]
+ 149: JIT compiled System.Diagnostics.Tracing.EventSource:GetCustomAttributeHelper(System.Reflection.MemberInfo,System.Type,int) [FullOpts, IL size=337, code size=1010]
+ 150: JIT compiled System.Reflection.MemberInfo:get_Module() [FullOpts, IL size=23, code size=83]
+ 151: JIT compiled System.RuntimeType:get_Module() [FullOpts, IL size=7, code size=41]
+ 152: JIT compiled System.Reflection.RuntimeModule:get_Assembly() [FullOpts, IL size=7, code size=5]
+ 153: JIT compiled System.Reflection.RuntimeAssembly:get_ReflectionOnly() [FullOpts, IL size=2, code size=3]
+ 154: JIT compiled System.Attribute:GetCustomAttributes(System.Reflection.MemberInfo,System.Type,bool) [FullOpts, IL size=133, code size=351]
+ 155: JIT compiled System.RuntimeType:IsSubclassOf(System.Type) [FullOpts, IL size=91, code size=165]
+ 156: JIT compiled System.RuntimeType:GetBaseType() [FullOpts, IL size=130, code size=295]
+ 157: JIT compiled System.RuntimeType:get_MemberType() [FullOpts, IL size=25, code size=60]
+ 158: JIT compiled System.RuntimeType:GetCustomAttributes(System.Type,bool) [FullOpts, IL size=51, code size=174]
+ 159: JIT compiled System.RuntimeType:get_UnderlyingSystemType() [FullOpts, IL size=2, code size=4]
+ 160: JIT compiled System.Reflection.CustomAttribute:GetCustomAttributes(System.RuntimeType,System.RuntimeType,bool) [FullOpts, IL size=315, code size=740]
+ 161: JIT compiled System.RuntimeType:get_IsGenericType() [FullOpts, IL size=38, code size=39]
+ 162: JIT compiled System.Reflection.PseudoCustomAttribute:GetCustomAttributes(System.RuntimeType,System.RuntimeType,byref) [FullOpts, IL size=148, code size=290]
+ 163: JIT compiled System.Reflection.PseudoCustomAttribute:.cctor() [FullOpts, IL size=11, code size=34]
+ 164: JIT compiled System.Reflection.PseudoCustomAttribute:CreatePseudoCustomAttributeHashSet() [FullOpts, IL size=195, code size=394]
+ 165: JIT compiled System.RuntimeType:MakeGenericType(System.Type[]) [FullOpts, IL size=306, code size=939]
+ 166: JIT compiled System.RuntimeType:get_IsGenericTypeDefinition() [FullOpts, IL size=38, code size=29]
+ 167: JIT compiled System.RuntimeType:GetGenericArgumentsInternal() [FullOpts, IL size=20, code size=55]
+ 168: JIT compiled System.RuntimeTypeHandle:GetInstantiationInternal() [FullOpts, IL size=31, code size=222]
+ 169: JIT compiled System.RuntimeTypeHandle:GetRuntimeTypeChecked() [FullOpts, IL size=23, code size=66]
+ 170: JIT compiled System.RuntimeType:ThrowIfTypeNeverValidGenericArgument(System.RuntimeType) [FullOpts, IL size=60, code size=132]
+ 171: JIT compiled System.RuntimeTypeHandle:Instantiate(System.RuntimeType) [FullOpts, IL size=55, code size=253]
+ 172: JIT compiled System.RuntimeType:IsAssignableFrom(System.Type) [FullOpts, IL size=115, code size=475]
+ 173: JIT compiled System.RuntimeType:get_IsEnum() [FullOpts, IL size=67, code size=48]
+ 174: JIT compiled System.RuntimeTypeHandle:CreateInstanceForAnotherGenericParameter(System.RuntimeType,System.RuntimeType) [FullOpts, IL size=48, code size=256]
+ 175: JIT compiled System.Collections.Generic.ObjectEqualityComparer`1[System.__Canon]:.ctor() [FullOpts, IL size=7, code size=1]
+ 176: JIT compiled System.Collections.Generic.HashSet`1[System.__Canon]:Initialize(int) [FullOpts, IL size=56, code size=166]
+ 177: JIT compiled System.Collections.Generic.HashSet`1[System.__Canon]:AddIfNotPresent(System.__Canon,byref) [FullOpts, IL size=494, code size=661]
+ 178: JIT compiled System.Collections.Generic.ObjectEqualityComparer`1[System.__Canon]:GetHashCode(System.__Canon) [FullOpts, IL size=49, code size=78]
+ 179: JIT compiled System.RuntimeType:GetHashCode() [FullOpts, IL size=7, code size=40]
+ 180: JIT compiled System.Runtime.CompilerServices.RuntimeHelpers:<GetHashCode>g__GetHashCodeWorker|15_0(System.Object) [FullOpts, IL size=18, code size=159]
+ 181: JIT compiled System.Collections.Generic.HashSet`1[System.__Canon]:FindItemIndex(System.__Canon) [FullOpts, IL size=255, code size=345]
+ 182: JIT compiled System.Reflection.CustomAttribute:GetCustomAttributes(System.Reflection.RuntimeModule,int,int,System.RuntimeType) [FullOpts, IL size=75, code size=172]
+ 183: JIT compiled System.Reflection.CustomAttribute:AddCustomAttributes(byref,System.Reflection.RuntimeModule,int,System.RuntimeType,bool,System.RuntimeType+ListBuilder`1[System.Object]) [FullOpts, IL size=508, code size=2671]
+ 184: JIT compiled System.Reflection.RuntimeCustomAttributeData:GetCustomAttributeRecords(System.Reflection.RuntimeModule,int) [FullOpts, IL size=111, code size=478]
+ 185: JIT compiled System.Reflection.CustomAttribute:FilterCustomAttributeRecord(System.Reflection.MetadataToken,byref,System.Reflection.RuntimeModule,System.Reflection.MetadataToken,System.RuntimeType,bool,byref,byref,byref,byref) [FullOpts, IL size=479, code size=1437]
+ 186: JIT compiled System.Reflection.RuntimeModule:ResolveType(int,System.Type[],System.Type[]) [FullOpts, IL size=179, code size=449]
+ 187: JIT compiled System.ModuleHandle:ResolveTypeHandle(int,System.RuntimeTypeHandle[],System.RuntimeTypeHandle[]) [FullOpts, IL size=281, code size=601]
+ 188: JIT compiled (dynamicClass):IL_STUB_PInvoke(System.Runtime.CompilerServices.QCallModule,int,ptr,int,ptr,int,System.Runtime.CompilerServices.ObjectHandleOnStack) [FullOpts, IL size=80, code size=221]
+ 189: JIT compiled System.Reflection.CustomAttribute:MatchesTypeFilter(System.RuntimeType,System.RuntimeType) [FullOpts, IL size=67, code size=149]
+ 190: JIT compiled System.Reflection.CustomAttribute:AttributeUsageCheck(System.RuntimeType,bool,byref) [FullOpts, IL size=88, code size=165]
+ 191: JIT compiled System.Reflection.RuntimeConstructorInfo:CheckCanCreateInstance(System.Type,bool) [FullOpts, IL size=154, code size=458]
+ 192: JIT compiled System.Type:get_IsInterface() [FullOpts, IL size=31, code size=57]
+ 193: JIT compiled System.RuntimeType:CreateInstanceDefaultCtor(bool,bool) [FullOpts, IL size=102, code size=415]
+ 194: JIT compiled System.RuntimeType:get_IsByRefLike() [FullOpts, IL size=38, code size=31]
+ 195: JIT compiled System.Diagnostics.Tracing.EventSourceAttribute:.ctor() [FullOpts, IL size=7, code size=1]
+ 196: JIT compiled System.Reflection.CustomAttribute:GetPropertyOrFieldData(System.Reflection.RuntimeModule,byref,nint,byref,byref,byref,byref) [FullOpts, IL size=70, code size=411]
+ 197: JIT compiled System.Type:.cctor() [FullOpts, IL size=87, code size=398]
+ 198: JIT compiled System.Array+EmptyArray`1[System.__Canon]:.cctor() [FullOpts, IL size=12, code size=90]
+ 199: JIT compiled System.Reflection.Missing:.cctor() [FullOpts, IL size=11, code size=43]
+ 200: JIT compiled System.Type+<>c:.cctor() [FullOpts, IL size=11, code size=43]
+ 201: JIT compiled System.RuntimeType:GetPropertyImpl(System.String,int,System.Reflection.Binder,System.Type,System.Type[],System.Reflection.ParameterModifier[]) [FullOpts, IL size=153, code size=803]
+ 202: JIT compiled System.RuntimeType:GetPropertyCandidates(System.String,int,System.Type[],bool) [FullOpts, IL size=130, code size=667]
+ 203: JIT compiled System.Reflection.CerHashtable`2[System.__Canon,System.__Canon]:get_Item(System.__Canon) [FullOpts, IL size=140, code size=172]
+ 204: JIT compiled System.Text.UTF8Encoding:.cctor() [FullOpts, IL size=12, code size=72]
+ 205: JIT compiled System.Text.UTF8Encoding:SetDefaultFallbacks() [FullOpts, IL size=64, code size=219]
+ 206: JIT compiled System.Text.EncoderReplacementFallback:.ctor(System.String) [FullOpts, IL size=110, code size=211]
+ 207: JIT compiled System.Text.DecoderReplacementFallback:.ctor(System.String) [FullOpts, IL size=110, code size=211]
+ 208: JIT compiled System.Text.Unicode.Utf16Utility:GetPointerToFirstInvalidChar(ptr,int,byref,byref) [FullOpts, IL size=946, code size=374]
+ 209: JIT compiled System.Text.Ascii:GetIndexOfFirstNonAsciiChar_Vector(ptr,nuint) [FullOpts, IL size=462, code size=278]
+ 210: JIT compiled System.Text.Unicode.Utf8Utility:TranscodeToUtf8(ptr,int,ptr,int,byref,byref) [FullOpts, IL size=1494, code size=1334]
+ 211: JIT compiled System.Text.Ascii:NarrowUtf16ToAscii(ptr,ptr,nuint) [FullOpts, IL size=380, code size=626]
+ 212: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:PopulateProperties(System.RuntimeType+RuntimeTypeCache+Filter) [FullOpts, IL size=190, code size=637]
+ 213: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:PopulateProperties(System.RuntimeType+RuntimeTypeCache+Filter,System.RuntimeType,System.Collections.Generic.Dictionary`2[System.String,System.Collections.Generic.List`1[System.Reflection.RuntimePropertyInfo]],System.Span`1[bool],bool,byref) [FullOpts, IL size=439, code size=2046]
+ 214: JIT compiled System.SpanHelpers:IndexOfNullByte(ptr) [FullOpts, IL size=1119, code size=467]
+ 215: JIT compiled System.SpanHelpers:SequenceEqual(byref,byref,nuint) [FullOpts, IL size=591, code size=336]
+ 216: JIT compiled System.Reflection.Associates:AssignAssociates(System.Reflection.MetadataImport,int,System.RuntimeType,System.RuntimeType,byref,byref,byref,byref,byref,byref,byref,byref) [FullOpts, IL size=390, code size=1155]
+ 217: JIT compiled System.Reflection.Associates:AssignAssociates(int,System.RuntimeType,System.RuntimeType) [FullOpts, IL size=266, code size=748]
+ 218: JIT compiled System.ModuleHandle:ResolveMethodHandleInternal(System.Reflection.RuntimeModule,int,System.ReadOnlySpan`1[nint],System.ReadOnlySpan`1[nint]) [FullOpts, IL size=130, code size=402]
+ 219: JIT compiled (dynamicClass):IL_STUB_PInvoke(System.Runtime.CompilerServices.QCallModule,int,ptr,int,ptr,int) [FullOpts, IL size=82, code size=212]
+ 220: JIT compiled System.RuntimeType:GetMethodBase(System.RuntimeType,nint) [FullOpts, IL size=456, code size=1538]
+ 221: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:AddMethod(System.RuntimeType,nint,int) [FullOpts, IL size=350, code size=745]
+ 222: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:MergeWithGlobalList(System.__Canon[]) [FullOpts, IL size=227, code size=484]
+ 223: JIT compiled System.Reflection.RuntimeMethodInfo:System.IRuntimeMethodInfo.get_Value() [FullOpts, IL size=12, code size=5]
+ 224: JIT compiled System.Reflection.RuntimeMethodInfo:CacheEquals(System.Object) [FullOpts, IL size=27, code size=38]
+ 225: JIT compiled System.Runtime.CompilerServices.CastHelpers:LdelemaRef(System.Object[],nint,ptr) [FullOpts, IL size=44, code size=45]
+ 226: JIT compiled System.Reflection.RuntimePropertyInfo:GetGetMethod(bool) [FullOpts, IL size=23, code size=31]
+ 227: JIT compiled System.Reflection.CerHashtable`2[System.__Canon,System.__Canon]:Rehash(int) [FullOpts, IL size=97, code size=237]
+ 228: JIT compiled System.Reflection.CerHashtable`2+Table[System.__Canon,System.__Canon]:.ctor(int) [FullOpts, IL size=39, code size=160]
+ 229: JIT compiled System.Reflection.CerHashtable`2+Table[System.__Canon,System.__Canon]:Insert(System.__Canon,System.__Canon) [FullOpts, IL size=100, code size=232]
+ 230: JIT compiled System.Reflection.CerHashtable`2[System.__Canon,System.__Canon]:GetHashCodeHelper(System.__Canon) [FullOpts, IL size=34, code size=43]
+ 231: JIT compiled System.Reflection.RuntimePropertyInfo:GetIndexParametersSpan() [FullOpts, IL size=168, code size=560]
+ 232: JIT compiled System.Reflection.RuntimeMethodInfo:FetchNonReturnParameters() [FullOpts, IL size=33, code size=103]
+ 233: JIT compiled System.Reflection.RuntimeMethodInfo:<get_Signature>g__LazyCreateSignature|25_0() [FullOpts, IL size=27, code size=243]
+ 234: JIT compiled System.Reflection.RuntimeParameterInfo:GetParameters(System.IRuntimeMethodInfo,System.Reflection.MemberInfo,System.Signature,byref,bool) [FullOpts, IL size=333, code size=1468]
+ 235: JIT compiled System.Reflection.RuntimePropertyInfo:get_PropertyType() [FullOpts, IL size=12, code size=19]
+ 236: JIT compiled System.Reflection.RuntimePropertyInfo:get_Signature() [FullOpts, IL size=92, code size=402]
+ 237: JIT compiled System.RuntimeType:IsEquivalentTo(System.Type) [FullOpts, IL size=31, code size=40]
+ 238: JIT compiled System.Reflection.MethodBaseInvoker:.ctor(System.Reflection.RuntimeMethodInfo) [FullOpts, IL size=61, code size=200]
+ 239: JIT compiled System.Reflection.MethodInvokerCommon:Initialize(System.RuntimeType[],byref,byref,byref) [FullOpts, IL size=226, code size=789]
+ 240: JIT compiled System.LocalAppContextSwitches:GetCachedSwitchValueInternal(System.String,byref) [FullOpts, IL size=44, code size=103]
+ 241: JIT compiled System.LocalAppContextSwitches:GetSwitchDefaultValue(System.String) [FullOpts, IL size=47, code size=185]
+ 242: JIT compiled System.Reflection.RuntimeMethodInfo:ComputeAndUpdateInvocationFlags() [FullOpts, IL size=109, code size=302]
+ 243: JIT compiled System.Reflection.RuntimeMethodInfo:get_ContainsGenericParameters() [FullOpts, IL size=74, code size=312]
+ 244: JIT compiled System.Reflection.MethodInvokerCommon:ValidateInvokeTarget(System.Object,System.Reflection.MethodBase) [FullOpts, IL size=57, code size=203]
+ 245: JIT compiled System.Reflection.RuntimeMethodInfo:get_DeclaringType() [FullOpts, IL size=22, code size=21]
+ 246: JIT compiled System.RuntimeType:IsInstanceOfType(System.Object) [FullOpts, IL size=33, code size=33]
+ 247: JIT compiled System.Reflection.MethodInvokerCommon:DetermineStrategy_ObjSpanArgs(byref,byref,System.Reflection.MethodBase,bool,bool) [FullOpts, IL size=54, code size=203]
+ 248: JIT compiled System.Reflection.MethodBaseInvoker:InvokeDirectByRefWithFewArgs(System.Object,System.Span`1[System.Object],int) [FullOpts, IL size=182, code size=515]
+ 249: JIT compiled System.Reflection.MethodBaseInvoker:InterpretedInvoke_Method(System.Object,ptr) [FullOpts, IL size=15, code size=202]
+ 250: JIT compiled System.Diagnostics.Tracing.EventSourceAttribute:set_Guid(System.String) [FullOpts, IL size=8, code size=11]
+ 251: JIT compiled System.Reflection.RuntimePropertyInfo:CacheEquals(System.Object) [FullOpts, IL size=41, code size=46]
+ 252: JIT compiled System.Diagnostics.Tracing.EventSourceAttribute:set_Name(System.String) [FullOpts, IL size=8, code size=11]
+ 253: JIT compiled System.Runtime.CompilerServices.TypeHandle:CanCastToWorker(System.Runtime.CompilerServices.TypeHandle,System.Runtime.CompilerServices.TypeHandle,bool) [FullOpts, IL size=62, code size=239]
+ 254: JIT compiled System.Reflection.CustomAttribute:CreateAttributeArrayHelper(System.RuntimeType,int) [FullOpts, IL size=134, code size=337]
+ 255: JIT compiled System.Array:CreateInstance(System.Type,int) [FullOpts, IL size=63, code size=416]
+ 256: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:.ctor(System.Resources.ResourceManager,int) [FullOpts, IL size=112, code size=286]
+ 257: JIT compiled System.Collections.Generic.Dictionary`2[int,System.__Canon]:.ctor(int,System.Collections.Generic.IEqualityComparer`1[int]) [FullOpts, IL size=136, code size=107]
+ 258: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:StartEvent(System.String,System.Diagnostics.Tracing.EventAttribute) [FullOpts, IL size=413, code size=1302]
+ 259: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:AppendLevelName(System.Text.StringBuilder,int) [FullOpts, IL size=124, code size=245]
+ 260: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:WriteMessageAttrib(System.Text.StringBuilder,System.String,System.String,System.String) [FullOpts, IL size=159, code size=592]
+ 261: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:GetTaskName(int,System.String) [FullOpts, IL size=63, code size=149]
+ 262: JIT compiled System.Collections.Generic.Dictionary`2[int,System.__Canon]:FindValue(int) [FullOpts, IL size=297, code size=364]
+ 263: JIT compiled System.Collections.Generic.Dictionary`2[int,System.__Canon]:TryInsert(int,System.__Canon,byte) [FullOpts, IL size=565, code size=682]
+ 264: JIT compiled System.Collections.Generic.Dictionary`2[int,System.__Canon]:Initialize(int) [FullOpts, IL size=56, code size=166]
+ 265: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:AddEventParameter(System.Type,System.String) [FullOpts, IL size=466, code size=1796]
+ 266: JIT compiled System.RuntimeType:IsArrayImpl() [FullOpts, IL size=7, code size=38]
+ 267: JIT compiled System.RuntimeType:IsPointerImpl() [FullOpts, IL size=7, code size=26]
+ 268: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:EndEvent() [FullOpts, IL size=212, code size=688]
+ 269: JIT compiled System.RuntimeType:GetNestedType(System.String,int) [FullOpts, IL size=118, code size=366]
+ 270: JIT compiled System.RuntimeType:SplitName(System.String,byref,byref) [FullOpts, IL size=49, code size=213]
+ 271: JIT compiled System.SpanHelpers:LastIndexOfValueType[short,System.SpanHelpers+DontNegate`1[short]](byref,short,int) [FullOpts, IL size=727, code size=319]
+ 272: JIT compiled System.SpanHelpers:<LastIndexOfValueType>g__SimdImpl|93_0[short,System.SpanHelpers+DontNegate`1[short],System.Runtime.Intrinsics.Vector128`1[short]](byref,short,int) [FullOpts, IL size=159, code size=133]
+ 273: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:PopulateNestedClasses(System.RuntimeType+RuntimeTypeCache+Filter) [FullOpts, IL size=187, code size=1140]
+ 274: JIT compiled System.RuntimeTypeHandle:GetUtf8Name(System.RuntimeType) [FullOpts, IL size=70, code size=154]
+ 275: JIT compiled System.RuntimeType:FilterApplyType(System.Type,int,System.String,bool,System.String) [FullOpts, IL size=62, code size=241]
+ 276: JIT compiled System.RuntimeType:FilterApplyBase(System.Reflection.MemberInfo,int,bool,bool,bool,System.String,bool) [FullOpts, IL size=190, code size=322]
+ 277: JIT compiled System.RuntimeType:get_DeclaringType() [FullOpts, IL size=12, code size=49]
+ 278: JIT compiled System.RuntimeType+RuntimeTypeCache:GetEnclosingType() [FullOpts, IL size=84, code size=83]
+ 279: JIT compiled System.RuntimeTypeHandle:GetDeclaringType(System.RuntimeType) [FullOpts, IL size=99, code size=315]
+ 280: JIT compiled System.RuntimeType:get_ReflectedType() [FullOpts, IL size=7, code size=49]
+ 281: JIT compiled System.RuntimeType:GetFields(int) [FullOpts, IL size=18, code size=307]
+ 282: JIT compiled System.RuntimeType:GetFieldCandidates(System.String,int,bool) [FullOpts, IL size=112, code size=479]
+ 283: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:PopulateFields(System.RuntimeType+RuntimeTypeCache+Filter) [FullOpts, IL size=185, code size=535]
+ 284: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:PopulateRtFields(System.RuntimeType+RuntimeTypeCache+Filter,System.RuntimeType,byref) [FullOpts, IL size=72, code size=423]
+ 285: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:PopulateLiteralFields(System.RuntimeType+RuntimeTypeCache+Filter,System.RuntimeType,byref) [FullOpts, IL size=252, code size=1103]
+ 286: JIT compiled System.RuntimeTypeHandle:GetInterfaces(System.RuntimeType) [FullOpts, IL size=55, code size=202]
+ 287: JIT compiled System.Diagnostics.Tracing.EventSource:AddProviderEnumKind(System.Diagnostics.Tracing.ManifestBuilder,System.Reflection.FieldInfo,System.String) [FullOpts, IL size=293, code size=844]
+ 288: JIT compiled System.Reflection.RuntimeFieldInfo:get_Module() [FullOpts, IL size=7, code size=10]
+ 289: JIT compiled System.Reflection.MdFieldInfo:GetRuntimeModule() [FullOpts, IL size=12, code size=44]
+ 290: JIT compiled System.Reflection.MdFieldInfo:get_FieldType() [FullOpts, IL size=91, code size=395]
+ 291: JIT compiled System.Diagnostics.Tracing.EventSource:AttributeTypeNamesMatch(System.Type,System.Type) [FullOpts, IL size=90, code size=317]
+ 292: JIT compiled System.Type:op_Equality(System.Type,System.Type) [FullOpts, IL size=38, code size=58]
+ 293: JIT compiled System.RuntimeType:get_FullName() [FullOpts, IL size=12, code size=96]
+ 294: JIT compiled System.RuntimeType:IsFullNameRoundtripCompatible(System.RuntimeType) [FullOpts, IL size=37, code size=83]
+ 295: JIT compiled System.RuntimeType:get_IsFunctionPointer() [FullOpts, IL size=7, code size=26]
+ 296: JIT compiled System.RuntimeType+RuntimeTypeCache:ConstructName(byref,int) [FullOpts, IL size=26, code size=63]
+ 297: JIT compiled System.RuntimeTypeHandle:ConstructName(int) [FullOpts, IL size=31, code size=220]
+ 298: JIT compiled System.String:Equals(System.String,System.String,int) [FullOpts, IL size=171, code size=448]
+ 299: JIT compiled System.RuntimeType:get_Name() [FullOpts, IL size=12, code size=69]
+ 300: JIT compiled System.Reflection.MdFieldInfo:GetRawConstantValue() [FullOpts, IL size=8, code size=11]
+ 301: JIT compiled System.Reflection.MdFieldInfo:GetValue(bool) [FullOpts, IL size=54, code size=205]
+ 302: JIT compiled System.Reflection.MdConstant:GetValue(System.Reflection.MetadataImport,int,System.RuntimeTypeHandle,bool) [FullOpts, IL size=618, code size=1056]
+ 303: JIT compiled System.DBNull:.cctor() [FullOpts, IL size=11, code size=43]
+ 304: JIT compiled System.Reflection.MdFieldInfo:get_Name() [FullOpts, IL size=59, code size=342]
+ 305: JIT compiled System.Text.UTF8Encoding:GetCharCount(ptr,int) [FullOpts, IL size=36, code size=139]
+ 306: JIT compiled System.Text.Unicode.Utf8Utility:GetPointerToFirstInvalidByte(ptr,int,byref,byref) [FullOpts, IL size=1315, code size=1199]
+ 307: JIT compiled System.Text.Ascii:GetIndexOfFirstNonAsciiByte_Vector(ptr,nuint) [FullOpts, IL size=437, code size=305]
+ 308: JIT compiled System.Text.UTF8Encoding:GetChars(ptr,int,ptr,int) [FullOpts, IL size=65, code size=236]
+ 309: JIT compiled System.Text.Unicode.Utf8Utility:TranscodeToUtf16(ptr,int,ptr,int,byref,byref) [FullOpts, IL size=1680, code size=1671]
+ 310: JIT compiled System.Text.Ascii:WidenAsciiToUtf16(ptr,ptr,nuint) [FullOpts, IL size=325, code size=514]
+ 311: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:AddKeyword(System.String,ulong) [FullOpts, IL size=292, code size=1475]
+ 312: JIT compiled System.Collections.Generic.Dictionary`2[ulong,System.__Canon]:.ctor(int,System.Collections.Generic.IEqualityComparer`1[ulong]) [FullOpts, IL size=136, code size=107]
+ 313: JIT compiled System.Collections.Generic.Dictionary`2[ulong,System.__Canon]:TryInsert(ulong,System.__Canon,byte) [FullOpts, IL size=565, code size=694]
+ 314: JIT compiled System.Collections.Generic.Dictionary`2[ulong,System.__Canon]:Initialize(int) [FullOpts, IL size=56, code size=166]
+ 315: JIT compiled System.Collections.HashHelpers:ExpandPrime(int) [FullOpts, IL size=33, code size=32]
+ 316: JIT compiled System.Collections.Generic.Dictionary`2[ulong,System.__Canon]:Resize(int,bool) [FullOpts, IL size=254, code size=392]
+ 317: JIT compiled System.Array:Copy(System.Array,System.Array,int) [FullOpts, IL size=152, code size=229]
+ 318: JIT compiled System.RuntimeType:CacheEquals(System.Object) [FullOpts, IL size=27, code size=38]
+ 319: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:AddTask(System.String,int) [FullOpts, IL size=138, code size=430]
+ 320: JIT compiled System.Collections.Generic.Dictionary`2[int,System.__Canon]:Resize(int,bool) [FullOpts, IL size=254, code size=392]
+ 321: JIT compiled System.String:Equals(System.Object) [FullOpts, IL size=42, code size=79]
+ 322: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:AddOpcode(System.String,int) [FullOpts, IL size=112, code size=370]
+ 323: JIT compiled System.Reflection.RuntimeMethodInfo:get_Attributes() [FullOpts, IL size=7, code size=4]
+ 324: JIT compiled System.Reflection.RuntimeMethodInfo:get_Module() [FullOpts, IL size=7, code size=44]
+ 325: JIT compiled System.Reflection.RuntimeMethodInfo:get_MemberType() [FullOpts, IL size=2, code size=6]
+ 326: JIT compiled System.Reflection.RuntimeMethodInfo:GetCustomAttributes(System.Type,bool) [FullOpts, IL size=51, code size=174]
+ 327: JIT compiled System.Reflection.CustomAttribute:GetCustomAttributes(System.Reflection.RuntimeMethodInfo,System.RuntimeType,bool) [FullOpts, IL size=273, code size=666]
+ 328: JIT compiled System.Reflection.PseudoCustomAttribute:GetCustomAttributes(System.Reflection.RuntimeMethodInfo,System.RuntimeType,byref) [FullOpts, IL size=140, code size=233]
+ 329: JIT compiled System.RuntimeType+RuntimeTypeCache:GetEmptyArray() [FullOpts, IL size=37, code size=450]
+ 330: JIT compiled System.Reflection.RuntimeMethodInfo:get_ReturnType() [FullOpts, IL size=12, code size=28]
+ 331: JIT compiled System.Diagnostics.Tracing.EventSource:IsCustomAttributeDefinedHelper(System.Reflection.MemberInfo,System.Type,int) [FullOpts, IL size=100, code size=299]
+ 332: JIT compiled System.Reflection.RuntimeMethodInfo:IsDefined(System.Type,bool) [FullOpts, IL size=51, code size=174]
+ 333: JIT compiled System.Reflection.CustomAttribute:IsDefined(System.Reflection.RuntimeMethodInfo,System.RuntimeType,bool) [FullOpts, IL size=85, code size=258]
+ 334: JIT compiled System.Reflection.PseudoCustomAttribute:IsDefined(System.Reflection.RuntimeMethodInfo,System.RuntimeType) [FullOpts, IL size=132, code size=167]
+ 335: JIT compiled System.Reflection.CustomAttribute:IsCustomAttributeDefined(System.Reflection.RuntimeModule,int,System.RuntimeType,int,bool) [FullOpts, IL size=222, code size=793]
+ 336: JIT compiled System.ModuleHandle:ResolveMethodHandle(int,System.RuntimeTypeHandle[],System.RuntimeTypeHandle[]) [FullOpts, IL size=141, code size=339]
+ 337: JIT compiled System.RuntimeTypeHandle:CopyRuntimeTypeHandles(System.RuntimeTypeHandle[],System.Span`1[nint]) [FullOpts, IL size=98, code size=207]
+ 338: JIT compiled System.RuntimeMethodHandle:GetLoaderAllocator(nint) [FullOpts, IL size=27, code size=65]
+ 339: JIT compiled System.RuntimeMethodInfoStub:System.IRuntimeMethodInfo.get_Value() [FullOpts, IL size=7, code size=5]
+ 340: JIT compiled System.Reflection.CustomAttribute:CreateCustomAttributeInstance(System.Reflection.RuntimeModule,System.RuntimeType,System.IRuntimeMethodInfo,byref,nint,byref) [FullOpts, IL size=57, code size=345]
+ 341: JIT compiled System.Diagnostics.Tracing.EventAttribute:.ctor(int) [FullOpts, IL size=21, code size=11]
+ 342: JIT compiled System.RuntimeType:get_IsNullableOfT() [FullOpts, IL size=38, code size=31]
+ 343: JIT compiled System.Diagnostics.Tracing.EventAttribute:set_Version(byte) [FullOpts, IL size=8, code size=4]
+ 344: JIT compiled System.Reflection.TypeNameResolver:GetTypeHelper(ptr,System.Reflection.RuntimeAssembly,bool,bool,nint) [FullOpts, IL size=17, code size=83]
+ 345: JIT compiled System.Runtime.InteropServices.MemoryMarshal:CreateReadOnlySpanFromNullTerminated(ptr) [FullOpts, IL size=28, code size=64]
+ 346: JIT compiled System.Reflection.TypeNameResolver:GetTypeHelper(System.ReadOnlySpan`1[char],System.Reflection.RuntimeAssembly,bool,bool,nint) [FullOpts, IL size=128, code size=258]
+ 347: JIT compiled System.Reflection.Metadata.TypeNameParser:Parse(System.ReadOnlySpan`1[char],bool,System.Nullable`1[System.Reflection.Metadata.TypeNameParseOptions]) [FullOpts, IL size=113, code size=201]
+ 348: JIT compiled System.MemoryExtensions:TrimStart(System.ReadOnlySpan`1[char]) [FullOpts, IL size=43, code size=110]
+ 349: JIT compiled System.Reflection.Metadata.TypeNameParser:.ctor(System.ReadOnlySpan`1[char],bool,System.Nullable`1[System.Reflection.Metadata.TypeNameParseOptions]) [FullOpts, IL size=53, code size=102]
+ 350: JIT compiled System.Reflection.Metadata.TypeNameParser:.cctor() [FullOpts, IL size=11, code size=14]
+ 351: JIT compiled System.Reflection.Metadata.TypeNameParser:ParseNextTypeName(bool,byref) [FullOpts, IL size=487, code size=1449]
+ 352: JIT compiled System.Reflection.Metadata.TypeNameParserHelpers:TryGetTypeNameInfo(System.Reflection.Metadata.TypeNameParseOptions,byref,byref,byref,byref) [FullOpts, IL size=134, code size=411]
+ 353: JIT compiled System.Reflection.Metadata.TypeNameParserHelpers:GetFullTypeNameLength(System.ReadOnlySpan`1[char],byref) [FullOpts, IL size=82, code size=207]
+ 354: JIT compiled System.Reflection.Metadata.TypeNameParserHelpers:.cctor() [FullOpts, IL size=21, code size=69]
+ 355: JIT compiled System.Buffers.SearchValues:Create(System.ReadOnlySpan`1[char]) [FullOpts, IL size=637, code size=2101]
+ 356: JIT compiled System.Buffers.SearchValues:TryGetSingleRange[char](System.ReadOnlySpan`1[char],byref,byref) [FullOpts, IL size=294, code size=386]
+ 357: JIT compiled System.Numerics.INumber`1[char]:Min(char,char) [FullOpts, IL size=68, code size=18]
+ 358: JIT compiled System.Numerics.INumber`1[char]:Max(char,char) [FullOpts, IL size=68, code size=18]
+ 359: JIT compiled System.Buffers.IndexOfAnyAsciiSearcher:CanUseUniqueLowNibbleSearch[char](System.ReadOnlySpan`1[char],int) [FullOpts, IL size=138, code size=70]
+ 360: JIT compiled System.Buffers.IndexOfAnyAsciiSearcher:ComputeAsciiState[char](System.ReadOnlySpan`1[char],byref) [FullOpts, IL size=102, code size=256]
+ 361: JIT compiled System.Buffers.AsciiCharSearchValues`2[System.Buffers.IndexOfAnyAsciiSearcher+Default,System.Buffers.SearchValues+FalseConst]:IndexOfAny(System.ReadOnlySpan`1[char]) [FullOpts, IL size=30, code size=21]
+ 362: JIT compiled System.Buffers.IndexOfAnyAsciiSearcher:IndexOfAnyCore[int,System.Buffers.IndexOfAnyAsciiSearcher+DontNegate,System.Buffers.IndexOfAnyAsciiSearcher+Default,System.Buffers.SearchValues+FalseConst,System.Buffers.IndexOfAnyAsciiSearcher+IndexOfAnyResultMapper`1[short]](byref,int,byref) [FullOpts, IL size=572, code size=482]
+ 363: JIT compiled System.Reflection.Metadata.TypeNameParserHelpers:IsBeginningOfGenericArgs(byref,byref) [FullOpts, IL size=127, code size=190]
+ 364: JIT compiled System.Reflection.Metadata.TypeNameParserHelpers:TryParseNextDecorator(byref,byref) [FullOpts, IL size=127, code size=450]
+ 365: JIT compiled System.ReadOnlySpan`1[char]:ToString() [FullOpts, IL size=144, code size=42]
+ 366: JIT compiled System.String:Ctor(System.ReadOnlySpan`1[char]) [FullOpts, IL size=54, code size=79]
+ 367: JIT compiled System.Reflection.Metadata.TypeNameParser:GetDeclaringType(System.String,System.Collections.Generic.List`1[int],System.Reflection.Metadata.AssemblyNameInfo) [FullOpts, IL size=78, code size=208]
+ 368: JIT compiled System.Reflection.TypeNameResolver:Resolve(System.Reflection.Metadata.TypeName) [FullOpts, IL size=142, code size=262]
+ 369: JIT compiled System.Reflection.TypeNameResolver:GetSimpleType(System.Reflection.Metadata.TypeName) [FullOpts, IL size=118, code size=344]
+ 370: JIT compiled System.Reflection.Metadata.TypeName:get_FullName() [FullOpts, IL size=123, code size=373]
+ 371: JIT compiled System.Reflection.TypeNameResolver:GetType(System.String,System.ReadOnlySpan`1[System.String],System.Reflection.Metadata.TypeName) [FullOpts, IL size=628, code size=1467]
+ 372: JIT compiled System.Reflection.Metadata.TypeName:Unescape(System.String) [FullOpts, IL size=20, code size=50]
+ 373: JIT compiled System.Reflection.Metadata.TypeNameParserHelpers:Unescape(System.String) [FullOpts, IL size=23, code size=56]
+ 374: JIT compiled System.PackedSpanHelpers:IndexOf[System.SpanHelpers+DontNegate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int) [FullOpts, IL size=1040, code size=449]
+ 375: JIT compiled System.Reflection.TypeNameResolver:GetTypeFromDefaultAssemblies(System.String,System.ReadOnlySpan`1[System.String],System.Reflection.Metadata.TypeName) [FullOpts, IL size=179, code size=513]
+ 376: JIT compiled System.Reflection.RuntimeAssembly:GetTypeCore(System.String,System.ReadOnlySpan`1[System.String],bool,bool) [FullOpts, IL size=99, code size=302]
+ 377: JIT compiled System.Reflection.RuntimeAssembly:GetTypeCore(System.Runtime.CompilerServices.QCallAssembly,System.String,System.ReadOnlySpan`1[System.String],int,System.Runtime.CompilerServices.ObjectHandleOnStack) [FullOpts, IL size=319, code size=753]
+ 378: JIT compiled System.Runtime.InteropServices.Marshalling.ReadOnlySpanMarshaller`2+ManagedToUnmanagedIn[System.__Canon,nint]:FromManaged(System.ReadOnlySpan`1[System.__Canon],System.Span`1[nint]) [FullOpts, IL size=144, code size=273]
+ 379: JIT compiled System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller+ManagedToUnmanagedIn:FromManaged(System.String,System.Span`1[byte]) [FullOpts, IL size=131, code size=671]
+ 380: JIT compiled System.RuntimeTypeHandle:RegisterCollectibleTypeDependency(System.RuntimeType,System.Reflection.RuntimeAssembly) [FullOpts, IL size=20, code size=279]
+ 381: JIT compiled System.Diagnostics.Tracing.EventAttribute:set_Level(int) [FullOpts, IL size=8, code size=4]
+ 382: JIT compiled System.Diagnostics.Tracing.EventAttribute:set_Keywords(long) [FullOpts, IL size=8, code size=5]
+ 383: JIT compiled System.Reflection.RuntimeMethodInfo:get_Name() [FullOpts, IL size=26, code size=239]
+ 384: JIT compiled System.RuntimeMethodHandle:GetUtf8Name(nint) [FullOpts, IL size=23, code size=86]
+ 385: JIT compiled System.SpanHelpers:<LastIndexOfValueType>g__SimdImpl|93_0[short,System.SpanHelpers+DontNegate`1[short],System.Runtime.Intrinsics.Vector256`1[short]](byref,short,int) [FullOpts, IL size=159, code size=154]
+ 386: JIT compiled System.Reflection.RuntimeMethodInfo:GetParameters() [FullOpts, IL size=34, code size=80]
+ 387: JIT compiled System.Diagnostics.Tracing.EventSource:RemoveFirstArgIfRelatedActivityId(byref) [FullOpts, IL size=88, code size=273]
+ 388: JIT compiled System.Reflection.RuntimeParameterInfo:get_ParameterType() [FullOpts, IL size=70, code size=76]
+ 389: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:AppendKeywords(System.Text.StringBuilder,ulong,System.String) [FullOpts, IL size=176, code size=445]
+ 390: JIT compiled System.Collections.Generic.Dictionary`2[ulong,System.__Canon]:FindValue(ulong) [FullOpts, IL size=297, code size=368]
+ 391: JIT compiled System.Reflection.RuntimeParameterInfo:get_Name() [FullOpts, IL size=84, code size=315]
+ 392: JIT compiled System.Diagnostics.Tracing.EventSource:DebugCheckEvent(byref,System.Collections.Generic.Dictionary`2[int,System.Diagnostics.Tracing.EventSource+EventMetadata],System.Reflection.MethodInfo,System.Diagnostics.Tracing.EventAttribute,System.Diagnostics.Tracing.ManifestBuilder,int) [FullOpts, IL size=457, code size=1403]
+ 393: JIT compiled System.Diagnostics.Tracing.EventSource:GetHelperCallFirstArg(System.Reflection.MethodInfo) [FullOpts, IL size=506, code size=391]
+ 394: JIT compiled System.Reflection.RuntimeMethodInfo:GetMethodBody() [FullOpts, IL size=25, code size=280]
+ 395: JIT compiled System.Reflection.RuntimeMethodBody:GetILAsByteArray() [FullOpts, IL size=7, code size=5]
+ 396: JIT compiled System.Collections.Generic.Dictionary`2[int,System.Diagnostics.Tracing.EventSource+EventMetadata]:FindValue(int) [FullOpts, IL size=297, code size=358]
+ 397: JIT compiled System.Collections.Generic.Dictionary`2+KeyCollection+Enumerator[int,System.Diagnostics.Tracing.EventSource+EventMetadata]:MoveNext() [FullOpts, IL size=135, code size=122]
+ 398: JIT compiled System.Diagnostics.Tracing.EventSource:AddEventDescriptor(byref,System.String,System.Diagnostics.Tracing.EventAttribute,System.Reflection.ParameterInfo[],bool) [FullOpts, IL size=317, code size=407]
+ 399: JIT compiled System.Diagnostics.Tracing.EventDescriptor:.ctor(int,byte,byte,byte,byte,int,long) [FullOpts, IL size=177, code size=453]
+ 400: JIT compiled System.Runtime.CompilerServices.RuntimeFeature:.cctor() [FullOpts, IL size=24, code size=51]
+ 401: JIT compiled System.Reflection.InvokerEmitUtil:CreateInvokeDelegate_ObjSpanArgs(System.Reflection.MethodBase,bool) [FullOpts, IL size=411, code size=1533]
+ 402: JIT compiled System.Reflection.Emit.DynamicMethod:Init(System.String,int,int,System.Type,System.Type[],System.Type,System.Reflection.Module,bool,bool) [FullOpts, IL size=430, code size=1031]
+ 403: JIT compiled System.Reflection.Emit.AssemblyBuilder:EnsureDynamicCodeSupported() [FullOpts, IL size=20, code size=1]
+ 404: JIT compiled System.Reflection.Emit.RuntimeModuleBuilder:GetRuntimeModuleFromModule(System.Reflection.Module) [FullOpts, IL size=24, code size=53]
+ 405: JIT compiled System.Reflection.Emit.DynamicMethod:GetILGenerator(int) [FullOpts, IL size=66, code size=455]
+ 406: JIT compiled System.Reflection.Emit.SignatureHelper:Init(System.Reflection.Module) [FullOpts, IL size=93, code size=167]
+ 407: JIT compiled System.Reflection.Emit.SignatureHelper:AddData(int) [FullOpts, IL size=186, code size=321]
+ 408: JIT compiled System.Reflection.Emit.SignatureHelper:AddOneArgTypeHelper(System.Type,System.Type[],System.Type[]) [FullOpts, IL size=231, code size=794]
+ 409: JIT compiled System.Reflection.Emit.SignatureHelper:AddOneArgTypeHelperWorker(System.Type,bool) [FullOpts, IL size=661, code size=1813]
+ 410: JIT compiled System.RuntimeType:get_IsGenericParameter() [FullOpts, IL size=7, code size=5]
+ 411: JIT compiled System.RuntimeType:IsByRefImpl() [FullOpts, IL size=7, code size=26]
+ 412: JIT compiled System.Reflection.Emit.SignatureHelper:IsSimpleType(byte) [FullOpts, IL size=31, code size=39]
+ 413: JIT compiled System.Reflection.Emit.SignatureHelper:AddElementType(byte) [FullOpts, IL size=61, code size=84]
+ 414: JIT compiled System.Reflection.Emit.SignatureHelper:AddArguments(System.Type[],System.Type[][],System.Type[][]) [FullOpts, IL size=125, code size=623]
+ 415: JIT compiled System.RuntimeType:GetGenericTypeDefinition() [FullOpts, IL size=31, code size=126]
+ 416: JIT compiled System.RuntimeType+RuntimeTypeCache:<GetGenericTypeDefinition>g__CacheGenericDefinition|50_0() [FullOpts, IL size=61, code size=299]
+ 417: JIT compiled System.Reflection.Emit.SignatureHelper:InternalAddRuntimeType(System.Type) [FullOpts, IL size=116, code size=221]
+ 418: JIT compiled System.RuntimeType:GetGenericArguments() [FullOpts, IL size=29, code size=71]
+ 419: JIT compiled System.RuntimeTypeHandle:GetInstantiationPublic() [FullOpts, IL size=31, code size=225]
+ 420: JIT compiled System.Reflection.Emit.SignatureHelper:GetSignature(bool) [FullOpts, IL size=92, code size=179]
+ 421: JIT compiled System.Reflection.Emit.SignatureHelper:SetNumberOfSignatureElements(bool) [FullOpts, IL size=198, code size=225]
+ 422: JIT compiled System.Buffer:BlockCopy(System.Array,int,System.Array,int,int) [FullOpts, IL size=267, code size=637]
+ 423: JIT compiled System.Reflection.Emit.RuntimeILGenerator:.ctor(System.Reflection.MethodInfo,int) [FullOpts, IL size=84, code size=223]
+ 424: JIT compiled System.Reflection.Emit.DynamicScope:.ctor() [FullOpts, IL size=25, code size=137]
+ 425: JIT compiled System.Collections.Generic.List`1[System.__Canon]:AddWithResize(System.__Canon) [FullOpts, IL size=39, code size=102]
+ 426: JIT compiled System.Collections.Generic.List`1[System.__Canon]:set_Capacity(int) [FullOpts, IL size=86, code size=216]
+ 427: JIT compiled System.Reflection.Emit.OpCodes:.cctor() [FullOpts, IL size=4137, code size=5197]
+ 428: JIT compiled System.Reflection.Emit.RuntimeILGenerator:Emit(System.Reflection.Emit.OpCode) [FullOpts, IL size=15, code size=110]
+ 429: JIT compiled System.Reflection.Emit.RuntimeILGenerator:InternalEmit(System.Reflection.Emit.OpCode) [FullOpts, IL size=98, code size=233]
+ 430: JIT compiled System.Reflection.RuntimeMethodInfo:GetParametersAsSpan() [FullOpts, IL size=12, code size=47]
+ 431: JIT compiled System.Reflection.Emit.RuntimeILGenerator:Emit(System.Reflection.Emit.OpCode,int) [FullOpts, IL size=457, code size=877]
+ 432: JIT compiled System.Reflection.InvokerEmitUtil+Methods:Span_get_Item() [FullOpts, IL size=41, code size=120]
+ 433: JIT compiled System.RuntimeType:.cctor() [FullOpts, IL size=61, code size=70]
+ 434: JIT compiled System.RuntimeMethodHandle:<GetStubIfNeeded>g__GetStubIfNeededWorker|47_0(nint,System.RuntimeType,System.RuntimeType[]) [FullOpts, IL size=21, code size=216]
+ 435: JIT compiled System.Reflection.Emit.DynamicILGenerator:Emit(System.Reflection.Emit.OpCode,System.Reflection.MethodInfo) [FullOpts, IL size=325, code size=1002]
+ 436: JIT compiled System.Reflection.InvokerEmitUtil:Unbox(System.Reflection.Emit.ILGenerator,System.Type) [FullOpts, IL size=29, code size=76]
+ 437: JIT compiled System.Reflection.InvokerEmitUtil+Methods:Object_GetRawData() [FullOpts, IL size=38, code size=123]
+ 438: JIT compiled System.RuntimeType:GetMethodImplCommon(System.String,int,int,System.Reflection.Binder,int,System.Type[],System.Reflection.ParameterModifier[]) [FullOpts, IL size=166, code size=802]
+ 439: JIT compiled System.Reflection.Emit.DynamicScope:GetTokenFor(System.RuntimeMethodHandle) [FullOpts, IL size=113, code size=303]
+ 440: JIT compiled System.Reflection.Emit.DynamicILGenerator:Emit(System.Reflection.Emit.OpCode,System.Type) [FullOpts, IL size=63, code size=312]
+ 441: JIT compiled System.Reflection.Emit.DynamicScope:GetTokenFor(System.RuntimeTypeHandle) [FullOpts, IL size=37, code size=116]
+ 442: JIT compiled System.Reflection.InvokerEmitUtil:EmitCallAndReturnHandling(System.Reflection.Emit.ILGenerator,System.Reflection.MethodBase,bool,bool) [FullOpts, IL size=589, code size=1105]
+ 443: JIT compiled System.Reflection.InvokerEmitUtil+Methods:NextCallReturnAddress() [FullOpts, IL size=38, code size=123]
+ 444: JIT compiled System.Reflection.Emit.DynamicMethod:GetMethodDescriptor() [FullOpts, IL size=154, code size=374]
+ 445: JIT compiled System.Reflection.Emit.DynamicILGenerator:GetCallableMethod(System.Reflection.RuntimeModule,System.Reflection.Emit.DynamicMethod) [FullOpts, IL size=52, code size=310]
+ 446: JIT compiled System.Reflection.Emit.DynamicMethod:get_Name() [FullOpts, IL size=7, code size=5]
+ 447: JIT compiled System.Reflection.Emit.DynamicResolver:.ctor(System.Reflection.Emit.DynamicILGenerator) [FullOpts, IL size=101, code size=173]
+ 448: JIT compiled System.Reflection.Emit.RuntimeILGenerator:GetMaxStackSize() [FullOpts, IL size=27, code size=24]
+ 449: JIT compiled System.Reflection.Emit.RuntimeILGenerator:GetExceptions() [FullOpts, IL size=67, code size=135]
+ 450: JIT compiled System.Reflection.Emit.RuntimeILGenerator:BakeByteArray() [FullOpts, IL size=203, code size=421]
+ 451: JIT compiled System.Reflection.Emit.SignatureHelper:InternalGetSignatureArray() [FullOpts, IL size=268, code size=425]
+ 452: JIT compiled System.ModuleHandle:GetDynamicMethod(System.Runtime.CompilerServices.QCallModule,System.String,byte[],int,System.Runtime.CompilerServices.ObjectHandleOnStack,System.Runtime.CompilerServices.ObjectHandleOnStack) [FullOpts, IL size=97, code size=395]
+ 453: JIT compiled System.Delegate:CreateDelegateNoSecurityCheck(System.Type,System.Object,System.RuntimeMethodHandle) [FullOpts, IL size=127, code size=863]
+ 454: JIT compiled System.RuntimeType:IsDelegate() [FullOpts, IL size=53, code size=36]
+ 455: JIT compiled System.Reflection.InvokerEmitUtil:CreateInvokeDelegate_RefArgs(System.Reflection.MethodBase,bool) [FullOpts, IL size=431, code size=1488]
+ 456: JIT compiled System.RuntimeType:GetElementType() [FullOpts, IL size=7, code size=41]
+ 457: JIT compiled System.Reflection.InvokerEmitUtil+Methods:ByReferenceOfByte_Value() [FullOpts, IL size=36, code size=85]
+ 458: JIT compiled System.RuntimeType:GetField(System.String,int) [FullOpts, IL size=224, code size=588]
+ 459: JIT compiled System.RuntimeType+RuntimeTypeCache+MemberInfoCache`1[System.__Canon]:PopulateRtFields(System.RuntimeType+RuntimeTypeCache+Filter,System.ReadOnlySpan`1[nint],System.RuntimeType,byref) [FullOpts, IL size=231, code size=760]
+ 460: JIT compiled System.RuntimeFieldHandle:GetUtf8Name(nint) [FullOpts, IL size=23, code size=86]
+ 461: JIT compiled System.Reflection.Emit.DynamicILGenerator:Emit(System.Reflection.Emit.OpCode,System.Reflection.FieldInfo) [FullOpts, IL size=97, code size=545]
+ 462: JIT compiled System.Reflection.RuntimeFieldInfo:get_DeclaringType() [FullOpts, IL size=22, code size=21]
+ 463: JIT compiled System.Reflection.RtFieldInfo:get_FieldHandle() [FullOpts, IL size=7, code size=4]
+ 464: JIT compiled System.Reflection.Emit.DynamicResolver:GetCodeInfo(byref,byref,byref) [FullOpts, IL size=154, code size=253]
+ 465: JIT compiled System.Reflection.Emit.DynamicResolver:CalculateNumberOfExceptions(System.Reflection.Emit.__ExceptionInfo[]) [FullOpts, IL size=34, code size=51]
+ 466: JIT compiled System.Reflection.Emit.DynamicResolver:GetLocalsSignature() [FullOpts, IL size=7, code size=5]
+ 467: JIT compiled System.Reflection.Emit.DynamicResolver:GetJitContext(byref) [FullOpts, IL size=53, code size=43]
+ 468: JIT compiled System.Reflection.Emit.DynamicResolver:ResolveToken(int,byref,byref,byref) [FullOpts, IL size=328, code size=596]
+ 469: JIT compiled System.Reflection.RtFieldInfo:System.IRuntimeFieldInfo.get_Value() [FullOpts, IL size=12, code size=5]
+ 470: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Level(System.Object,System.Object,ptr) [FullOpts, IL size=25, code size=27]
+ 471: JIT compiled System.Diagnostics.Tracing.EventAttribute:set_Message(System.String) [FullOpts, IL size=8, code size=11]
+ 472: JIT compiled System.Diagnostics.Tracing.EventAttribute:set_Task(int) [FullOpts, IL size=8, code size=4]
+ 473: JIT compiled System.Diagnostics.Tracing.EventAttribute:set_Opcode(int) [FullOpts, IL size=15, code size=8]
+ 474: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Version(System.Object,System.Object,ptr) [FullOpts, IL size=25, code size=28]
+ 475: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Keywords(System.Object,System.Object,ptr) [FullOpts, IL size=25, code size=28]
+ 476: JIT compiled System.Collections.Generic.NonRandomizedStringEqualityComparer+OrdinalComparer:Equals(System.String,System.String) [FullOpts, IL size=8, code size=69]
+ 477: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:TranslateToManifestConvention(System.String,System.String) [FullOpts, IL size=452, code size=1379]
+ 478: JIT compiled System.Text.StringBuilder:Append(System.String,int,int) [FullOpts, IL size=94, code size=251]
+ 479: JIT compiled System.Text.StringBuilder:Append(byref,int) [FullOpts, IL size=96, code size=109]
+ 480: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:TranslateIndexToManifestConvention(int,System.String) [FullOpts, IL size=71, code size=78]
+ 481: JIT compiled System.Text.StringBuilder:AppendSpanFormattable[int](int) [FullOpts, IL size=93, code size=432]
+ 482: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:.cctor() [FullOpts, IL size=76, code size=160]
+ 483: JIT compiled System.Text.StringBuilder:AppendWithExpansion(byref,int) [FullOpts, IL size=155, code size=299]
+ 484: JIT compiled System.Text.StringBuilder:ExpandByABlock(int) [FullOpts, IL size=144, code size=333]
+ 485: JIT compiled System.Number:Int32ToDecStr(int) [FullOpts, IL size=29, code size=52]
+ 486: JIT compiled System.Text.StringBuilder:ToString() [FullOpts, IL size=133, code size=192]
+ 487: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Level(System.Object,System.Span`1[System.Object]) [FullOpts, IL size=36, code size=40]
+ 488: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Message(System.Object,System.Object,ptr) [FullOpts, IL size=25, code size=28]
+ 489: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Task(System.Object,System.Object,ptr) [FullOpts, IL size=25, code size=27]
+ 490: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Opcode(System.Object,System.Object,ptr) [FullOpts, IL size=25, code size=27]
+ 491: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Version(System.Object,System.Span`1[System.Object]) [FullOpts, IL size=36, code size=41]
+ 492: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Keywords(System.Object,System.Span`1[System.Object]) [FullOpts, IL size=36, code size=41]
+ 493: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:GetOpcodeName(int,System.String) [FullOpts, IL size=174, code size=418]
+ 494: JIT compiled System.RuntimeType:GetEnumUnderlyingType() [FullOpts, IL size=20, code size=102]
+ 495: JIT compiled System.RuntimeType:get_IsActualEnum() [FullOpts, IL size=53, code size=36]
+ 496: JIT compiled System.Enum:.cctor() [FullOpts, IL size=272, code size=250]
+ 497: JIT compiled System.Text.StringBuilder:AppendWithExpansion(char) [FullOpts, IL size=31, code size=55]
+ 498: JIT compiled System.Collections.Generic.Dictionary`2[int,System.Diagnostics.Tracing.EventSource+EventMetadata]:Resize(int,bool) [FullOpts, IL size=254, code size=330]
+ 499: JIT compiled System.RuntimeType:GetTypeCodeImpl() [FullOpts, IL size=38, code size=584]
+ 500: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Message(System.Object,System.Span`1[System.Object]) [FullOpts, IL size=26, code size=37]
+ 501: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Task(System.Object,System.Span`1[System.Object]) [FullOpts, IL size=36, code size=40]
+ 502: JIT compiled (dynamicClass):InvokeStub_EventAttribute.set_Opcode(System.Object,System.Span`1[System.Object]) [FullOpts, IL size=36, code size=40]
+ 503: JIT compiled System.Collections.Generic.Dictionary`2[System.__Canon,System.__Canon]:Resize(int,bool) [FullOpts, IL size=254, code size=762]
+ 504: JIT compiled System.Array+EmptyArray`1[System.Reflection.CustomAttributeRecord]:.cctor() [FullOpts, IL size=12, code size=45]
+ 505: JIT compiled System.Diagnostics.Tracing.NameInfo:ReserveEventIDsBelow(int) [FullOpts, IL size=44, code size=83]
+ 506: JIT compiled System.Diagnostics.Tracing.NameInfo:.cctor() [FullOpts, IL size=11, code size=11]
+ 507: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:GetChannelData() [FullOpts, IL size=155, code size=439]
+ 508: JIT compiled System.Array+EmptyArray`1[ulong]:.cctor() [FullOpts, IL size=12, code size=45]
+ 509: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:CreateManifest() [FullOpts, IL size=38, code size=130]
+ 510: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:CreateManifestString() [FullOpts, IL size=2464, code size=7215]
+ 511: JIT compiled System.Collections.Generic.Dictionary`2[int,System.__Canon]:get_Keys() [FullOpts, IL size=26, code size=107]
+ 512: JIT compiled System.Collections.Generic.List`1[int]:.ctor(System.Collections.Generic.IEnumerable`1[int]) [FullOpts, IL size=134, code size=419]
+ 513: JIT compiled System.Runtime.CompilerServices.CastHelpers:IsInstanceOfInterface(ptr,System.Object) [FullOpts, IL size=152, code size=131]
+ 514: JIT compiled System.Collections.Generic.Dictionary`2+KeyCollection[int,System.__Canon]:get_Count() [FullOpts, IL size=12, code size=13]
+ 515: JIT compiled System.Collections.Generic.Dictionary`2+KeyCollection[int,System.__Canon]:CopyTo(int[],int) [FullOpts, IL size=124, code size=237]
+ 516: JIT compiled System.Collections.Generic.List`1[int]:Sort(int,int,System.Collections.Generic.IComparer`1[int]) [FullOpts, IL size=73, code size=88]
+ 517: JIT compiled System.Array:Sort[int](int[],int,int,System.Collections.Generic.IComparer`1[int]) [FullOpts, IL size=78, code size=170]
+ 518: JIT compiled System.Collections.Generic.ArraySortHelper`1[int]:.cctor() [FullOpts, IL size=11, code size=34]
+ 519: JIT compiled System.Collections.Generic.ArraySortHelper`1[int]:CreateArraySortHelper() [FullOpts, IL size=78, code size=55]
+ 520: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[int]:.ctor() [FullOpts, IL size=7, code size=1]
+ 521: JIT compiled System.Runtime.CompilerServices.CastHelpers:ChkCastInterface(ptr,System.Object) [FullOpts, IL size=140, code size=119]
+ 522: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[int]:Sort(System.Span`1[int],System.Collections.Generic.IComparer`1[int]) [FullOpts, IL size=212, code size=319]
+ 523: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[int]:IntroSort(System.Span`1[int],int) [FullOpts, IL size=182, code size=321]
+ 524: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[int]:PickPivotAndPartition(System.Span`1[int]) [FullOpts, IL size=311, code size=221]
+ 525: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[int]:InsertionSort(System.Span`1[int]) [FullOpts, IL size=141, code size=81]
+ 526: JIT compiled System.Collections.Generic.Dictionary`2[System.__Canon,System.__Canon]:get_Values() [FullOpts, IL size=26, code size=107]
+ 527: JIT compiled System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator[System.__Canon,System.__Canon]:MoveNext() [FullOpts, IL size=135, code size=130]
+ 528: JIT compiled System.RuntimeType:IsDefined(System.Type,bool) [FullOpts, IL size=51, code size=174]
+ 529: JIT compiled System.Reflection.CustomAttribute:IsDefined(System.RuntimeType,System.RuntimeType,bool) [FullOpts, IL size=105, code size=290]
+ 530: JIT compiled System.Reflection.PseudoCustomAttribute:IsDefined(System.RuntimeType,System.RuntimeType) [FullOpts, IL size=132, code size=179]
+ 531: JIT compiled System.Convert:ToInt64(System.Object) [FullOpts, IL size=19, code size=56]
+ 532: JIT compiled System.Byte:System.IConvertible.ToInt64(System.IFormatProvider) [FullOpts, IL size=8, code size=4]
+ 533: JIT compiled System.Number:<TryFormatUInt64>g__TryFormatUInt64Slow|28_0[char](ulong,System.ReadOnlySpan`1[char],System.IFormatProvider,System.Span`1[char],byref) [FullOpts, IL size=195, code size=1167]
+ 534: JIT compiled System.Number:ParseFormatSpecifier(System.ReadOnlySpan`1[char],byref) [FullOpts, IL size=259, code size=267]
+ 535: JIT compiled System.UInt32:System.IConvertible.ToInt64(System.IFormatProvider) [FullOpts, IL size=8, code size=3]
+ 536: JIT compiled System.Collections.Generic.List`1+Enumerator[int]:MoveNext() [FullOpts, IL size=105, code size=93]
+ 537: JIT compiled System.Collections.Generic.Dictionary`2[int,System.__Canon]:get_Item(int) [FullOpts, IL size=39, code size=38]
+ 538: JIT compiled System.Collections.Generic.Dictionary`2[ulong,System.__Canon]:get_Keys() [FullOpts, IL size=26, code size=107]
+ 539: JIT compiled System.Collections.Generic.List`1[ulong]:.ctor(System.Collections.Generic.IEnumerable`1[ulong]) [FullOpts, IL size=134, code size=420]
+ 540: JIT compiled System.Collections.Generic.Dictionary`2+KeyCollection[ulong,System.__Canon]:get_Count() [FullOpts, IL size=12, code size=13]
+ 541: JIT compiled System.Collections.Generic.Dictionary`2+KeyCollection[ulong,System.__Canon]:CopyTo(ulong[],int) [FullOpts, IL size=124, code size=237]
+ 542: JIT compiled System.Collections.Generic.List`1[ulong]:Sort(int,int,System.Collections.Generic.IComparer`1[ulong]) [FullOpts, IL size=73, code size=88]
+ 543: JIT compiled System.Array:Sort[ulong](ulong[],int,int,System.Collections.Generic.IComparer`1[ulong]) [FullOpts, IL size=78, code size=170]
+ 544: JIT compiled System.Collections.Generic.ArraySortHelper`1[ulong]:.cctor() [FullOpts, IL size=11, code size=34]
+ 545: JIT compiled System.Collections.Generic.ArraySortHelper`1[ulong]:CreateArraySortHelper() [FullOpts, IL size=78, code size=54]
+ 546: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[ulong]:.ctor() [FullOpts, IL size=7, code size=1]
+ 547: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[ulong]:Sort(System.Span`1[ulong],System.Collections.Generic.IComparer`1[ulong]) [FullOpts, IL size=212, code size=319]
+ 548: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[ulong]:IntroSort(System.Span`1[ulong],int) [FullOpts, IL size=182, code size=334]
+ 549: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[ulong]:PickPivotAndPartition(System.Span`1[ulong]) [FullOpts, IL size=311, code size=221]
+ 550: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[ulong]:InsertionSort(System.Span`1[ulong]) [FullOpts, IL size=141, code size=82]
+ 551: JIT compiled System.Collections.Generic.List`1+Enumerator[ulong]:MoveNext() [FullOpts, IL size=105, code size=96]
+ 552: JIT compiled System.Collections.Generic.Dictionary`2[ulong,System.__Canon]:get_Item(ulong) [FullOpts, IL size=39, code size=41]
+ 553: JIT compiled System.Collections.Generic.Dictionary`2[System.__Canon,System.__Canon]:get_Keys() [FullOpts, IL size=26, code size=107]
+ 554: JIT compiled System.Collections.Generic.Dictionary`2+KeyCollection[System.__Canon,System.__Canon]:CopyTo(System.__Canon[],int) [FullOpts, IL size=124, code size=245]
+ 555: JIT compiled System.Array:Sort[System.__Canon](System.__Canon[],int,int,System.Collections.Generic.IComparer`1[System.__Canon]) [FullOpts, IL size=78, code size=242]
+ 556: JIT compiled System.Collections.Generic.ArraySortHelper`1[System.__Canon]:.cctor() [FullOpts, IL size=11, code size=62]
+ 557: JIT compiled System.Collections.Generic.ArraySortHelper`1[System.__Canon]:CreateArraySortHelper() [FullOpts, IL size=78, code size=184]
+ 558: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[System.__Canon]:.ctor() [FullOpts, IL size=7, code size=1]
+ 559: JIT compiled System.Collections.Generic.GenericArraySortHelper`1[System.__Canon]:Sort(System.Span`1[System.__Canon],System.Collections.Generic.IComparer`1[System.__Canon]) [FullOpts, IL size=212, code size=477]
+ 560: JIT compiled System.Collections.Generic.Comparer`1[System.__Canon]:.cctor() [FullOpts, IL size=26, code size=92]
+ 561: JIT compiled System.Collections.Generic.ComparerHelpers:CreateDefaultComparer(System.Type) [FullOpts, IL size=192, code size=358]
+ 562: JIT compiled System.Collections.Generic.GenericComparer`1[System.__Canon]:.ctor() [FullOpts, IL size=7, code size=1]
+ 563: JIT compiled System.Runtime.CompilerServices.VirtualDispatchHelpers:VirtualFunctionPointer(System.Object,nint,nint) [FullOpts, IL size=38, code size=278]
+ 564: JIT compiled System.Runtime.CompilerServices.VirtualDispatchHelpers:.cctor() [FullOpts, IL size=21, code size=155]
+ 565: JIT compiled System.Runtime.CompilerServices.GenericCache`2[System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,nint]:CreateCacheTable(int,bool) [FullOpts, IL size=96, code size=212]
+ 566: JIT compiled System.Runtime.CompilerServices.VirtualDispatchHelpers:VirtualFunctionPointerSlow(System.Object,nint,nint) [FullOpts, IL size=47, code size=244]
+ 567: JIT compiled System.Runtime.CompilerServices.GenericCache`2[System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,nint]:TrySet(System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,nint) [FullOpts, IL size=445, code size=648]
+ 568: JIT compiled System.Collections.Generic.ArraySortHelper`1[System.__Canon]:IntroSort(System.Span`1[System.__Canon],int,System.Comparison`1[System.__Canon]) [FullOpts, IL size=152, code size=520]
+ 569: JIT compiled System.Collections.Generic.ArraySortHelper`1[System.__Canon]:PickPivotAndPartition(System.Span`1[System.__Canon],System.Comparison`1[System.__Canon]) [FullOpts, IL size=167, code size=454]
+ 570: JIT compiled System.OrdinalCaseSensitiveComparer:Compare(System.String,System.String) [FullOpts, IL size=8, code size=12]
+ 571: JIT compiled System.String:CompareOrdinal(System.String,System.String) [FullOpts, IL size=52, code size=57]
+ 572: JIT compiled System.Collections.Generic.ArraySortHelper`1[System.__Canon]:SwapIfGreater(System.Span`1[System.__Canon],System.Comparison`1[System.__Canon],int,int) [FullOpts, IL size=90, code size=112]
+ 573: JIT compiled System.String:CompareOrdinalHelper(System.String,System.String) [FullOpts, IL size=298, code size=267]
+ 574: JIT compiled System.Collections.Generic.ArraySortHelper`1[System.__Canon]:InsertionSort(System.Span`1[System.__Canon],System.Comparison`1[System.__Canon]) [FullOpts, IL size=116, code size=210]
+ 575: JIT compiled System.Globalization.CultureInfo:get_CurrentUICulture() [FullOpts, IL size=26, code size=97]
+ 576: JIT compiled System.Runtime.CompilerServices.StaticsHelpers:GetOptimizedGCThreadStaticBase(int) [FullOpts, IL size=8, code size=123]
+ 577: JIT compiled System.Runtime.CompilerServices.StaticsHelpers:GetGCThreadStaticsByIndexSlow(int) [FullOpts, IL size=30, code size=164]
+ 578: JIT compiled System.Globalization.CultureInfo:get_UserDefaultUICulture() [FullOpts, IL size=17, code size=25]
+ 579: JIT compiled System.Globalization.CultureInfo:InitializeUserDefaultUICulture() [FullOpts, IL size=25, code size=49]
+ 580: JIT compiled System.Globalization.CultureInfo:GetUserDefaultUICulture() [FullOpts, IL size=134, code size=513]
+ 581: JIT compiled System.Span`1[char]:ToString() [FullOpts, IL size=144, code size=42]
+ 582: JIT compiled System.Globalization.CultureInfo:GetCultureByName(System.String) [FullOpts, IL size=27, code size=251]
+ 583: JIT compiled System.Globalization.CultureData:GetCultureData(System.String,bool) [FullOpts, IL size=232, code size=655]
+ 584: JIT compiled System.Globalization.TextInfo:ToLowerAsciiInvariant(System.String) [FullOpts, IL size=180, code size=305]
+ 585: JIT compiled System.PackedSpanHelpers:IndexOfAnyInRange[System.SpanHelpers+DontNegate`1[short]](byref,short,short,int) [FullOpts, IL size=861, code size=362]
+ 586: JIT compiled System.Globalization.CultureData:CreateCultureData(System.String,bool) [FullOpts, IL size=180, code size=235]
+ 587: JIT compiled System.Globalization.CultureData:InitCultureDataCore() [FullOpts, IL size=262, code size=1186]
+ 588: JIT compiled System.Globalization.GlobalizationMode:.cctor() [FullOpts, IL size=45, code size=291]
+ 589: JIT compiled System.Globalization.GlobalizationMode:LoadIcu() [FullOpts, IL size=26, code size=191]
+ 590: JIT compiled System.Globalization.GlobalizationMode:TryGetAppLocalIcuSwitchValue(byref) [FullOpts, IL size=17, code size=129]
+ 591: JIT compiled System.Globalization.CultureData:InitIcuCultureDataCore() [FullOpts, IL size=251, code size=681]
+ 592: JIT compiled System.Globalization.CultureData:IsValidCultureName(System.String,byref,byref) [FullOpts, IL size=309, code size=433]
+ 593: JIT compiled System.Globalization.CultureData:GetLocaleName(System.String,byref) [FullOpts, IL size=38, code size=285]
+ 594: JIT compiled System.Globalization.CultureData:NormalizeCultureName(System.String,System.ReadOnlySpan`1[char],System.String,byref) [FullOpts, IL size=451, code size=772]
+ 595: JIT compiled System.Globalization.CultureData:get_LCID() [FullOpts, IL size=59, code size=98]
+ 596: JIT compiled System.Globalization.CultureData:IcuLocaleNameToLCID(System.String) [FullOpts, IL size=20, code size=28]
+ 597: JIT compiled System.Globalization.IcuLocaleData:GetLocaleDataNumericPart(System.String,int) [FullOpts, IL size=401, code size=351]
+ 598: JIT compiled System.Globalization.IcuLocaleData:SearchCultureName(System.String) [FullOpts, IL size=166, code size=365]
+ 599: JIT compiled System.Globalization.IcuLocaleData:GetCultureName(int) [FullOpts, IL size=62, code size=117]
+ 600: JIT compiled System.SpanHelpers:SequenceCompareTo(byref,int,byref,int) [FullOpts, IL size=637, code size=317]
+ 601: JIT compiled System.Globalization.CultureData:IcuGetLocaleInfo(System.String,uint,System.String) [FullOpts, IL size=66, code size=370]
+ 602: JIT compiled System.Diagnostics.Tracing.ManifestBuilder:GetLocalizedMessage(System.String,System.Globalization.CultureInfo,bool) [FullOpts, IL size=95, code size=221]
+ 603: JIT compiled System.Array+EmptyArray`1[byte]:.cctor() [FullOpts, IL size=12, code size=45]
+ 604: JIT compiled System.Diagnostics.Tracing.EventSource:DefineEventPipeEvents() [FullOpts, IL size=258, code size=452]
+ 605: JIT compiled System.Diagnostics.Tracing.EventPipeMetadataGenerator:.cctor() [FullOpts, IL size=11, code size=43]
+ 606: JIT compiled System.Diagnostics.Tracing.EventPipeMetadataGenerator:GenerateEventMetadata(System.Diagnostics.Tracing.EventSource+EventMetadata) [FullOpts, IL size=149, code size=466]
+ 607: JIT compiled System.Diagnostics.Tracing.EventParameterInfo:GetTypeInfoFromType(System.Type,byref) [FullOpts, IL size=410, code size=606]
+ 608: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:IntPtr() [FullOpts, IL size=36, code size=207]
+ 609: JIT compiled System.Diagnostics.Tracing.Statics:.cctor() [FullOpts, IL size=46, code size=31]
+ 610: JIT compiled System.Diagnostics.Tracing.PropertyValue:GetFactory(System.Type) [FullOpts, IL size=982, code size=3160]
+ 611: JIT compiled System.Diagnostics.Tracing.PropertyValue+<>c:.cctor() [FullOpts, IL size=11, code size=43]
+ 612: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:UInt32() [FullOpts, IL size=32, code size=193]
+ 613: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:UInt16() [FullOpts, IL size=32, code size=170]
+ 614: JIT compiled System.Diagnostics.Tracing.EventPipeMetadataGenerator:GenerateMetadata(int,System.String,long,uint,uint,int,System.Diagnostics.Tracing.EventParameterInfo[]) [FullOpts, IL size=648, code size=1921]
+ 615: JIT compiled System.Diagnostics.Tracing.EventParameterInfo:GetMetadataLength(byref) [FullOpts, IL size=115, code size=150]
+ 616: JIT compiled System.Diagnostics.Tracing.EventParameterInfo:GetTypeCodeExtended(System.Type) [FullOpts, IL size=82, code size=85]
+ 617: JIT compiled System.Diagnostics.Tracing.EventParameterInfo:GenerateMetadata(ptr,byref,uint) [FullOpts, IL size=187, code size=271]
+ 618: JIT compiled System.Diagnostics.Tracing.EventPipeMetadataGenerator:WriteToBuffer(ptr,uint,byref,ptr,uint) [FullOpts, IL size=35, code size=50]
+ 619: JIT compiled System.Diagnostics.Tracing.EventPipeEventProvider:DefineEventHandle(uint,System.String,long,uint,uint,ptr,uint) [FullOpts, IL size=22, code size=190]
+ 620: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:UInt64() [FullOpts, IL size=33, code size=170]
+ 621: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:Double() [FullOpts, IL size=33, code size=170]
+ 622: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:Boolean() [FullOpts, IL size=36, code size=170]
+ 623: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:Byte() [FullOpts, IL size=32, code size=193]
+ 624: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:Guid() [FullOpts, IL size=33, code size=170]
+ 625: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:Int32() [FullOpts, IL size=32, code size=170]
+ 626: JIT compiled System.Diagnostics.Tracing.ScalarTypeInfo:Int64() [FullOpts, IL size=33, code size=170]
+ 627: JIT compiled System.Diagnostics.Tracing.EventSource:GetDispatcher(System.Diagnostics.Tracing.EventListener) [FullOpts, IL size=34, code size=25]
+ 628: JIT compiled System.Diagnostics.Tracing.EventSource:IsEnabledCommon(bool,int,long,int,long,byte) [FullOpts, IL size=85, code size=112]
+ 629: JIT compiled System.Diagnostics.Tracing.EventSource:EnableEventForDispatcher(System.Diagnostics.Tracing.EventDispatcher,int,int,bool) [FullOpts, IL size=126, code size=179]
+ 630: JIT compiled System.Diagnostics.Tracing.EventSource:SendManifest(byte[]) [FullOpts, IL size=408, code size=480]
+ 631: JIT compiled System.Diagnostics.Tracing.EventSource:OnEventCommand(System.Diagnostics.Tracing.EventCommandEventArgs) [FullOpts, IL size=1, code size=1]
+ 632: JIT compiled System.Diagnostics.Tracing.RuntimeEventSource:.cctor() [FullOpts, IL size=26, code size=144]
+ 633: JIT compiled System.Guid:TryParseGuid[char](System.ReadOnlySpan`1[char],byref) [FullOpts, IL size=193, code size=357]
+ 634: JIT compiled System.Guid:TryParseExactD[char](System.ReadOnlySpan`1[char],byref) [FullOpts, IL size=993, code size=1247]
+ 635: JIT compiled System.Diagnostics.Tracing.RuntimeEventSource:.ctor() [FullOpts, IL size=55, code size=187]
+ 636: JIT compiled System.Diagnostics.Tracing.RuntimeEventSource:get_ProviderMetadata() [FullOpts, IL size=13, code size=24]
+ 637: JIT compiled System.Diagnostics.Tracing.EventSourceInitHelper:PreregisterEventProviders(System.Guid,System.String,System.Func`1[System.Diagnostics.Tracing.EventSource]) [FullOpts, IL size=194, code size=735]
+ 638: JIT compiled System.Diagnostics.Tracing.Statics:MetadataForString(System.String,int,int,int) [FullOpts, IL size=71, code size=348]
+ 639: JIT compiled System.Diagnostics.Tracing.Statics:CheckName(System.String) [FullOpts, IL size=25, code size=101]
+ 640: JIT compiled System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+DontNegate`1[short]](byref,short,int) [FullOpts, IL size=1204, code size=652]
+ 641: JIT compiled System.Text.UTF8Encoding:GetBytes(System.String,int,int,byte[],int) [FullOpts, IL size=151, code size=354]
+ 642: JIT compiled System.Collections.Generic.Dictionary`2[System.Guid,System.__Canon]:TryInsert(System.Guid,System.__Canon,byte) [FullOpts, IL size=565, code size=767]
+ 643: JIT compiled System.Collections.Generic.Dictionary`2[System.Guid,System.__Canon]:Initialize(int) [FullOpts, IL size=56, code size=166]
+ 644: JIT compiled System.Environment:InitializeCommandLineArgs(ptr,int,ptr) [FullOpts, IL size=75, code size=230]
+ 645: JIT compiled System.Environment:.cctor() [FullOpts, IL size=11, code size=146]
+ 646: JIT compiled System.StartupHookProvider:ManagedStartup(ptr) [FullOpts, IL size=19, code size=46]
+ 647: JIT compiled System.StartupHookProvider:get_IsSupported() [FullOpts, IL size=18, code size=47]
+ 648: JIT compiled System.StartupHookProvider:ProcessStartupHooks(System.String) [FullOpts, IL size=169, code size=503]
+ 649: JIT compiled Program:<Main>$(System.String[]) [FullOpts, IL size=709, code size=2362]
+ 650: JIT compiled System.Enum:TryParseByValueOrName[int,uint](System.RuntimeType,System.ReadOnlySpan`1[char],bool,bool,byref) [FullOpts, IL size=175, code size=317]
+ 651: JIT compiled System.Enum:TryParseByName[uint](System.RuntimeType,System.ReadOnlySpan`1[char],bool,bool,byref) [FullOpts, IL size=335, code size=1067]
+ 652: JIT compiled System.Enum:<GetEnumInfo>g__InitializeEnumInfo|5_0[uint](System.RuntimeType,bool) [FullOpts, IL size=24, code size=182]
+ 653: JIT compiled System.Enum+EnumInfo`1[uint]:Create(System.RuntimeType,bool) [FullOpts, IL size=62, code size=411]
+ 654: JIT compiled System.Enum:AreSorted[uint](uint[]) [FullOpts, IL size=50, code size=78]
+ 655: JIT compiled System.Enum:AreSequentialFromZero[uint](uint[]) [FullOpts, IL size=34, code size=37]
+ 656: JIT compiled System.RuntimeType+IGenericCacheEntry`1[System.__Canon]:Replace(System.RuntimeType,System.__Canon) [FullOpts, IL size=152, code size=305]
+ 657: JIT compiled System.Diagnostics.Process:GetCurrentProcess() [FullOpts, IL size=18, code size=115]
+ 658: JIT compiled System.Environment:get_ProcessId() [FullOpts, IL size=27, code size=31]
+ 659: JIT compiled System.Environment:GetProcessId() [FullOpts, IL size=6, code size=146]
+ 660: JIT compiled System.Diagnostics.Process:set_ProcessorAffinityCore(nint) [FullOpts, IL size=41, code size=187]
+ 661: JIT compiled System.Diagnostics.Process:GetProcessHandle(int,bool) [FullOpts, IL size=193, code size=607]
+ 662: JIT compiled System.Diagnostics.Process:EnsureState(int) [FullOpts, IL size=227, code size=534]
+ 663: JIT compiled System.Diagnostics.ProcessManager:OpenProcess(int,int,bool) [FullOpts, IL size=92, code size=360]
+ 664: JIT compiled System.Runtime.CompilerServices.InitHelpers:InitClass(ptr) [FullOpts, IL size=21, code size=16]
+ 665: JIT compiled System.Diagnostics.ProcessManager:.cctor() [FullOpts, IL size=99, code size=492]
+ 666: JIT compiled System.Runtime.InteropServices.NativeLibrary:LoadLibraryCallbackStub(System.String,System.Reflection.Assembly,bool,uint) [FullOpts, IL size=63, code size=178]
+ 667: JIT compiled Interop+Advapi32:OpenProcessToken(nint,int,byref) [FullOpts, IL size=83, code size=358]
+ 668: JIT compiled Microsoft.Win32.SafeHandles.SafeTokenHandle:.ctor() [FullOpts, IL size=13, code size=22]
+ 669: JIT compiled Interop+Advapi32:AdjustTokenPrivileges(Microsoft.Win32.SafeHandles.SafeTokenHandle,bool,ptr,uint,ptr,ptr) [FullOpts, IL size=78, code size=336]
+ 670: JIT compiled Microsoft.Win32.SafeHandles.SafeTokenHandle:get_IsInvalid() [FullOpts, IL size=31, code size=26]
+ 671: JIT compiled Microsoft.Win32.SafeHandles.SafeTokenHandle:ReleaseHandle() [FullOpts, IL size=12, code size=10]
+ 672: JIT compiled Interop+Kernel32:CloseHandle(nint) [FullOpts, IL size=28, code size=189]
+ 673: JIT compiled Interop+Kernel32:OpenProcess(int,bool,int) [FullOpts, IL size=84, code size=327]
+ 674: JIT compiled Microsoft.Win32.SafeHandles.SafeProcessHandle:.ctor() [FullOpts, IL size=12, code size=26]
+ 675: JIT compiled Interop+Kernel32:SetProcessAffinityMask(Microsoft.Win32.SafeHandles.SafeProcessHandle,nint) [FullOpts, IL size=65, code size=295]
+ 676: JIT compiled Microsoft.Win32.SafeHandles.SafeProcessHandle:ReleaseHandle() [FullOpts, IL size=12, code size=10]
+ 677: JIT compiled Tedd.FastNoise.NoiseGenerator:.ctor(int) [FullOpts, IL size=153, code size=135]
+ 678: JIT compiled Tedd.FastNoise.NoiseGenerator:CalculateFractalBounding() [FullOpts, IL size=59, code size=61]
+ 679: JIT compiled Tedd.FastNoise.NoiseGenerator:UpdateTransformType3D() [FullOpts, IL size=58, code size=45]
+ 680: JIT compiled Program:<<Main>$>g__Evaluate|0_0(byref) [FullOpts, IL size=252, code size=495]
+ 681: JIT compiled Tedd.FastNoise.NoiseGenerator:GetNoise(float,float,float) [FullOpts, IL size=91, code size=6945]
+ 682: JIT compiled Tedd.FastNoise.NoiseGenerator:BuildKernelConfig() [FullOpts, IL size=75, code size=43]
+ 683: JIT compiled Tedd.FastNoise.NoiseGenerator:BuildFractalConfig() [FullOpts, IL size=101, code size=67]
+ 684: JIT compiled Tedd.FastNoise.Internal.ScalarOps:F(float) [FullOpts, IL size=2, code size=1]
+ 685: JIT compiled Tedd.FastNoise.Internal.Kernels.FractalConfig:get_Bounding() [FullOpts, IL size=7, code size=6]
+ 686: JIT compiled Tedd.FastNoise.Internal.Kernels.FractalConfig:get_Lacunarity() [FullOpts, IL size=7, code size=6]
+ 687: JIT compiled Tedd.FastNoise.Internal.Kernels.FractalConfig:get_Gain() [FullOpts, IL size=7, code size=6]
+ 688: JIT compiled Tedd.FastNoise.Internal.Kernels.FractalConfig:get_WeightedStrength() [FullOpts, IL size=7, code size=6]
+ 689: JIT compiled Tedd.FastNoise.Internal.ScalarOps:I(int) [FullOpts, IL size=2, code size=3]
+ 690: JIT compiled Tedd.FastNoise.Internal.Kernels.NoisePipeline:Single3[Tedd.FastNoise.Internal.ScalarOps,float,int](byref,int,float,float,float) [FullOpts, IL size=141, code size=5614]
+; Assembly listing for method Tedd.FastNoise.Internal.Kernels.OpenSimplex2Kernel:Sample3[Tedd.FastNoise.Internal.ScalarOps,float,int](int,float,float,float):float (FullOpts)
+; Emitting BLENDED_CODE for generic X64 + VEX on Windows
+; FullOpts code
+; optimized code
+; rsp based frame
+; fully interruptible
+; No PGO data
+; 0 inlinees with PGO data; 191 single block inlinees; 36 inlinees without PGO data
+
+G_M000_IG01:                ;; offset=0x0000
+       push     r15
+       push     r14
+       push     r13
+       push     r12
+       push     rdi
+       push     rsi
+       push     rbp
+       push     rbx
+       sub      rsp, 200
+       vmovaps  xmmword ptr [rsp+0xB0], xmm6
+       vmovaps  xmmword ptr [rsp+0xA0], xmm7
+       vmovaps  xmmword ptr [rsp+0x90], xmm8
+       vmovaps  xmmword ptr [rsp+0x80], xmm9
+       vmovaps  xmmword ptr [rsp+0x70], xmm10
+       vmovaps  xmmword ptr [rsp+0x60], xmm11
+       vmovaps  xmmword ptr [rsp+0x50], xmm12
+       vmovaps  xmmword ptr [rsp+0x40], xmm13
+       vmovaps  xmmword ptr [rsp+0x30], xmm14
+       mov      ebx, ecx
+
+G_M000_IG02:                ;; offset=0x0057
+       vxorps   xmm0, xmm0, xmm0
+       vucomiss xmm0, xmm1
+       jbe      SHORT G_M000_IG04
+
+G_M000_IG03:                ;; offset=0x0061
+       vmovss   xmm0, dword ptr [reloc @RWD00]
+       jmp      SHORT G_M000_IG05
+
+G_M000_IG04:                ;; offset=0x006B
+       vmovss   xmm0, dword ptr [reloc @RWD04]
+
+G_M000_IG05:                ;; offset=0x0073
+       vaddss   xmm0, xmm1, xmm0
+       vcmpordss xmm4, xmm0, xmm0
+       vandps   xmm4, xmm4, xmm0
+       mov      ecx, 0x7FFFFFFF
+       vcvttss2si eax, xmm4
+       vucomiss xmm0, dword ptr [reloc @RWD08]
+       cmovb    ecx, eax
+       mov      esi, ecx
+       vxorps   xmm0, xmm0, xmm0
+       vucomiss xmm0, xmm2
+       jbe      SHORT G_M000_IG07
+
+G_M000_IG06:                ;; offset=0x00A0
+       vmovss   xmm0, dword ptr [reloc @RWD00]
+       jmp      SHORT G_M000_IG08
+
+G_M000_IG07:                ;; offset=0x00AA
+       vmovss   xmm0, dword ptr [reloc @RWD04]
+
+G_M000_IG08:                ;; offset=0x00B2
+       vaddss   xmm0, xmm2, xmm0
+       vcmpordss xmm4, xmm0, xmm0
+       vandps   xmm4, xmm4, xmm0
+       mov      ecx, 0x7FFFFFFF
+       vcvttss2si eax, xmm4
+       vucomiss xmm0, dword ptr [reloc @RWD08]
+       cmovb    ecx, eax
+       mov      edi, ecx
+       vxorps   xmm0, xmm0, xmm0
+       vucomiss xmm0, xmm3
+       jbe      SHORT G_M000_IG10
+
+G_M000_IG09:                ;; offset=0x00DF
+       vmovss   xmm0, dword ptr [reloc @RWD00]
+       jmp      SHORT G_M000_IG11
+
+G_M000_IG10:                ;; offset=0x00E9
+       vmovss   xmm0, dword ptr [reloc @RWD04]
+
+G_M000_IG11:                ;; offset=0x00F1
+       vaddss   xmm0, xmm3, xmm0
+       vcmpordss xmm4, xmm0, xmm0
+       vandps   xmm4, xmm4, xmm0
+       mov      ecx, 0x7FFFFFFF
+       vcvttss2si eax, xmm4
+       vucomiss xmm0, dword ptr [reloc @RWD08]
+       cmovb    ecx, eax
+       mov      ebp, ecx
+       vxorps   xmm0, xmm0, xmm0
+       vcvtsi2ss xmm0, xmm0, esi
+       vsubss   xmm6, xmm1, xmm0
+       vxorps   xmm0, xmm0, xmm0
+       vcvtsi2ss xmm0, xmm0, edi
+       vsubss   xmm7, xmm2, xmm0
+       vxorps   xmm0, xmm0, xmm0
+       vcvtsi2ss xmm0, xmm0, ebp
+       vsubss   xmm8, xmm3, xmm0
+       vmovss   xmm0, dword ptr [reloc @RWD12]
+       vsubss   xmm1, xmm0, xmm6
+       vcmpordss xmm2, xmm1, xmm1
+       vandps   xmm2, xmm2, xmm1
+       mov      ecx, 0x7FFFFFFF
+       vcvttss2si eax, xmm2
+       vucomiss xmm1, dword ptr [reloc @RWD08]
+       cmovb    ecx, eax
+       mov      r14d, ecx
+       or       r14d, 1
+       vsubss   xmm1, xmm0, xmm7
+       vcmpordss xmm2, xmm1, xmm1
+       vandps   xmm2, xmm2, xmm1
+       mov      ecx, 0x7FFFFFFF
+       vcvttss2si eax, xmm2
+       vucomiss xmm1, dword ptr [reloc @RWD08]
+       cmovb    ecx, eax
+       mov      r15d, ecx
+       or       r15d, 1
+       vsubss   xmm0, xmm0, xmm8
+       vcmpordss xmm1, xmm0, xmm0
+       vandps   xmm1, xmm1, xmm0
+       mov      ecx, 0x7FFFFFFF
+       vcvttss2si eax, xmm1
+       vucomiss xmm0, dword ptr [reloc @RWD08]
+       cmovb    ecx, eax
+       mov      r13d, ecx
+       or       r13d, 1
+       vandps   xmm9, xmm6, xmmword ptr [reloc @RWD16]
+       vandps   xmm10, xmm7, xmmword ptr [reloc @RWD16]
+       vandps   xmm11, xmm8, xmmword ptr [reloc @RWD16]
+       imul     esi, esi, 0x1DDE90C9
+       imul     edi, edi, 0x43C42E4D
+       imul     ebp, ebp, 0x668B6E2F
+       vxorps   xmm12, xmm12, xmm12
+       vmulss   xmm0, xmm7, xmm7
+       vmulss   xmm1, xmm8, xmm8
+       vaddss   xmm0, xmm0, xmm1
+       vmulss   xmm1, xmm6, xmm6
+       vmovss   xmm2, dword ptr [reloc @RWD32]
+       vsubss   xmm1, xmm2, xmm1
+       vsubss   xmm13, xmm1, xmm0
+       xor      r12d, r12d
+
+G_M000_IG12:                ;; offset=0x020C
+       jmp      G_M000_IG14
+
+G_M000_IG13:                ;; offset=0x0211
+       vmovss   xmm0, dword ptr [reloc @RWD04]
+       vsubss   xmm9, xmm0, xmm9
+       vsubss   xmm10, xmm0, xmm10
+       vsubss   xmm11, xmm0, xmm11
+       vxorps   xmm0, xmm0, xmm0
+       vcvtsi2ss xmm0, xmm0, r14d
+       vmulss   xmm6, xmm0, xmm9
+       vxorps   xmm0, xmm0, xmm0
+       vcvtsi2ss xmm0, xmm0, r15d
+       vmulss   xmm7, xmm0, xmm10
+       vxorps   xmm0, xmm0, xmm0
+       vcvtsi2ss xmm0, xmm0, r13d
+       vmulss   xmm8, xmm0, xmm11
+       vaddss   xmm0, xmm10, xmm11
+       vmovss   xmm1, dword ptr [reloc @RWD36]
+       vsubss   xmm1, xmm1, xmm9
+       vsubss   xmm0, xmm1, xmm0
+       vaddss   xmm13, xmm0, xmm13
+       mov      eax, r14d
+       sar      eax, 1
+       and      eax, 0x1DDE90C9
+       add      esi, eax
+       mov      eax, r15d
+       sar      eax, 1
+       and      eax, 0x43C42E4D
+       add      edi, eax
+       mov      eax, r13d
+       sar      eax, 1
+       and      eax, 0x668B6E2F
+       add      ebp, eax
+       neg      r14d
+       neg      r15d
+       neg      r13d
+       not      ebx
+       inc      r12d
+
+G_M000_IG14:                ;; offset=0x029F
+       vxorps   xmm0, xmm0, xmm0
+       vucomiss xmm13, xmm0
+       jbe      SHORT G_M000_IG16
+
+G_M000_IG15:                ;; offset=0x02A9
+       mov      eax, -1
+       mov      dword ptr [rsp+0x28], eax
+       jmp      SHORT G_M000_IG17
+
+G_M000_IG16:                ;; offset=0x02B4
+       xor      eax, eax
+       mov      dword ptr [rsp+0x28], eax
+
+G_M000_IG17:                ;; offset=0x02BA
+       vmulss   xmm0, xmm13, xmm13
+       vmulss   xmm14, xmm0, xmm0
+       mov      ecx, ebx
+       xor      ecx, esi
+       xor      ecx, edi
+       xor      ecx, ebp
+       imul     ecx, ecx, 0x27D4EB2D
+       mov      edx, ecx
+       sar      edx, 15
+       xor      edx, ecx
+       mov      ecx, edx
+       and      ecx, 252
+       mov      dword ptr [rsp+0x24], ecx
+       test     byte  ptr [(reloc 0x7ffccb6bcf78)], 1
+       je       G_M000_IG90
+
+G_M000_IG18:                ;; offset=0x02F1
+       mov      rdx, 0x1FD2EC00E60
+       mov      rdx, gword ptr [rdx]
+       mov      r8, rdx
+       test     r8, r8
+       je       SHORT G_M000_IG20
+
+G_M000_IG19:                ;; offset=0x0306
+       lea      r10, bword ptr [r8+0x10]
+       mov      r8d, dword ptr [r8+0x08]
+       jmp      SHORT G_M000_IG21
+
+G_M000_IG20:                ;; offset=0x0310
+       xor      r10, r10
+
+G_M000_IG21:                ;; offset=0x0313
+       mov      ecx, dword ptr [rsp+0x24]
+       shr      ecx, 2
+       mov      ecx, dword ptr [r10+4*rcx]
+       mov      r8d, ecx
+       and      r8d, 3
+       jne      SHORT G_M000_IG23
+
+G_M000_IG22:                ;; offset=0x0327
+       vxorps   xmm0, xmm0, xmm0
+       jmp      SHORT G_M000_IG24
+
+G_M000_IG23:                ;; offset=0x032D
+       vmovd    r10d, xmm6
+       mov      r9d, ecx
+       shl      r9d, 29
+       and      r9d, 0xFFFFFFFF80000000
+       xor      r10d, r9d
+       vmovd    xmm0, r10d
+
+G_M000_IG24:                ;; offset=0x0348
+       cmp      r8d, 1
+       jne      SHORT G_M000_IG26
+
+G_M000_IG25:                ;; offset=0x034E
+       vxorps   xmm1, xmm1, xmm1
+       jmp      SHORT G_M000_IG27
+
+G_M000_IG26:                ;; offset=0x0354
+       vmovd    r10d, xmm7
+       mov      r9d, ecx
+       shl      r9d, 28
+       and      r9d, 0xFFFFFFFF80000000
+       xor      r10d, r9d
+       vmovd    xmm1, r10d
+
+G_M000_IG27:                ;; offset=0x036F
+       cmp      r8d, 2
+       jne      SHORT G_M000_IG29
+
+G_M000_IG28:                ;; offset=0x0375
+       vxorps   xmm2, xmm2, xmm2
+       jmp      SHORT G_M000_IG30
+
+G_M000_IG29:                ;; offset=0x037B
+       vmovd    r8d, xmm8
+       shl      ecx, 27
+       and      ecx, 0xFFFFFFFF80000000
+       xor      r8d, ecx
+       vmovd    xmm2, r8d
+
+G_M000_IG30:                ;; offset=0x0391
+       vaddss   xmm0, xmm0, xmm1
+       vaddss   xmm0, xmm0, xmm2
+       vmulss   xmm0, xmm0, xmm14
+       cmp      dword ptr [rsp+0x28], 0
+       je       SHORT G_M000_IG32
+
+G_M000_IG31:                ;; offset=0x03A5
+       jmp      SHORT G_M000_IG33
+
+G_M000_IG32:                ;; offset=0x03A7
+       vxorps   xmm0, xmm0, xmm0
+
+G_M000_IG33:                ;; offset=0x03AB
+       vaddss   xmm12, xmm12, xmm0
+       vucomiss xmm10, xmm9
+       jbe      SHORT G_M000_IG35
+
+G_M000_IG34:                ;; offset=0x03B6
+       mov      eax, -1
+       jmp      SHORT G_M000_IG36
+
+G_M000_IG35:                ;; offset=0x03BD
+       xor      eax, eax
+
+G_M000_IG36:                ;; offset=0x03BF
+       not      eax
+       vucomiss xmm11, xmm9
+       jbe      SHORT G_M000_IG38
+
+G_M000_IG37:                ;; offset=0x03C8
+       mov      ecx, -1
+       jmp      SHORT G_M000_IG39
+
+G_M000_IG38:                ;; offset=0x03CF
+       xor      ecx, ecx
+
+G_M000_IG39:                ;; offset=0x03D1
+       andn     eax, ecx, eax
+       mov      ecx, eax
+       not      ecx
+       vucomiss xmm10, xmm9
+       jbe      SHORT G_M000_IG41
+
+G_M000_IG40:                ;; offset=0x03E1
+       mov      r8d, -1
+       jmp      SHORT G_M000_IG42
+
+G_M000_IG41:                ;; offset=0x03E9
+       xor      r8d, r8d
+
+G_M000_IG42:                ;; offset=0x03EC
+       vucomiss xmm11, xmm10
+       jbe      SHORT G_M000_IG44
+
+G_M000_IG43:                ;; offset=0x03F3
+       mov      r10d, -1
+       jmp      SHORT G_M000_IG45
+
+G_M000_IG44:                ;; offset=0x03FB
+       xor      r10d, r10d
+
+G_M000_IG45:                ;; offset=0x03FE
+       and      ecx, r8d
+       andn     ecx, r10d, ecx
+       mov      r8d, eax
+       or       r8d, ecx
+       not      r8d
+       test     ecx, ecx
+       je       SHORT G_M000_IG47
+
+G_M000_IG46:                ;; offset=0x0413
+       vmovaps  xmm0, xmm10
+       jmp      SHORT G_M000_IG48
+
+G_M000_IG47:                ;; offset=0x041A
+       vmovaps  xmm0, xmm11
+
+G_M000_IG48:                ;; offset=0x041F
+       test     eax, eax
+       je       SHORT G_M000_IG50
+
+G_M000_IG49:                ;; offset=0x0423
+       vmovaps  xmm1, xmm9
+       jmp      SHORT G_M000_IG51
+
+G_M000_IG50:                ;; offset=0x042A
+       vmovaps  xmm1, xmm0
+
+G_M000_IG51:                ;; offset=0x042E
+       vaddss   xmm0, xmm13, xmm1
+       vaddss   xmm0, xmm0, xmm1
+       vsubss   xmm0, xmm0, dword ptr [reloc @RWD40]
+       imul     r10d, r14d, 0x1DDE90C9
+       test     eax, eax
+       je       SHORT G_M000_IG53
+
+G_M000_IG52:                ;; offset=0x0449
+       jmp      SHORT G_M000_IG54
+
+G_M000_IG53:                ;; offset=0x044B
+       xor      r10d, r10d
+
+G_M000_IG54:                ;; offset=0x044E
+       mov      r9d, esi
+       sub      r9d, r10d
+       imul     r10d, r15d, 0x43C42E4D
+       test     ecx, ecx
+       je       SHORT G_M000_IG56
+
+G_M000_IG55:                ;; offset=0x045F
+       jmp      SHORT G_M000_IG57
+
+G_M000_IG56:                ;; offset=0x0461
+       xor      r10d, r10d
+
+G_M000_IG57:                ;; offset=0x0464
+       mov      r11d, edi
+       sub      r11d, r10d
+       mov      dword ptr [rsp+0x2C], r11d
+       imul     r10d, r13d, 0x668B6E2F
+       test     r8d, r8d
+       je       SHORT G_M000_IG59
+
+G_M000_IG58:                ;; offset=0x047B
+       jmp      SHORT G_M000_IG60
+
+G_M000_IG59:                ;; offset=0x047D
+       xor      r10d, r10d
+
+G_M000_IG60:                ;; offset=0x0480
+       mov      r11d, ebp
+       sub      r11d, r10d
+       test     eax, eax
+       je       SHORT G_M000_IG62
+
+G_M000_IG61:                ;; offset=0x048A
+       vxorps   xmm1, xmm1, xmm1
+       vcvtsi2ss xmm1, xmm1, r14d
+       jmp      SHORT G_M000_IG63
+
+G_M000_IG62:                ;; offset=0x0495
+       vxorps   xmm1, xmm1, xmm1
+
+G_M000_IG63:                ;; offset=0x0499
+       vaddss   xmm1, xmm6, xmm1
+       test     ecx, ecx
+       je       SHORT G_M000_IG65
+
+G_M000_IG64:                ;; offset=0x04A1
+       vxorps   xmm2, xmm2, xmm2
+       vcvtsi2ss xmm2, xmm2, r15d
+       jmp      SHORT G_M000_IG66
+
+G_M000_IG65:                ;; offset=0x04AC
+       vxorps   xmm2, xmm2, xmm2
+
+G_M000_IG66:                ;; offset=0x04B0
+       vaddss   xmm2, xmm7, xmm2
+       test     r8d, r8d
+       je       SHORT G_M000_IG68
+
+G_M000_IG67:                ;; offset=0x04B9
+       vxorps   xmm3, xmm3, xmm3
+       vcvtsi2ss xmm3, xmm3, r13d
+       jmp      SHORT G_M000_IG69
+
+G_M000_IG68:                ;; offset=0x04C4
+       vxorps   xmm3, xmm3, xmm3
+
+G_M000_IG69:                ;; offset=0x04C8
+       vaddss   xmm3, xmm8, xmm3
+       vxorps   xmm4, xmm4, xmm4
+       vucomiss xmm0, xmm4
+       jbe      SHORT G_M000_IG71
+
+G_M000_IG70:                ;; offset=0x04D6
+       mov      eax, -1
+       jmp      SHORT G_M000_IG72
+
+G_M000_IG71:                ;; offset=0x04DD
+       xor      eax, eax
+
+G_M000_IG72:                ;; offset=0x04DF
+       vmulss   xmm0, xmm0, xmm0
+       vmulss   xmm0, xmm0, xmm0
+       xor      r9d, ebx
+       xor      r9d, dword ptr [rsp+0x2C]
+       xor      r9d, r11d
+       imul     ecx, r9d, 0x27D4EB2D
+       mov      r8d, ecx
+       sar      r8d, 15
+       xor      r8d, ecx
+       mov      ecx, r8d
+       and      ecx, 252
+       test     rdx, rdx
+       je       SHORT G_M000_IG74
+
+G_M000_IG73:                ;; offset=0x0511
+       lea      r8, bword ptr [rdx+0x10]
+       mov      edx, dword ptr [rdx+0x08]
+       jmp      SHORT G_M000_IG75
+
+G_M000_IG74:                ;; offset=0x051A
+       xor      r8, r8
+
+G_M000_IG75:                ;; offset=0x051D
+       shr      ecx, 2
+       mov      ecx, dword ptr [r8+4*rcx]
+       mov      edx, ecx
+       and      edx, 3
+       jne      SHORT G_M000_IG77
+
+G_M000_IG76:                ;; offset=0x052B
+       vxorps   xmm4, xmm4, xmm4
+       jmp      SHORT G_M000_IG78
+
+G_M000_IG77:                ;; offset=0x0531
+       vmovd    r8d, xmm1
+       mov      r10d, ecx
+       shl      r10d, 29
+       and      r10d, 0xFFFFFFFF80000000
+       xor      r8d, r10d
+       vmovd    xmm4, r8d
+
+G_M000_IG78:                ;; offset=0x054C
+       cmp      edx, 1
+       jne      SHORT G_M000_IG80
+
+G_M000_IG79:                ;; offset=0x0551
+       vxorps   xmm1, xmm1, xmm1
+       jmp      SHORT G_M000_IG81
+
+G_M000_IG80:                ;; offset=0x0557
+       vmovd    r8d, xmm2
+       mov      r10d, ecx
+       shl      r10d, 28
+       and      r10d, 0xFFFFFFFF80000000
+       xor      r8d, r10d
+       vmovd    xmm1, r8d
+
+G_M000_IG81:                ;; offset=0x0572
+       cmp      edx, 2
+       jne      SHORT G_M000_IG83
+
+G_M000_IG82:                ;; offset=0x0577
+       vxorps   xmm2, xmm2, xmm2
+       jmp      SHORT G_M000_IG84
+
+G_M000_IG83:                ;; offset=0x057D
+       vmovd    edx, xmm3
+       shl      ecx, 27
+       and      ecx, 0xFFFFFFFF80000000
+       xor      edx, ecx
+       vmovd    xmm2, edx
+
+G_M000_IG84:                ;; offset=0x0590
+       vaddss   xmm1, xmm4, xmm1
+       vaddss   xmm1, xmm1, xmm2
+       vmulss   xmm0, xmm1, xmm0
+       test     eax, eax
+       je       SHORT G_M000_IG86
+
+G_M000_IG85:                ;; offset=0x05A0
+       jmp      SHORT G_M000_IG87
+
+G_M000_IG86:                ;; offset=0x05A2
+       vxorps   xmm0, xmm0, xmm0
+
+G_M000_IG87:                ;; offset=0x05A6
+       vaddss   xmm12, xmm12, xmm0
+       cmp      r12d, 1
+       jne      G_M000_IG13
+
+G_M000_IG88:                ;; offset=0x05B4
+       vmulss   xmm0, xmm12, dword ptr [reloc @RWD44]
+
+G_M000_IG89:                ;; offset=0x05BC
+       vmovaps  xmm6, xmmword ptr [rsp+0xB0]
+       vmovaps  xmm7, xmmword ptr [rsp+0xA0]
+       vmovaps  xmm8, xmmword ptr [rsp+0x90]
+       vmovaps  xmm9, xmmword ptr [rsp+0x80]
+       vmovaps  xmm10, xmmword ptr [rsp+0x70]
+       vmovaps  xmm11, xmmword ptr [rsp+0x60]
+       vmovaps  xmm12, xmmword ptr [rsp+0x50]
+       vmovaps  xmm13, xmmword ptr [rsp+0x40]
+       vmovaps  xmm14, xmmword ptr [rsp+0x30]
+       add      rsp, 200
+       pop      rbx
+       pop      rbp
+       pop      rsi
+       pop      rdi
+       pop      r12
+       pop      r13
+       pop      r14
+       pop      r15
+       ret
+
+G_M000_IG90:                ;; offset=0x0612
+       mov      rcx, 0x7FFCCB6BCF10
+       call     CORINFO_HELP_GET_GCSTATIC_BASE
+       jmp      G_M000_IG18
+
+RWD00  	dd	BF000000h		;      -0.5
+RWD04  	dd	3F000000h		;       0.5
+RWD08  	dd	4F000000h		; 2.14748e+09
+RWD12  	dd	BF800000h		;        -1
+RWD16  	dq	7FFFFFFF7FFFFFFFh, 7FFFFFFF7FFFFFFFh
+RWD32  	dd	3F19999Ah		;       0.6
+RWD36  	dd	3F400000h		;      0.75
+RWD40  	dd	3F800000h		;         1
+RWD44  	dd	4202C6F2h		;   32.6943
+
+; Total bytes of code 1574
+
+ 691: JIT compiled Tedd.FastNoise.Internal.Kernels.OpenSimplex2Kernel:Sample3[Tedd.FastNoise.Internal.ScalarOps,float,int](int,float,float,float) [FullOpts, IL size=1795, code size=1574]
+ 692: JIT compiled Tedd.FastNoise.Internal.Tables:.cctor() [FullOpts, IL size=128, code size=326]
+ 693: JIT compiled Tedd.FastNoise.Internal.Kernels.FractalConfig:get_Type() [FullOpts, IL size=7, code size=3]
+ 694: JIT compiled Tedd.FastNoise.Internal.ScalarOps:Mul(float,float) [FullOpts, IL size=4, code size=5]
+ 695: JIT compiled Tedd.FastNoise.Internal.ScalarOps:Add(float,float) [FullOpts, IL size=4, code size=5]
+ 696: JIT compiled Tedd.FastNoise.Internal.NoiseMath:Lerp[Tedd.FastNoise.Internal.ScalarOps,float,int](float,float,float) [FullOpts, IL size=38, code size=13]
+ 697: JIT compiled System.Threading.Thread:Sleep(int) [FullOpts, IL size=19, code size=187]
+ 698: JIT compiled System.Diagnostics.Stopwatch:GetElapsedTime(long,long) [FullOpts, IL size=17, code size=103]
+ 699: JIT compiled System.Diagnostics.Stopwatch:.cctor() [FullOpts, IL size=38, code size=197]
+ 700: JIT compiled System.Buffers.ArrayPool`1[char]:.cctor() [FullOpts, IL size=11, code size=57]
+ 701: JIT compiled System.Buffers.SharedArrayPool`1[char]:.ctor() [FullOpts, IL size=31, code size=88]
+ 702: JIT compiled System.Runtime.CompilerServices.ConditionalWeakTable`2[System.__Canon,System.__Canon]:.ctor() [FullOpts, IL size=32, code size=123]
+ 703: JIT compiled System.Runtime.CompilerServices.ConditionalWeakTable`2+Container[System.__Canon,System.__Canon]:.ctor(System.Runtime.CompilerServices.ConditionalWeakTable`2[System.__Canon,System.__Canon]) [FullOpts, IL size=66, code size=177]
+ 704: JIT compiled System.Buffers.SharedArrayPool`1[char]:Rent(int) [FullOpts, IL size=274, code size=1120]
+ 705: JIT compiled System.Buffers.ArrayPoolEventSource:.cctor() [FullOpts, IL size=11, code size=57]
+ 706: JIT compiled System.Buffers.ArrayPoolEventSource:.ctor() [FullOpts, IL size=54, code size=187]
+ 707: JIT compiled System.Buffers.ArrayPoolEventSource:get_ProviderMetadata() [FullOpts, IL size=13, code size=24]
+ 708: JIT compiled System.Runtime.CompilerServices.DefaultInterpolatedStringHandler:AppendFormatted[int](int) [FullOpts, IL size=257, code size=183]
+ 709: JIT compiled System.Enum:TryFormatPrimitiveDefault[int,uint](System.RuntimeType,int,System.Span`1[char],byref) [FullOpts, IL size=109, code size=699]
+ 710: JIT compiled System.Runtime.CompilerServices.DefaultInterpolatedStringHandler:AppendFormatted[int](int) [FullOpts, IL size=257, code size=434]
+ 711: JIT compiled System.Runtime.CompilerServices.DefaultInterpolatedStringHandler:AppendFormatted[double](double,System.String) [FullOpts, IL size=251, code size=252]
+ 712: JIT compiled System.Globalization.NumberFormatInfo:<GetInstance>g__GetProviderNonNull|58_0(System.IFormatProvider) [FullOpts, IL size=81, code size=127]
+ 713: JIT compiled System.Globalization.CultureInfo:GetFormat(System.Type) [FullOpts, IL size=52, code size=55]
+ 714: JIT compiled System.Globalization.CultureInfo:get_NumberFormat() [FullOpts, IL size=53, code size=95]
+ 715: JIT compiled System.Globalization.NumberFormatInfo:.ctor(System.Globalization.CultureData) [FullOpts, IL size=263, code size=377]
+ 716: JIT compiled System.Globalization.NumberFormatInfo:.cctor() [FullOpts, IL size=109, code size=233]
+ 717: JIT compiled System.Globalization.CultureData:GetNFIValues(System.Globalization.NumberFormatInfo) [FullOpts, IL size=594, code size=2384]
+ 718: JIT compiled System.Globalization.CultureData:get_NumberGroupSizes() [FullOpts, IL size=28, code size=375]
+ 719: JIT compiled System.Globalization.CultureData:get_CurrencyGroupSizes() [FullOpts, IL size=28, code size=375]
+ 720: JIT compiled System.Globalization.CultureData:get_PercentSymbol() [FullOpts, IL size=29, code size=71]
+ 721: JIT compiled System.Globalization.CultureData:get_PerMilleSymbol() [FullOpts, IL size=29, code size=71]
+ 722: JIT compiled System.Globalization.CultureData:get_NegativeInfinitySymbol() [FullOpts, IL size=29, code size=71]
+ 723: JIT compiled System.Globalization.CultureData:get_PositiveInfinitySymbol() [FullOpts, IL size=29, code size=71]
+ 724: JIT compiled System.Globalization.CultureData:get_NaNSymbol() [FullOpts, IL size=29, code size=71]
+ 725: JIT compiled System.Globalization.NumberFormatInfo:InitializeInvariantAndNegativeSignFlags() [FullOpts, IL size=166, code size=233]
+ 726: JIT compiled System.Number:TryFormatFloat[double,char](double,System.ReadOnlySpan`1[char],System.Globalization.NumberFormatInfo,System.Span`1[char],byref) [FullOpts, IL size=71, code size=288]
+ 727: JIT compiled System.Number:FormatFloat[double,char](byref,double,System.ReadOnlySpan`1[char],System.Globalization.NumberFormatInfo) [FullOpts, IL size=368, code size=568]
+ 728: JIT compiled System.Number:GetFloatingPointMaxDigitsAndPrecision(char,byref,System.Globalization.NumberFormatInfo,byref) [FullOpts, IL size=185, code size=207]
+ 729: JIT compiled System.Number:Dragon4[double](double,int,bool,byref) [FullOpts, IL size=153, code size=187]
+ 730: JIT compiled System.Number:ExtractFractionAndBiasedExponent[double](double,byref) [FullOpts, IL size=139, code size=67]
+ 731: JIT compiled System.Number:Dragon4(ulong,int,uint,bool,int,bool,System.Span`1[byte],byref) [FullOpts, IL size=1020, code size=3202]
+ 732: JIT compiled System.Number+BigInteger:Multiply(byref,uint,byref) [FullOpts, IL size=169, code size=197]
+ 733: JIT compiled System.Number+BigInteger:Compare(byref,byref) [FullOpts, IL size=97, code size=78]
+ 734: JIT compiled System.Number+BigInteger:HeuristicDivide(byref,byref) [FullOpts, IL size=363, code size=267]
+ 735: JIT compiled System.Number+BigInteger:Multiply10() [FullOpts, IL size=129, code size=83]
+ 736: JIT compiled System.Number+BigInteger:ShiftLeft(uint) [FullOpts, IL size=359, code size=279]
+ 737: JIT compiled System.Number:NumberToString[char](byref,byref,char,int,System.Globalization.NumberFormatInfo) [FullOpts, IL size=503, code size=983]
+ 738: JIT compiled System.Number:RoundNumber(byref,int,bool) [FullOpts, IL size=158, code size=186]
+ 739: JIT compiled System.Number:FormatFixed[char](byref,byref,int,int[],System.ReadOnlySpan`1[char],System.ReadOnlySpan`1[char]) [FullOpts, IL size=530, code size=999]
+ 740: JIT compiled System.Number+Grisu3:TryRun[double](double,int,byref) [FullOpts, IL size=150, code size=641]
+ 741: JIT compiled System.Number+DiyFp:GetBoundaries(int,byref,byref) [FullOpts, IL size=156, code size=129]
+ 742: JIT compiled System.Number+Grisu3:GetCachedPowerForBinaryExponentRange(int,int,byref) [FullOpts, IL size=92, code size=154]
+ 743: JIT compiled System.Number+DiyFp:Multiply(byref) [FullOpts, IL size=128, code size=114]
+ 744: JIT compiled System.Number+Grisu3:TryDigitGenShortest(byref,byref,byref,System.Span`1[byte],byref,byref) [FullOpts, IL size=455, code size=500]
+ 745: JIT compiled System.Number+Grisu3:BiggestPowerTen(uint,int,byref) [FullOpts, IL size=60, code size=71]
+ 746: JIT compiled System.Number+Grisu3:TryRoundWeedShortest(System.Span`1[byte],int,ulong,ulong,ulong,ulong,ulong) [FullOpts, IL size=131, code size=195]
+ 747: JIT compiled System.Number:<RoundNumber>g__ShouldRoundUp|162_0(ptr,int,byte,bool) [FullOpts, IL size=24, code size=36]
+ 748: JIT compiled System.Number:FormatGeneral[char](byref,byref,int,System.Globalization.NumberFormatInfo,char,bool) [FullOpts, IL size=198, code size=491]
+ 749: JIT compiled System.Runtime.CompilerServices.DefaultInterpolatedStringHandler:AppendFormatted[float](float,System.String) [FullOpts, IL size=251, code size=252]
+ 750: JIT compiled System.Number:TryFormatFloat[float,char](float,System.ReadOnlySpan`1[char],System.Globalization.NumberFormatInfo,System.Span`1[char],byref) [FullOpts, IL size=71, code size=288]
+ 751: JIT compiled System.Number:FormatFloat[float,char](byref,float,System.ReadOnlySpan`1[char],System.Globalization.NumberFormatInfo) [FullOpts, IL size=368, code size=563]
+ 752: JIT compiled System.Number+Grisu3:TryRun[float](float,int,byref) [FullOpts, IL size=150, code size=639]
+ 753: JIT compiled System.Number:ExtractFractionAndBiasedExponent[float](float,byref) [FullOpts, IL size=139, code size=55]
+ 754: JIT compiled System.Buffers.SharedArrayPool`1[char]:Return(char[],bool) [FullOpts, IL size=223, code size=989]
+ 755: JIT compiled System.Buffers.SharedArrayPool`1[char]:InitializeTlsBucketsAndTrimming() [FullOpts, IL size=80, code size=368]
+ 756: JIT compiled System.Runtime.CompilerServices.ConditionalWeakTable`2[System.__Canon,System.__Canon]:Add(System.__Canon,System.__Canon) [FullOpts, IL size=78, code size=294]
+ 757: JIT compiled System.Runtime.CompilerServices.ConditionalWeakTable`2+Container[System.__Canon,System.__Canon]:FindEntry(System.__Canon,byref) [FullOpts, IL size=153, code size=184]
+ 758: JIT compiled System.Runtime.CompilerServices.ConditionalWeakTable`2+Container[System.__Canon,System.__Canon]:CreateEntryNoResize(System.__Canon,System.__Canon) [FullOpts, IL size=165, code size=212]
+ 759: JIT compiled System.Runtime.CompilerServices.ConditionalWeakTable`2+Container[System.__Canon,System.__Canon]:VerifyIntegrity() [FullOpts, IL size=20, code size=62]
+ 760: JIT compiled System.Buffers.SharedArrayPool`1+<>c[char]:.cctor() [FullOpts, IL size=11, code size=43]
+ 761: JIT compiled System.Console:WriteLine(System.String) [FullOpts, IL size=12, code size=37]
+ 762: JIT compiled System.Console:get_Out() [FullOpts, IL size=20, code size=63]
+ 763: JIT compiled System.Console:.cctor() [FullOpts, IL size=11, code size=43]
+ 764: JIT compiled System.Console:<get_Out>g__EnsureInitialized|26_0() [FullOpts, IL size=63, code size=180]
+ 765: JIT compiled System.ConsolePal:OpenStandardOutput() [FullOpts, IL size=34, code size=71]
+ 766: JIT compiled System.Console:get_OutputEncoding() [FullOpts, IL size=72, code size=325]
+ 767: JIT compiled System.Text.EncodingHelper:GetSupportedConsoleEncoding(int) [FullOpts, IL size=53, code size=296]
+ 768: JIT compiled System.Text.Encoding:GetEncoding(int) [FullOpts, IL size=335, code size=1103]
+ 769: JIT compiled System.Text.EncodingProvider:GetEncodingFromProvider(int) [FullOpts, IL size=46, code size=84]
+ 770: JIT compiled System.Text.Encoding:FilterDisallowedEncodings(System.Text.Encoding) [FullOpts, IL size=29, code size=90]
+ 771: JIT compiled System.Text.Encoding:.cctor() [FullOpts, IL size=12, code size=72]
+ 772: JIT compiled System.Text.Encoding:get_CodePage() [FullOpts, IL size=7, code size=4]
+ 773: JIT compiled System.ConsolePal:GetStandardFile(int,int,bool) [FullOpts, IL size=50, code size=218]
+ 774: JIT compiled System.ConsolePal:ConsoleHandleIsWritable(nint) [FullOpts, IL size=24, code size=218]
+ 775: JIT compiled Interop+Kernel32:GetFileType(nint) [FullOpts, IL size=23, code size=183]
+ 776: JIT compiled System.Console:CreateOutputWriter(System.IO.Stream) [FullOpts, IL size=49, code size=228]
+ 777: JIT compiled System.IO.Stream:.cctor() [FullOpts, IL size=11, code size=43]
+ 778: JIT compiled System.Text.EncodingExtensions:RemovePreamble(System.Text.Encoding) [FullOpts, IL size=25, code size=196]
+ 779: JIT compiled System.Text.UTF8Encoding+UTF8EncodingSealed:get_Preamble() [FullOpts, IL size=24, code size=41]
+ 780: JIT compiled System.Text.EncoderReplacementFallback:.cctor() [FullOpts, IL size=11, code size=67]
+ 781: JIT compiled System.Text.DecoderReplacementFallback:.cctor() [FullOpts, IL size=11, code size=67]
+ 782: JIT compiled System.IO.StreamWriter:.ctor(System.IO.Stream,System.Text.Encoding,int,bool) [FullOpts, IL size=190, code size=498]
+ 783: JIT compiled System.Threading.Tasks.Task:.cctor() [FullOpts, IL size=76, code size=232]
+ 784: JIT compiled System.Threading.Tasks.Task+<>c:.cctor() [FullOpts, IL size=11, code size=43]
+ 785: JIT compiled System.IO.TextWriter:.cctor() [FullOpts, IL size=26, code size=127]
+ 786: JIT compiled System.IO.ConsoleStream:get_CanWrite() [FullOpts, IL size=7, code size=5]
+ 787: JIT compiled System.Text.ConsoleEncoding:GetEncoder() [FullOpts, IL size=12, code size=15]
+ 788: JIT compiled System.Text.UTF8Encoding:GetEncoder() [FullOpts, IL size=7, code size=91]
+ 789: JIT compiled System.IO.ConsoleStream:get_CanSeek() [FullOpts, IL size=2, code size=3]
+ 790: JIT compiled System.IO.StreamWriter:Flush(bool,bool) [FullOpts, IL size=263, code size=467]
+ 791: JIT compiled System.Text.Encoding:get_Preamble() [FullOpts, IL size=12, code size=51]
+ 792: JIT compiled System.Text.ConsoleEncoding:GetPreamble() [FullOpts, IL size=6, code size=11]
+ 793: JIT compiled System.Text.ConsoleEncoding:GetMaxByteCount(int) [FullOpts, IL size=13, code size=15]
+ 794: JIT compiled System.Text.UTF8Encoding+UTF8EncodingSealed:GetMaxByteCount(int) [FullOpts, IL size=20, code size=32]
+ 795: JIT compiled System.Text.Encoder:GetBytes(System.ReadOnlySpan`1[char],System.Span`1[byte],bool) [FullOpts, IL size=44, code size=111]
+ 796: JIT compiled System.Text.EncoderNLS:GetBytes(ptr,int,ptr,int,bool) [FullOpts, IL size=78, code size=210]
+ 797: JIT compiled System.Text.Encoding:GetBytes(ptr,int,ptr,int,System.Text.EncoderNLS) [FullOpts, IL size=57, code size=200]
+ 798: JIT compiled System.Text.EncoderNLS:get_HasLeftoverData() [FullOpts, IL size=35, code size=59]
+ 799: JIT compiled System.Text.UTF8Encoding:GetBytesFast(ptr,int,ptr,int,byref) [FullOpts, IL size=33, code size=99]
+ 800: JIT compiled System.ConsolePal+WindowsConsoleStream:Flush() [FullOpts, IL size=26, code size=31]
+ 801: JIT compiled System.IO.TextWriter:Synchronized(System.IO.TextWriter) [FullOpts, IL size=28, code size=136]
+ 802: JIT compiled System.IO.TextWriter+SyncTextWriter:WriteLine(System.String) [FullOpts, IL size=13, code size=110]
+ 803: JIT compiled System.Threading.Monitor:Enter(System.Object,byref) [FullOpts, IL size=34, code size=69]
+ 804: JIT compiled System.IO.StreamWriter:WriteLine(System.String) [FullOpts, IL size=20, code size=474]
+ 805: JIT compiled System.ConsolePal+WindowsConsoleStream:Write(System.ReadOnlySpan`1[byte]) [FullOpts, IL size=36, code size=76]
+ 806: JIT compiled System.ConsolePal+WindowsConsoleStream:WriteFileNative(nint,System.ReadOnlySpan`1[byte],bool) [FullOpts, IL size=115, code size=450]
+disasm,OpenSimplex2,point,0,20432.800,3640.3326059739047,0,-0.3921608
+ 807: JIT compiled System.Threading.Monitor:ExitIfLockTaken(System.Object,byref) [FullOpts, IL size=33, code size=70]
+disasm,OpenSimplex2,point,1,20482.900,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,2,20400.000,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,3,20429.200,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,4,20454.500,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,5,20404.200,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,6,20402.400,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,7,20422.600,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,8,20383.800,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,9,20459.500,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,10,20448.700,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,11,20453.100,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,12,20397.800,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,13,20410.600,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,14,20396.300,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,15,20375.000,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,16,20439.900,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,17,20430.100,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,18,20456.400,3640.3326059739047,0,-0.3921608
+disasm,OpenSimplex2,point,19,20455.200,3640.3326059739047,0,-0.3921608
+ 808: JIT compiled System.GC:RunFinalizers() [FullOpts, IL size=81, code size=500]
+ 809: JIT compiled System.Threading.Thread:InitializeCurrentThread() [FullOpts, IL size=22, code size=220]
+ 810: JIT compiled System.AppContext:OnProcessExit() [FullOpts, IL size=23, code size=27]
+ 811: JIT compiled System.Runtime.Loader.AssemblyLoadContext:OnProcessExit() [FullOpts, IL size=99, code size=345]
+ 812: JIT compiled System.Diagnostics.Tracing.EventListener:DisposeOnShutdown() [FullOpts, IL size=142, code size=529]
+ 813: JIT compiled System.Diagnostics.Tracing.EventSource:Dispose(bool) [FullOpts, IL size=124, code size=204]
+ 814: JIT compiled System.Diagnostics.Tracing.EventProvider:Dispose(bool) [FullOpts, IL size=77, code size=223]
+ 815: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:Disable() [FullOpts, IL size=14, code size=29]
+ 816: JIT compiled System.Diagnostics.Tracing.EventProviderImpl:Disable() [FullOpts, IL size=31, code size=17]
+ 817: JIT compiled System.Diagnostics.Tracing.EtwEventProvider:Unregister() [FullOpts, IL size=40, code size=213]
+ 818: JIT compiled System.Diagnostics.Tracing.EventPipeEventProvider:Unregister() [FullOpts, IL size=39, code size=213]
+ 819: JIT compiled System.AppDomain:OnProcessExit() [FullOpts, IL size=32, code size=99]

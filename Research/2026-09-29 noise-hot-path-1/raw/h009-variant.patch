@@ -1,0 +1,13 @@
+diff --git a/src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs b/src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs
+--- a/src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs
++++ b/src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs
+@@ -125,3 +125,9 @@ internal static class OpenSimplex2Kernel
++#if H009_BASELINE
+         TF ax0 = TOps.Mul(TOps.ToFloat(xNSign), TOps.Neg(x0));
+         TF ay0 = TOps.Mul(TOps.ToFloat(yNSign), TOps.Neg(y0));
+         TF az0 = TOps.Mul(TOps.ToFloat(zNSign), TOps.Neg(z0));
++#else
++        TF ax0 = TOps.Abs(x0);
++        TF ay0 = TOps.Abs(y0);
++        TF az0 = TOps.Abs(z0);
++#endif
