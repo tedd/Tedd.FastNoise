@@ -360,8 +360,11 @@ path; `CompiledNoiseStack.IsVectorised` tells you when that has happened.
 
 ## Performance
 
-Numbers are not published here yet. The benchmark project is written and the questions it answers
-are fixed; the table lands once the suite has been run on a machine worth quoting.
+The [CPU benchmark graphs](https://tedd.no/Tedd.FastNoise/#benchmarks) compare point loops and
+scalar, SIMD, and parallel fills across six kernels, single-octave and four-octave fBm signals,
+and equally sized 2D/3D fields. The [raw observations](Research/2026-09-29%20access-matrix-1/raw.csv)
+and [reproduction instructions](Research/2026-09-29%20access-matrix-1/README.md) accompany the
+published medians and dispersion. These are host-specific measurements, not latency guarantees.
 
 What it measures, and against what:
 

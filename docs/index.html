@@ -9,6 +9,7 @@
   <link rel="icon" href="assets/noise-mark.svg" type="image/svg+xml">
   <script>document.documentElement.classList.add('js')</script>
   <link rel="stylesheet" href="style.css">
+  <script src="benchmarks-data.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -21,7 +22,7 @@
     </a>
     <nav aria-label="Primary navigation">
       <a href="#algorithms">Algorithms</a>
-      <a href="#execution">Execution</a>
+      <a href="#benchmarks">Benchmarks</a>
       <a href="#gpu">GPU terrain</a>
       <a href="#composition">Composition</a>
       <a href="#api">API</a>
@@ -173,6 +174,45 @@ densityNoise.Fill(density, region); <span class="comment">// Auto backend</span>
       </div>
     </section>
 
+    <section class="benchmarks section-shell" id="benchmarks">
+      <div class="section-intro reveal">
+        <div>
+          <p class="eyebrow">Measured CPU performance</p>
+          <h2>Choose the kernel.<br>Choose the access path.</h2>
+        </div>
+        <p>Each result fills or samples the same 65,536 coordinates. Compare all six kernels as single-octave signals or four-octave fBm, in a 2D tile or 3D volume. Shorter bars mean less elapsed time.</p>
+      </div>
+
+      <div class="benchmark-controls reveal">
+        <label for="benchmark-shape">Field
+          <select id="benchmark-shape">
+            <option value="2D 256×256">2D · 256 × 256</option>
+            <option value="3D 16×256×16" selected>3D · 16 × 256 × 16</option>
+          </select>
+        </label>
+        <label for="benchmark-fractal">Signal
+          <select id="benchmark-fractal">
+            <option value="Single">Single octave</option>
+            <option value="fBm ×4" selected>fBm · four octaves</option>
+          </select>
+        </label>
+        <p>Point loop = repeated <code>GetNoise</code>. All other paths use <code>Fill</code> on a preallocated destination.</p>
+      </div>
+
+      <div id="benchmark-graphs" class="benchmark-grid" aria-live="polite">
+        <p>Benchmark graphs require JavaScript.</p>
+      </div>
+
+      <div class="benchmark-table-wrap table-shell" role="region" aria-label="Benchmark values" tabindex="0">
+        <table id="benchmark-table">
+          <thead><tr><th>Kernel</th><th>Point loop</th><th>Scalar fill</th><th>SIMD fill</th><th>Parallel fill</th></tr></thead>
+          <tbody><tr><td colspan="5">Benchmark values require JavaScript.</td></tr></tbody>
+        </table>
+      </div>
+
+      <p class="benchmark-method">Bars show median milliseconds per field; fine marks span the 10th–90th percentile across 13 timed calls. Each kernel card has its own scale, so use the numeric values to compare different kernels. OpenSimplex2S has no SIMD kernel and its SIMD request uses the scalar path. Parallel timing includes scheduling overhead and depends strongly on available cores. <span id="benchmark-machine"></span> <a href="benchmarks.json">Full data and machine details</a> · <a href="https://github.com/tedd/Tedd.FastNoise/tree/main/Research/2026-09-29%20access-matrix-1">Raw observations and reproduction</a>.</p>
+    </section>
+
     <section class="execution section-shell" id="execution">
       <div class="execution-heading reveal">
         <p class="eyebrow">Bulk execution</p>
@@ -182,7 +222,7 @@ densityNoise.Fill(density, region); <span class="comment">// Auto backend</span>
 
       <ol class="pipeline" aria-label="Bulk fill pipeline">
         <li class="reveal"><span>01</span><div><h3>Resolve one fill plan</h3><p><code>Auto</code> selects scalar, SIMD, or parallel SIMD from sample count, hardware vector support, and kernel capability. Configuration is snapshotted before row execution.</p></div></li>
-        <li class="reveal"><span>02</span><div><h3>Partition complete rows</h3><p>Rows are contiguous ranges in the destination. Parallel workers receive disjoint row groups, so workers do not write the same cache line.</p></div></li>
+        <li class="reveal"><span>02</span><div><h3>Partition complete rows</h3><p>Rows are contiguous ranges in the destination. Parallel workers receive disjoint row groups; a cache line can still be shared at a range boundary.</p></div></li>
         <li class="reveal"><span>03</span><div><h3>Construct X-coordinate vectors</h3><p>A ramp generates <code>originX + n × step</code> for all lanes. Y and Z remain broadcast values. No matrix transpose is required.</p></div></li>
         <li class="reveal"><span>04</span><div><h3>Execute one generic kernel body</h3><p>The scalar and vector implementations instantiate the same generic arithmetic over different operation sets. The scalar path has one lane; the vector path uses the hardware width.</p></div></li>
         <li class="reveal"><span>05</span><div><h3>Store contiguous vectors</h3><p>Full vectors are written directly into the caller’s span. A scalar tail handles row widths that are not multiples of the current lane count.</p></div></li>

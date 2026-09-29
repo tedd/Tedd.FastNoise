@@ -23,7 +23,7 @@
     <PackageProjectUrl>https://github.com/tedd/Tedd.FastNoise</PackageProjectUrl>
     <RepositoryUrl>https://github.com/tedd/Tedd.FastNoise.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Typed procedural algorithm graphs with constant folding, common-expression elimination, dead-branch specialization, generated scalar/SIMD executors and a NativeAOT interpreter fallback. Compose planetary recipes and import LOD-resolved noise stacks; compile the same graphs to device-resident terrain with Tedd.FastNoise.Gpu.</PackageReleaseNotes>
+    <PackageReleaseNotes>Reduced 3D gradient-table gathers in Perlin and OpenSimplex2 while preserving exact scalar, SIMD and parallel outputs. Includes typed procedural graphs and LOD-resolved noise stacks for CPU and Vulkan terrain generation.</PackageReleaseNotes>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
