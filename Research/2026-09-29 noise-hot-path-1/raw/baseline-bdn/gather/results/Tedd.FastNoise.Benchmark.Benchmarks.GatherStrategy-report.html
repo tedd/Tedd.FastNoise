@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.FastNoise.Benchmark.Benchmarks.GatherStrategy-20260929-183920</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.4, Windows 11 (10.0.26200.9457)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+.NET SDK 11.0.100-rc.1.26425.128
+  [Host] : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  net10  : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>Job=net10  IterationCount=8  LaunchCount=2
+WarmupCount=3
+</code></pre>
+
+<table>
+<thead><tr><th>Method                       </th><th>Mean</th><th>Error</th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Rank</th>
+</tr>
+</thead><tbody><tr><td>&#39;VectorOps.Gather (as shipped)&#39;</td><td>356.9 &mu;s</td><td>1.86 &mu;s</td><td>1.83 &mu;s</td><td>1.00</td><td>0.01</td><td>1</td>
+</tr><tr><td>&#39;Software gather (spill and index)&#39;</td><td>934.0 &mu;s</td><td>20.64 &mu;s</td><td>18.29 &mu;s</td><td>2.62</td><td>0.05</td><td>2</td>
+</tr></tbody></table>
+</body>
+</html>

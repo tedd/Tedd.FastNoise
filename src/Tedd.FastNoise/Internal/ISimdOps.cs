@@ -118,6 +118,11 @@ internal interface ISimdOps<TF, TI>
     /// </remarks>
     static abstract TF Gather(ReadOnlySpan<float> table, TI indices);
 
+    /// <summary>
+    /// Per-lane integer table read. Callers must have constrained every index to the table range.
+    /// </summary>
+    static abstract TI GatherI(ReadOnlySpan<int> table, TI indices);
+
     // ---- memory -------------------------------------------------------------
 
     /// <summary>Reads <see cref="Count"/> lanes starting at the beginning of <paramref name="source"/>.</summary>

@@ -192,6 +192,35 @@ internal readonly unsafe struct VectorOps : ISimdOps<Vector<float>, Vector<int>>
         return new Vector<float>(values);
     }
 
+    /// <summary>Per-lane integer table read, using AVX2 gather when it matches the portable vector width.</summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [SkipLocalsInit]
+    public static Vector<int> GatherI(ReadOnlySpan<int> table, Vector<int> indices)
+    {
+        ref int origin = ref MemoryMarshal.GetReference(table);
+
+        if (Avx2.IsSupported && Vector<int>.Count == Vector256<int>.Count)
+        {
+            Vector256<int> idx = Unsafe.As<Vector<int>, Vector256<int>>(ref indices);
+            Vector256<int> gathered = Avx2.GatherVector256((int*)Unsafe.AsPointer(ref origin), idx, 4);
+            return Unsafe.As<Vector256<int>, Vector<int>>(ref gathered);
+        }
+
+        Unsafe.SkipInit(out LaneIndices indexBuffer);
+        Unsafe.SkipInit(out LaneIndices valueBuffer);
+
+        Span<int> laneIndices = indexBuffer;
+        indices.CopyTo(laneIndices);
+
+        Span<int> values = valueBuffer;
+        for (int lane = 0; lane < Vector<int>.Count; lane++)
+        {
+            values[lane] = Unsafe.Add(ref origin, (nint)(uint)laneIndices[lane]);
+        }
+
+        return new Vector<int>(values);
+    }
+
     /// <summary>Stack scratch for one vector of indices. Sized for the widest register the runtime supports.</summary>
     [InlineArray(MaxLanes)]
     private struct LaneIndices

@@ -126,6 +126,10 @@ internal readonly struct ScalarOps : ISimdOps<float, int>
         => System.Runtime.CompilerServices.Unsafe.Add(ref System.Runtime.InteropServices.MemoryMarshal.GetReference(table), (nint)(uint)indices);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GatherI(ReadOnlySpan<int> table, int indices)
+        => System.Runtime.CompilerServices.Unsafe.Add(ref System.Runtime.InteropServices.MemoryMarshal.GetReference(table), (nint)(uint)indices);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Load(ReadOnlySpan<float> source) => source[0];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

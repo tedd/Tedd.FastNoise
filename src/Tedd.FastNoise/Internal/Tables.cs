@@ -34,6 +34,12 @@ internal static class Tables
     /// <summary>64 3D gradient directions padded to four floats each so indexing is a shift.</summary>
     public static ReadOnlySpan<float> Gradients3D => Gradients3DData;
 
+    /// <summary>
+    /// The 64 3D gradients encoded as zero-axis plus X/Y/Z sign bits. This permits one integer
+    /// gather instead of three float gathers while reconstructing the table values exactly.
+    /// </summary>
+    public static ReadOnlySpan<int> GradientCodes3D => GradientCodes3DData;
+
     /// <summary>256 unit-length 3D feature-point offsets for cellular noise, padded to four floats each.</summary>
     public static ReadOnlySpan<float> RandVecs3D => RandVecs3DData;
 
@@ -128,6 +134,17 @@ internal static class Tables
         1, 0, 1, 0, -1, 0, 1, 0,  1, 0,-1, 0, -1, 0,-1, 0,
         1, 1, 0, 0, -1, 1, 0, 0,  1,-1, 0, 0, -1,-1, 0, 0,
         1, 1, 0, 0,  0,-1, 1, 0, -1, 1, 0, 0,  0,-1,-1, 0
+    };
+
+    // Bits 0-1 select the zero axis (0=X, 1=Y, 2=Z); bits 2-4 negate X, Y and Z.
+    private static readonly int[] GradientCodes3DData =
+    {
+         0,  8, 16, 24,  1,  5, 17, 21,  2,  6, 10, 14,
+         0,  8, 16, 24,  1,  5, 17, 21,  2,  6, 10, 14,
+         0,  8, 16, 24,  1,  5, 17, 21,  2,  6, 10, 14,
+         0,  8, 16, 24,  1,  5, 17, 21,  2,  6, 10, 14,
+         0,  8, 16, 24,  1,  5, 17, 21,  2,  6, 10, 14,
+         2,  8,  6, 24,
     };
 
     private static readonly float[] RandVecs3DData =

@@ -112,11 +112,18 @@ internal static class Hashing
         hash = TOps.XorI(hash, TOps.ShiftRightArithmetic(hash, 15));
         hash = TOps.AndI(hash, TOps.I(63 << 2));
 
-        TF xg = TOps.Gather(Tables.Gradients3D, hash);
-        TF yg = TOps.Gather(Tables.Gradients3D, TOps.OrI(hash, TOps.I(1)));
-        TF zg = TOps.Gather(Tables.Gradients3D, TOps.OrI(hash, TOps.I(2)));
+        TI code = TOps.GatherI(Tables.GradientCodes3D, TOps.ShiftRightLogical(hash, 2));
+        TI zeroAxis = TOps.AndI(code, TOps.I(3));
+        TF zero = TOps.F(0f);
 
-        return TOps.Add(TOps.Add(TOps.Mul(xd, xg), TOps.Mul(yd, yg)), TOps.Mul(zd, zg));
+        TF xTerm = TOps.SelectF(
+            TOps.EqualI(zeroAxis, TOps.I(0)), zero, TOps.FlipSign(xd, TOps.ShiftLeft(code, 29)));
+        TF yTerm = TOps.SelectF(
+            TOps.EqualI(zeroAxis, TOps.I(1)), zero, TOps.FlipSign(yd, TOps.ShiftLeft(code, 28)));
+        TF zTerm = TOps.SelectF(
+            TOps.EqualI(zeroAxis, TOps.I(2)), zero, TOps.FlipSign(zd, TOps.ShiftLeft(code, 27)));
+
+        return TOps.Add(TOps.Add(xTerm, yTerm), zTerm);
     }
 
     /// <summary>The 2D feature-point offset for a cellular lattice cell.</summary>

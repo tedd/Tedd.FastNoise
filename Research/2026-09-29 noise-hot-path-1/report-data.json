@@ -1,0 +1,338 @@
+{
+  "title": "3D gradient hot-path investigation",
+  "generatedAt": "2026-09-29T19:00:05+02:00",
+  "status": "complete",
+  "scope": "Steady-state SIMD generation of a 16×256×16, four-octave 3D voxel field on .NET 10/x64 AVX2.",
+  "question": "Can the dominant 3D gradient calculation reduce random table traffic by at least 5% without changing noise outputs or materially regressing unaffected kernels?",
+  "primaryMetric": "microseconds per 100,000 gradient vectors",
+  "summary": {
+    "baseline": 1368.0,
+    "final": 783.6,
+    "unit": "µs/100k vectors",
+    "changePercent": -42.7,
+    "headline": "Packed gradient codes reduced the isolated 3D gradient cost by 42.7%; the complete 3D Perlin caller improved by 30.6%."
+  },
+  "scorecards": [
+    {
+      "title": "3D gradient operation",
+      "value": 783.6,
+      "unit": "µs/100k vectors",
+      "wallChangePercent": -42.7,
+      "baseline": 1368.0,
+      "progression": "1,368.0 → 783.6"
+    },
+    {
+      "title": "3D Perlin voxel fill",
+      "value": 3845.3,
+      "unit": "µs/fill",
+      "wallChangePercent": -30.6,
+      "baseline": 5539.9,
+      "progression": "5,539.9 → 3,846.1 → 3,844.5"
+    },
+    {
+      "title": "3D OpenSimplex2 voxel fill",
+      "value": 4548.0,
+      "unit": "µs/fill",
+      "wallChangePercent": -1.6,
+      "baseline": 4624.1,
+      "progression": "Conservative FullOpts repeat: 4,624.1 → 4,548.0; second candidate repeat was 3,552.5"
+    }
+  ],
+  "environment": [
+    {"label": "Baseline revision", "value": "1716d0fe0e9328017279295475b6a4bf11657901 (main; clean before investigation)"},
+    {"label": "Runtime", "value": ".NET 10.0.12, X64 RyuJIT x86-64-v3; BenchmarkDotNet 0.15.4"},
+    {"label": "SDK", "value": "11.0.100-rc.1.26425.128"},
+    {"label": "CPU", "value": "AMD Ryzen 9 5950X, 16 cores / 32 logical processors, AVX2, FMA, BMI1/2"},
+    {"label": "OS", "value": "Windows 11 Pro 10.0.26200.9457"},
+    {"label": "GC", "value": "Concurrent workstation GC"},
+    {"label": "Affinity", "value": "Logical processor mask 0x10 for comparative benchmarks"},
+    {"label": "Measurement lock", "value": "C:\\Users\\tedd\\.codex\\locks\\performance-measurement.lock; all builds, tests, traces, disassembly, and timings serialized"},
+    {"label": "Epoch 1", "value": "Default BenchmarkDotNet/tiered PGO; rejected for whole-caller acceptance after tier-transition bimodality"},
+    {"label": "Epoch 2", "value": "Explicit 100-call warmup, 250 ms background-JIT window, 20 stabilization calls, 30 observations"},
+    {"label": "FullOpts diagnostic", "value": "DOTNET_ReadyToRun=0 and DOTNET_TieredCompilation=0; two candidate repeats around one baseline"}
+  ],
+  "hotspots": [
+    {
+      "name": "OpenSimplex2Kernel.Sample3",
+      "location": "src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs:93",
+      "inclusivePercent": 70.03,
+      "exclusivePercent": 69.61,
+      "evidence": "EventPipe sampled-thread-time profile of warmed 3D OpenSimplex2 SIMD voxel fills",
+      "limit": "random 3D gradient table gathers and a large vectorized dependency graph"
+    },
+    {
+      "name": "OpenSimplex2Kernel.Sample3 after retained change",
+      "location": "src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs:93",
+      "inclusivePercent": 66.05,
+      "exclusivePercent": 65.52,
+      "evidence": "Repeat EventPipe profile under the same fixture",
+      "limit": "remaining lattice arithmetic; gradient traffic reduced"
+    }
+  ],
+  "areas": [
+    {
+      "name": "Random table access and addressing",
+      "boundary": "Hashing.GradCoord3 and VectorOps gathers",
+      "evidence": "Three AVX2 float gathers per gradient; six per OpenSimplex2 Sample3 call",
+      "catalogue": "optimize-code: M6, C3, C4",
+      "hypothesisIds": ["H-001", "H-002", "H-003"],
+      "disposition": "Two complementary changes retained; software-gather alternative rejected"
+    },
+    {
+      "name": "Grid traversal, bounds, and buffer traffic",
+      "boundary": "GridFill.Rows3 and destination stores",
+      "evidence": "1.60% baseline exclusive CPU; contiguous writes; no allocation in kernel",
+      "catalogue": "optimize-code: M1-M5, M7",
+      "hypothesisIds": ["H-004", "H-008"],
+      "disposition": "No material candidate under the 5% threshold"
+    },
+    {
+      "name": "Dependency, branch, and instruction behavior",
+      "boundary": "Two-lattice OpenSimplex2 Sample3 body",
+      "evidence": "2,294-byte FullOpts body, one predictable pass branch, 0x4A0-byte frame",
+      "catalogue": "optimize-code: C1, C2, C4",
+      "hypothesisIds": ["H-002", "H-005"],
+      "disposition": "Signed-term reconstruction retained; manual unrolling ruled below materiality"
+    },
+    {
+      "name": "Dispatch, inlining, and specialization",
+      "boundary": "NoisePipeline.Single3 through generic SIMD operations",
+      "evidence": "Single3 was 1.70% exclusive baseline; FullOpts reported 263 single-block inlinees and no virtual call in the kernel",
+      "catalogue": "optimize-code: R1-R3",
+      "hypothesisIds": ["H-006", "H-007"],
+      "disposition": "No measured dispatch or feature-flag bottleneck"
+    },
+    {
+      "name": "Storage and concurrency",
+      "boundary": "Single-threaded SIMD target plus RowScheduler parallel wrapper",
+      "evidence": "No collection lookup/storage path in the kernel; parallel rows have disjoint output ownership",
+      "catalogue": "optimize-code: S1-S5, T1-T4",
+      "hypothesisIds": [],
+      "disposition": "Not applicable to the selected single-threaded kernel; no contention evidence"
+    }
+  ],
+  "series": [
+    {
+      "title": "Isolated 3D gradient operation",
+      "description": "Bars show medians; whiskers are observed minima and maxima across two launches.",
+      "unit": "µs/100k vectors",
+      "lowerIsBetter": true,
+      "rounds": ["Three float gathers", "Packed code + signed terms"],
+      "rows": [
+        {
+          "label": "AVX2 gradient dot product",
+          "detail": "100,000 vectors with randomized hashes and offsets",
+          "measurements": [
+            {"median": 1348.0, "min": 1334.0, "max": 1527.0, "n": 23},
+            {"median": 776.688, "min": 771.798, "max": 836.646, "n": 20, "changePercent": -42.38}
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Complete 3D voxel fills under FullOpts",
+      "description": "Medians of 30 complete fills after controlled warmup; candidate A and B bracket the baseline in execution order.",
+      "unit": "µs/fill",
+      "lowerIsBetter": true,
+      "rounds": ["Baseline", "Candidate A", "Candidate B"],
+      "rows": [
+        {
+          "label": "Perlin",
+          "detail": "16×256×16, four octaves, SIMD",
+          "measurements": [
+            {"median": 5539.85, "min": 5523.2, "max": 5856.6, "n": 30},
+            {"median": 3846.05, "min": 3826.9, "max": 4115.8, "n": 30, "changePercent": -30.57},
+            {"median": 3844.45, "min": 3826.9, "max": 3914.0, "n": 30, "changePercent": -30.6}
+          ]
+        },
+        {
+          "label": "OpenSimplex2",
+          "detail": "Profiled representative caller",
+          "measurements": [
+            {"median": 4624.05, "min": 4606.3, "max": 4669.7, "n": 30},
+            {"median": 4547.95, "min": 4516.8, "max": 4675.2, "n": 30, "changePercent": -1.65},
+            {"median": 3552.5, "min": 3535.9, "max": 3604.9, "n": 30, "changePercent": -23.17}
+          ]
+        },
+        {
+          "label": "Value control",
+          "detail": "Does not use the changed gradient path",
+          "measurements": [
+            {"median": 2281.15, "min": 2268.5, "max": 2352.1, "n": 30},
+            {"median": 2365.25, "min": 2312.8, "max": 2515.0, "n": 30, "changePercent": 3.69},
+            {"median": 2375.5, "min": 2308.7, "max": 2515.7, "n": 30, "changePercent": 4.14}
+          ]
+        }
+      ]
+    }
+  ],
+  "effectGroups": [
+    {
+      "name": "Gradient mechanism",
+      "control": "Three float gathers: 1,368.0 µs mean, observed range 1,334-1,527 µs",
+      "items": [
+        {
+          "hypothesisId": "H-001",
+          "label": "One packed-code gather plus signed terms",
+          "effect": -0.427,
+          "range": [-0.495, -0.373],
+          "note": "AVX2; same-process BenchmarkDotNet comparison"
+        }
+      ]
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H-001",
+      "claim": "Encoding each restricted 3D gradient in one integer removes two of three random gathers.",
+      "mechanism": "M6/C3: reduce random table traffic from three VGATHERDPS to one VPGATHERDD per gradient",
+      "prediction": "At least 5% lower median gradient time and complete 3D caller time.",
+      "falsification": "Less than 5% repeatable gain, changed outputs, or a material control regression.",
+      "change": "Added GradientCodes3D and integer gather support; GradCoord3 decodes one packed code.",
+      "result": "Isolated operation improved 42.7%; FullOpts Perlin improved 30.6%; all correctness tests passed.",
+      "effectPercent": -42.7,
+      "state": "retained",
+      "decision": "Adopted",
+      "evidence": ["raw/h001-gradient-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.Gradient3DStrategy-report.csv", "disassembly/candidate-open-simplex-2-sample3.asm.txt"],
+      "risks": ["AVX2-specific magnitude; software fallback is correctness-tested but not separately benchmarked on ARM/AVX-512 hardware."]
+    },
+    {
+      "id": "H-002",
+      "parentId": "H-001",
+      "claim": "Apply packed sign bits directly to coordinates instead of reconstructing coefficients and multiplying.",
+      "mechanism": "C4: sign-bit XOR and zero-axis selection remove three vector multiplies and recover register pressure.",
+      "prediction": "Preserve H-001's gather reduction without increasing the OpenSimplex2 frame or code size.",
+      "falsification": "A larger frame/code body, output mismatch, or loss of caller benefit.",
+      "change": "Decode gradient signs with FlipSign on xd/yd/zd and select only the zero component.",
+      "result": "Final FullOpts body is 2,290 bytes with a 0x4A0 frame versus baseline 2,294 bytes/0x4A0; six float gathers became two integer gathers per Sample3 call.",
+      "state": "retained",
+      "decision": "Adopted",
+      "evidence": ["disassembly/baseline-open-simplex-2-sample3.asm.txt", "disassembly/candidate-open-simplex-2-sample3.asm.txt"],
+      "risks": []
+    },
+    {
+      "id": "H-003",
+      "claim": "Software spill-and-index gathers may beat AVX2 hardware gather on this CPU.",
+      "mechanism": "M6/C3: replace high-latency VGATHERDPS with independent scalar loads.",
+      "prediction": "Lower GatherStrategy time than the shipped AVX2 path.",
+      "falsification": "Software gather is slower beyond noise.",
+      "change": "No library change; compared existing VectorOps.GatherSoftware control.",
+      "result": "Software gather was 934.0 µs versus 356.9 µs for hardware gather (2.62× slower).",
+      "effectPercent": 161.7,
+      "state": "rejected",
+      "decision": "Rejected",
+      "evidence": ["raw/baseline-bdn/gather/results/Tedd.FastNoise.Benchmark.Benchmarks.GatherStrategy-report.csv"],
+      "risks": []
+    },
+    {
+      "id": "H-004",
+      "claim": "Hoisting coordinate broadcasts from GridFill.Rows3 could materially improve the caller.",
+      "mechanism": "C1/R2: remove repeated invariant vector construction.",
+      "prediction": "At least 5% complete-caller reduction.",
+      "falsification": "Grid traversal has less than 5% exclusive contribution.",
+      "change": "None.",
+      "result": "GridFill.Rows3 measured 1.60% exclusive CPU baseline; its Amdahl ceiling is below the acceptance threshold.",
+      "state": "not-applicable",
+      "decision": "Below materiality",
+      "evidence": ["profiling/voxel-open-simplex-2-topn.txt"],
+      "risks": []
+    },
+    {
+      "id": "H-005",
+      "claim": "Manual unrolling of the two-lattice loop could remove loop control.",
+      "mechanism": "C2: remove one predictable back-edge branch.",
+      "prediction": "At least 5% complete-caller reduction.",
+      "falsification": "The removable control is negligible relative to duplicated kernel code.",
+      "change": "None.",
+      "result": "Only one CMP/JNE controls a 2,294-byte body; duplicating it would approximately double hot code to remove one predictable branch.",
+      "state": "not-applicable",
+      "decision": "Below materiality",
+      "evidence": ["disassembly/baseline-open-simplex-2-sample3.asm.txt"],
+      "risks": []
+    },
+    {
+      "id": "H-006",
+      "claim": "Kernel dispatch is a material cost inside the representative caller.",
+      "mechanism": "R1/R2: specialize or reorder NoisePipeline.Single3 dispatch.",
+      "prediction": "Dispatch contributes at least 5% exclusive CPU.",
+      "falsification": "Measured exclusive contribution below 5% with direct kernel attribution dominant.",
+      "change": "None.",
+      "result": "NoisePipeline.Single3 was 1.70% exclusive baseline; kernel work dominated.",
+      "state": "not-applicable",
+      "decision": "Below materiality",
+      "evidence": ["profiling/voxel-open-simplex-2-topn.txt"],
+      "risks": []
+    },
+    {
+      "id": "H-007",
+      "claim": "The packed code should also replace GradCoordDual3's float gathers.",
+      "mechanism": "M6/C4: reuse the retained encoding in domain-warp dual gradients.",
+      "prediction": "Improve an exercised application caller.",
+      "falsification": "No production caller reaches GradCoordDual3 in the current repository.",
+      "change": "None.",
+      "result": "Repository call-graph search found only the definition; changing an uncalled path would not affect the measured workload.",
+      "state": "not-applicable",
+      "decision": "No current caller",
+      "evidence": [],
+      "risks": []
+    },
+    {
+      "id": "H-008",
+      "claim": "Bounds-check removal or raw-pointer traversal can materially improve the fill.",
+      "mechanism": "M3/M4: remove loop-body range checks.",
+      "prediction": "At least 5% complete-caller reduction and visible range-check failure edges.",
+      "falsification": "Existing stores and gathers already use proven byrefs/pointers and the traversal is below 5% exclusive CPU.",
+      "change": "None.",
+      "result": "The hot lookup already lowers to hardware gather from a GC-tracked table base and the destination store uses Unsafe.WriteUnaligned under a proven loop bound.",
+      "state": "not-applicable",
+      "decision": "Already eliminated",
+      "evidence": ["disassembly/baseline-open-simplex-2-sample3.asm.txt"],
+      "risks": []
+    }
+  ],
+  "retainedChanges": [
+    "Represent each of the 64 3D gradients as a five-bit code identifying its zero axis and sign bits.",
+    "Add scalar and portable-vector integer gather operations with an AVX2 hardware path and bounded software fallback.",
+    "Apply sign bits directly to coordinate terms, eliminating two random gathers and three coefficient multiplies per gradient.",
+    "Add a reusable Gradient3DStrategy benchmark and exhaustive table-encoding correctness test."
+  ],
+  "decisions": [],
+  "correctness": [
+    "Complete solution tests: 263 passed, 8 GPU-hardware tests skipped by existing environment guards, 0 failed.",
+    "The new exhaustive test verifies all 64 packed codes reconstruct all three reference-table components exactly.",
+    "Existing compatibility and backend-agreement tests compare scalar/SIMD results to the vendored FastNoiseLite reference across algorithms, rotations, fractals, and coordinates.",
+    "Controlled caller checksums were unchanged for OpenSimplex2, Perlin, Value, and Cellular across every baseline/candidate run."
+  ],
+  "generatedCode": [
+    {
+      "hypothesisId": "H-001",
+      "summary": "Six float gathers per OpenSimplex2 Sample3 became two integer gathers.",
+      "before": "Six VGATHERDPS instructions; 2,294-byte body; 0x4A0 stack frame.",
+      "after": "Two VPGATHERDD instructions; 2,290-byte body; 0x4A0 stack frame.",
+      "artifact": "disassembly/candidate-open-simplex-2-sample3.asm.txt"
+    }
+  ],
+  "validityThreats": [
+    "The host showed material frequency/background-load drift and tier-transition bimodality. Whole-caller conclusions therefore emphasize same-process microbenchmarks, A/B/A repetition, unaffected controls, and FullOpts diagnostics rather than the rejected initial BDN means.",
+    "OpenSimplex2 FullOpts candidate repeats differed substantially (1.6% to 23.2% faster); only the conservative repeat is used in its scorecard. Tiered-PGO epoch-2 repeats were 7.4% and 12.0% faster.",
+    "Magnitude is established on one Zen 3 AVX2 host. The portable scalar fallback passed correctness tests, but performance on ARM, AVX-512, and non-AVX2 x64 remains unmeasured.",
+    "EventPipe sampling attributes heavily inlined work to large callers; percentages locate the kernel but do not distinguish individual instructions.",
+    "FullOpts disables deployment tiering to stabilize code generation; separate tiered-PGO measurements were retained to bound deployment behavior."
+  ],
+  "reproduction": [
+    "python C:\\Users\\tedd\\.codex\\skills\\scientific-method-performance\\scripts\\run_with_performance_lock.py --cwd D:\\SourceCode\\Tedd.FastNoise -- powershell -NoProfile -ExecutionPolicy Bypass -File \"D:\\SourceCode\\Tedd.FastNoise\\Research\\2026-09-29 noise-hot-path-1\\raw\\run-h001-microbenchmark.ps1\"",
+    "Run raw/run-h001-controlled-caller.ps1 with -Label <name> and optional -FullOpts for complete-caller repetitions.",
+    "Run profiling/run-profile.ps1 under the performance lock for EventPipe hotspot evidence.",
+    "Run disassembly/run-baseline-disassembly.ps1 under the performance lock for optimized native code.",
+    "dotnet test src/Tedd.FastNoise.slnx -c Release --nologo under the performance lock."
+  ],
+  "artifacts": [
+    {"label": "Microbenchmark CSV", "path": "raw/h001-gradient-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.Gradient3DStrategy-report.csv"},
+    {"label": "Controlled caller measurements", "path": "raw/"},
+    {"label": "Baseline hotspot profile", "path": "profiling/voxel-open-simplex-2-topn.txt"},
+    {"label": "Candidate hotspot profile", "path": "profiling/candidate-voxel-open-simplex-2-topn.txt"},
+    {"label": "Baseline disassembly", "path": "disassembly/baseline-open-simplex-2-sample3.asm.txt"},
+    {"label": "Candidate disassembly", "path": "disassembly/candidate-open-simplex-2-sample3.asm.txt"},
+    {"label": "Environment", "path": "raw/dotnet-info.txt"}
+  ]
+}

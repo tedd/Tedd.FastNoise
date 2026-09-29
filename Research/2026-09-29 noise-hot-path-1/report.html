@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Scientific performance report</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f5f6f8;
+      --surface: #fcfcfd;
+      --ink: #0f1217;
+      --ink-2: #4a5160;
+      --muted: #767d8b;
+      --grid: #e3e6eb;
+      --axis: #c3c8d1;
+      --hairline: rgba(15, 18, 23, .10);
+      --before: #a9cbf3;
+      --mid: #5f97dc;
+      --after: #1d5aa6;
+      --good: #006300;
+      --slower: #d9822b;
+      --noeffect: #b9c0cb;
+      --adopted-bg: #e4f2e4;
+      --adopted-ink: #0b4f0b;
+      --decision-bg: #fbf0da;
+      --decision-ink: #6b4a00;
+      --info-bg: #e3edfb;
+      --info-ink: #184f95;
+      --neutral-bg: #eceef1;
+      --neutral-ink: #4a5160;
+      --sans: "IBM Plex Sans", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 40px 16px 64px;
+      background: var(--page);
+      color: var(--ink);
+      font: 15px/1.55 var(--sans);
+    }
+    a { color: var(--after); overflow-wrap: anywhere; }
+    code, .mono { font-family: var(--mono); font-size: .86em; }
+    h1, h2, h3 { margin: 0; font-weight: 600; text-wrap: balance; }
+    h1 { font-size: clamp(1.9rem, 1.25rem + 2vw, 2.65rem); line-height: 1.15; letter-spacing: -.012em; }
+    h2 { font-size: 1.25rem; line-height: 1.3; }
+    h3 { font-size: 1rem; line-height: 1.35; }
+    p { margin: 0; }
+    ul, ol { margin: 0; padding-left: 1.25em; display: grid; gap: 6px; }
+
+    .wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 40px; }
+    .report-head { display: grid; gap: 12px; }
+    .eyebrow { font: .78rem/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .lede { color: var(--ink-2); max-width: 78ch; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; color: var(--muted); font: .74rem/1.4 var(--mono); }
+    .report-status { display: inline-flex; padding: 2px 9px; border-radius: 999px; background: var(--info-bg); color: var(--info-ink); font: 500 .72rem/1.5 var(--sans); text-transform: capitalize; }
+
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 8px; }
+    .kpi, .card, .chart, .table-wrap, .panel {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: 10px;
+    }
+    .kpi { padding: 16px 18px; display: grid; gap: 6px; }
+    .kpi-label { color: var(--ink-2); font-size: .86rem; }
+    .kpi-value { font-size: 2rem; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .kpi-value small { margin-left: 3px; color: var(--ink-2); font-size: 1rem; font-weight: 500; }
+    .kpi-delta { color: var(--ink-2); font-size: .86rem; }
+    .kpi-delta strong { font-weight: 600; }
+    .kpi-delta .good { color: var(--good); }
+    .kpi-delta .bad { color: var(--slower); }
+    .kpi-steps { color: var(--muted); font: .72rem/1.4 var(--mono); }
+
+    section { display: grid; gap: 14px; }
+    section > p { color: var(--ink-2); max-width: 82ch; }
+    .panel { padding: 18px 20px; }
+    .scope-grid, .evidence-grid, .outcome-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { padding: 16px 18px; display: grid; gap: 6px; min-width: 0; }
+    .card p { color: var(--ink-2); }
+    .card .small, .small { color: var(--muted); font-size: .8rem; }
+    .card .metric { font: 500 .78rem/1.4 var(--mono); color: var(--muted); }
+
+    .charts { display: grid; gap: 20px; }
+    .chart { margin: 0; padding: 20px 20px 16px; display: grid; gap: 16px; overflow-x: auto; overflow-y: hidden; }
+    .chart-head { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between; }
+    .chart-head p { color: var(--ink-2); font-size: .9rem; }
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; color: var(--ink-2); font-size: .86rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 14px; height: 10px; border-radius: 0 3px 3px 0; display: inline-block; background: var(--swatch); }
+
+    .plot { display: grid; gap: 14px; }
+    .chart-row { display: grid; grid-template-columns: minmax(160px, 250px) 1fr; gap: 16px; align-items: center; }
+    .row-label { display: grid; gap: 2px; }
+    .row-label b { font-weight: 500; font-size: .95rem; }
+    .row-label small { color: var(--muted); font: .74rem/1.35 var(--mono); }
+    .track { position: relative; min-width: 0; }
+    .bar-plot-area { position: relative; display: grid; gap: 2px; margin-right: var(--bar-label-gutter, 0px); padding-block: 2px; }
+    .gridline { position: absolute; z-index: 0; top: -6px; bottom: -6px; width: 1px; background: var(--grid); }
+    .gridline.zero { background: var(--axis); }
+    .bar-line { position: relative; height: 16px; }
+    .bar { position: absolute; z-index: 1; left: 0; top: 1px; height: 14px; border-radius: 0 4px 4px 0; background: var(--bar-color); }
+    .whisker { position: absolute; z-index: 2; top: 7px; height: 1px; background: var(--ink); opacity: .65; pointer-events: none; }
+    .whisker::before, .whisker::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--ink); }
+    .whisker::before { left: 0; }
+    .whisker::after { right: 0; }
+    .bar-value { position: absolute; z-index: 3; top: -1px; color: var(--ink-2); font: .78rem/1.4 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .bar-value strong { color: var(--ink); font-weight: 500; }
+    .bar-value .improve { color: var(--good); margin-left: 6px; }
+    .bar-value .regress { color: var(--slower); margin-left: 6px; }
+    .axis { display: grid; grid-template-columns: minmax(160px, 250px) 1fr; gap: 16px; }
+    .axis-ticks { position: relative; height: 18px; color: var(--muted); font: .72rem/1.4 var(--mono); font-variant-numeric: tabular-nums; }
+    .axis-ticks span { position: absolute; transform: translateX(-50%); }
+    .axis-ticks span:first-child { transform: none; }
+    .axis-ticks span:last-child { transform: translateX(-100%); }
+    .axis .axis-ticks { margin-right: var(--bar-label-gutter, 0px); }
+
+    .effects { display: grid; gap: 20px; }
+    .effect-group { display: grid; gap: 8px; }
+    .effect-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+    .effect-head b { font-weight: 600; font-size: .95rem; }
+    .effect-head small { color: var(--muted); font: .74rem/1.4 var(--mono); }
+    .effect-row { display: grid; grid-template-columns: minmax(170px, 290px) 1fr; gap: 16px; align-items: center; }
+    .effect-label { font-size: .86rem; line-height: 1.3; }
+    .effect-label .id { margin-right: 6px; color: var(--muted); font: .74rem/1.3 var(--mono); }
+    .effect-track { position: relative; height: 18px; }
+    .effect-plot-area { position: absolute; inset: 0 var(--effect-right-gutter, 0px) 0 var(--effect-left-gutter, 0px); }
+    .effect-bar { position: absolute; z-index: 1; top: 3px; height: 12px; }
+    .effect-bar.faster { background: var(--after); border-radius: 3px 0 0 3px; }
+    .effect-bar.slower { background: var(--slower); border-radius: 0 3px 3px 0; }
+    .effect-bar.mixed { background: var(--noeffect); }
+    .effect-grid, .effect-zero { position: absolute; z-index: 0; top: -4px; bottom: -4px; width: 1px; background: var(--grid); }
+    .effect-zero { background: var(--axis); }
+    .effect-whisker { position: absolute; z-index: 2; top: 9px; height: 1px; background: var(--ink); opacity: .65; }
+    .effect-whisker::before, .effect-whisker::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--ink); }
+    .effect-whisker::before { left: 0; }
+    .effect-whisker::after { right: 0; }
+    .effect-value { position: absolute; z-index: 3; top: 0; color: var(--ink-2); font: .76rem/1.4 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .effect-value strong { color: var(--ink); font-weight: 500; }
+    .effect-axis { display: grid; grid-template-columns: minmax(170px, 290px) 1fr; gap: 16px; }
+    .effect-axis .axis-ticks { margin-left: var(--effect-left-gutter, 0px); margin-right: var(--effect-right-gutter, 0px); }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
+    thead th { color: var(--ink-2); font-size: .8rem; font-weight: 500; white-space: nowrap; }
+    tbody tr:last-child td { border-bottom: 0; }
+    td.id { color: var(--muted); font: .8rem/1.5 var(--mono); white-space: nowrap; }
+    td.num { text-align: right; font: .8rem/1.5 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .hypothesis-table { min-width: 820px; }
+    .hypothesis-table th:nth-child(1) { width: 68px; }
+    .hypothesis-table th:nth-child(2) { width: 37%; }
+    .hypothesis-table th:nth-child(4) { width: 160px; }
+    .cell-note { margin-top: 3px; color: var(--muted); font-size: .78rem; }
+    .chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px; font-size: .76rem; font-weight: 500; white-space: nowrap; }
+    .chip.retained { background: var(--adopted-bg); color: var(--adopted-ink); }
+    .chip.decision-required, .chip.inconclusive { background: var(--decision-bg); color: var(--decision-ink); }
+    .chip.pending { background: var(--info-bg); color: var(--info-ink); }
+    .chip.rejected, .chip.blocked, .chip.not-applicable { background: var(--neutral-bg); color: var(--neutral-ink); }
+
+    dl { display: grid; grid-template-columns: minmax(150px, 220px) 1fr; margin: 0; }
+    dt, dd { margin: 0; padding: 8px 0; border-bottom: 1px solid var(--grid); }
+    dt { padding-right: 18px; color: var(--muted); font-weight: 500; }
+    .code-note { padding-left: 13px; border-left: 3px solid var(--mid); }
+    .code-note + .code-note { margin-top: 14px; }
+    .empty { color: var(--muted); font-style: italic; }
+    footer { color: var(--muted); text-align: center; font: .72rem/1.4 var(--mono); }
+
+    @media (max-width: 700px) {
+      body { padding: 24px 10px 48px; }
+      .wrap { gap: 30px; }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .kpi { padding: 12px; }
+      .kpi-value { font-size: 1.6rem; }
+      .kpi-steps { display: none; }
+      .scope-grid, .evidence-grid, .outcome-grid { grid-template-columns: 1fr; }
+      .chart { padding: 16px 12px 14px; }
+      .chart-row, .axis, .effect-row, .effect-axis { grid-template-columns: 1fr; gap: 5px; }
+      .axis > div:first-child, .effect-axis > div:first-child { display: none; }
+      .effect-value .secondary { display: none; }
+      dl { grid-template-columns: 1fr; }
+      dt { padding-bottom: 0; border-bottom: 0; }
+    }
+
+    @media print {
+      body { padding: 0; background: #fff; font-size: 11px; }
+      .wrap { max-width: none; gap: 18px; }
+      .chart, .table-wrap, .panel, .kpi, .card { break-inside: avoid; background: #fff; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="report-head">
+      <p class="eyebrow" id="eyebrow"></p>
+      <h1 id="title"></h1>
+      <p class="lede" id="headline"></p>
+      <div class="meta"><span class="report-status" id="status"></span><span id="generated"></span></div>
+      <div class="kpis" id="scorecards" aria-label="Performance outcomes"></div>
+    </header>
+
+    <section>
+      <h2>Scope and scientific question</h2>
+      <div class="scope-grid">
+        <article class="card"><h3>Scope</h3><p id="scope"></p></article>
+        <article class="card"><h3>Question</h3><p id="question"></p></article>
+      </div>
+    </section>
+
+    <div class="charts" id="charts"></div>
+
+    <section id="measurements-section">
+      <h2>Every measurement</h2>
+      <p>Recorded medians, observed ranges, and run counts for every comparison series.</p>
+      <div class="table-wrap"><table id="measurements-table"><thead><tr><th>Metric</th><th>Workload</th><th>Round</th><th class="num">Median</th><th class="num">Range</th><th class="num">Runs</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <figure class="chart" id="effects-chart">
+      <div class="chart-head">
+        <div><h2>Effect of each variant against the control</h2><p>Change against a control measured in the same period. Bars are medians; whiskers span the runs. Grey means the runs disagreed on direction.</p></div>
+        <div class="legend" aria-hidden="true"><span><i class="swatch" style="--swatch:var(--after)"></i>Faster</span><span><i class="swatch" style="--swatch:var(--slower)"></i>Slower</span><span><i class="swatch" style="--swatch:var(--noeffect)"></i>No consistent effect</span></div>
+      </div>
+      <div class="effects" id="effects"></div>
+    </figure>
+
+    <section>
+      <h2 id="hypothesis-title">Hypotheses</h2>
+      <p>Claims are recorded before measurement and tested against the declared baseline. Results smaller than environmental variation remain inconclusive.</p>
+      <div class="table-wrap"><table class="hypothesis-table"><thead><tr><th>#</th><th>Hypothesis</th><th>Measured</th><th>Verdict</th></tr></thead><tbody id="hypotheses"></tbody></table></div>
+    </section>
+
+    <section>
+      <h2>Outcomes</h2>
+      <div class="outcome-grid">
+        <article class="card"><h3>Retained changes</h3><div id="retainedChanges"></div></article>
+        <article class="card"><h3>Decisions required</h3><div id="decisions"></div></article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Environment and baseline epoch</h2>
+      <div class="panel"><dl id="environment"></dl></div>
+    </section>
+
+    <section>
+      <h2>Hotspot evidence</h2>
+      <div class="evidence-grid" id="hotspots"></div>
+    </section>
+
+    <section>
+      <h2>Investigation-area coverage</h2>
+      <div class="evidence-grid" id="areas"></div>
+    </section>
+
+    <section>
+      <h2>Correctness evidence</h2>
+      <div class="panel" id="correctness"></div>
+    </section>
+
+    <section>
+      <h2>Generated-code observations</h2>
+      <div class="panel" id="generatedCode"></div>
+    </section>
+
+    <section>
+      <h2>Threats to validity</h2>
+      <div class="panel" id="validityThreats"></div>
+    </section>
+
+    <section>
+      <h2>Reproduction procedure</h2>
+      <div class="panel" id="reproduction"></div>
+    </section>
+
+    <section>
+      <h2>Artifacts</h2>
+      <div class="panel" id="artifacts"></div>
+    </section>
+
+    <footer>Generated from the Scientific Performance standard report template.</footer>
+  </main>
+
+  <script id="report-data" type="application/json">{"title":"3D gradient hot-path investigation","generatedAt":"2026-09-29T19:00:05+02:00","status":"complete","scope":"Steady-state SIMD generation of a 16×256×16, four-octave 3D voxel field on .NET 10/x64 AVX2.","question":"Can the dominant 3D gradient calculation reduce random table traffic by at least 5% without changing noise outputs or materially regressing unaffected kernels?","primaryMetric":"microseconds per 100,000 gradient vectors","summary":{"baseline":1368.0,"final":783.6,"unit":"µs/100k vectors","changePercent":-42.7,"headline":"Packed gradient codes reduced the isolated 3D gradient cost by 42.7%; the complete 3D Perlin caller improved by 30.6%."},"scorecards":[{"title":"3D gradient operation","value":783.6,"unit":"µs/100k vectors","wallChangePercent":-42.7,"baseline":1368.0,"progression":"1,368.0 → 783.6"},{"title":"3D Perlin voxel fill","value":3845.3,"unit":"µs/fill","wallChangePercent":-30.6,"baseline":5539.9,"progression":"5,539.9 → 3,846.1 → 3,844.5"},{"title":"3D OpenSimplex2 voxel fill","value":4548.0,"unit":"µs/fill","wallChangePercent":-1.6,"baseline":4624.1,"progression":"Conservative FullOpts repeat: 4,624.1 → 4,548.0; second candidate repeat was 3,552.5"}],"environment":[{"label":"Baseline revision","value":"1716d0fe0e9328017279295475b6a4bf11657901 (main; clean before investigation)"},{"label":"Runtime","value":".NET 10.0.12, X64 RyuJIT x86-64-v3; BenchmarkDotNet 0.15.4"},{"label":"SDK","value":"11.0.100-rc.1.26425.128"},{"label":"CPU","value":"AMD Ryzen 9 5950X, 16 cores / 32 logical processors, AVX2, FMA, BMI1/2"},{"label":"OS","value":"Windows 11 Pro 10.0.26200.9457"},{"label":"GC","value":"Concurrent workstation GC"},{"label":"Affinity","value":"Logical processor mask 0x10 for comparative benchmarks"},{"label":"Measurement lock","value":"C:\\Users\\tedd\\.codex\\locks\\performance-measurement.lock; all builds, tests, traces, disassembly, and timings serialized"},{"label":"Epoch 1","value":"Default BenchmarkDotNet/tiered PGO; rejected for whole-caller acceptance after tier-transition bimodality"},{"label":"Epoch 2","value":"Explicit 100-call warmup, 250 ms background-JIT window, 20 stabilization calls, 30 observations"},{"label":"FullOpts diagnostic","value":"DOTNET_ReadyToRun=0 and DOTNET_TieredCompilation=0; two candidate repeats around one baseline"}],"hotspots":[{"name":"OpenSimplex2Kernel.Sample3","location":"src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs:93","inclusivePercent":70.03,"exclusivePercent":69.61,"evidence":"EventPipe sampled-thread-time profile of warmed 3D OpenSimplex2 SIMD voxel fills","limit":"random 3D gradient table gathers and a large vectorized dependency graph"},{"name":"OpenSimplex2Kernel.Sample3 after retained change","location":"src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs:93","inclusivePercent":66.05,"exclusivePercent":65.52,"evidence":"Repeat EventPipe profile under the same fixture","limit":"remaining lattice arithmetic; gradient traffic reduced"}],"areas":[{"name":"Random table access and addressing","boundary":"Hashing.GradCoord3 and VectorOps gathers","evidence":"Three AVX2 float gathers per gradient; six per OpenSimplex2 Sample3 call","catalogue":"optimize-code: M6, C3, C4","hypothesisIds":["H-001","H-002","H-003"],"disposition":"Two complementary changes retained; software-gather alternative rejected"},{"name":"Grid traversal, bounds, and buffer traffic","boundary":"GridFill.Rows3 and destination stores","evidence":"1.60% baseline exclusive CPU; contiguous writes; no allocation in kernel","catalogue":"optimize-code: M1-M5, M7","hypothesisIds":["H-004","H-008"],"disposition":"No material candidate under the 5% threshold"},{"name":"Dependency, branch, and instruction behavior","boundary":"Two-lattice OpenSimplex2 Sample3 body","evidence":"2,294-byte FullOpts body, one predictable pass branch, 0x4A0-byte frame","catalogue":"optimize-code: C1, C2, C4","hypothesisIds":["H-002","H-005"],"disposition":"Signed-term reconstruction retained; manual unrolling ruled below materiality"},{"name":"Dispatch, inlining, and specialization","boundary":"NoisePipeline.Single3 through generic SIMD operations","evidence":"Single3 was 1.70% exclusive baseline; FullOpts reported 263 single-block inlinees and no virtual call in the kernel","catalogue":"optimize-code: R1-R3","hypothesisIds":["H-006","H-007"],"disposition":"No measured dispatch or feature-flag bottleneck"},{"name":"Storage and concurrency","boundary":"Single-threaded SIMD target plus RowScheduler parallel wrapper","evidence":"No collection lookup/storage path in the kernel; parallel rows have disjoint output ownership","catalogue":"optimize-code: S1-S5, T1-T4","hypothesisIds":[],"disposition":"Not applicable to the selected single-threaded kernel; no contention evidence"}],"series":[{"title":"Isolated 3D gradient operation","description":"Bars show medians; whiskers are observed minima and maxima across two launches.","unit":"µs/100k vectors","lowerIsBetter":true,"rounds":["Three float gathers","Packed code + signed terms"],"rows":[{"label":"AVX2 gradient dot product","detail":"100,000 vectors with randomized hashes and offsets","measurements":[{"median":1348.0,"min":1334.0,"max":1527.0,"n":23},{"median":776.688,"min":771.798,"max":836.646,"n":20,"changePercent":-42.38}]}]},{"title":"Complete 3D voxel fills under FullOpts","description":"Medians of 30 complete fills after controlled warmup; candidate A and B bracket the baseline in execution order.","unit":"µs/fill","lowerIsBetter":true,"rounds":["Baseline","Candidate A","Candidate B"],"rows":[{"label":"Perlin","detail":"16×256×16, four octaves, SIMD","measurements":[{"median":5539.85,"min":5523.2,"max":5856.6,"n":30},{"median":3846.05,"min":3826.9,"max":4115.8,"n":30,"changePercent":-30.57},{"median":3844.45,"min":3826.9,"max":3914.0,"n":30,"changePercent":-30.6}]},{"label":"OpenSimplex2","detail":"Profiled representative caller","measurements":[{"median":4624.05,"min":4606.3,"max":4669.7,"n":30},{"median":4547.95,"min":4516.8,"max":4675.2,"n":30,"changePercent":-1.65},{"median":3552.5,"min":3535.9,"max":3604.9,"n":30,"changePercent":-23.17}]},{"label":"Value control","detail":"Does not use the changed gradient path","measurements":[{"median":2281.15,"min":2268.5,"max":2352.1,"n":30},{"median":2365.25,"min":2312.8,"max":2515.0,"n":30,"changePercent":3.69},{"median":2375.5,"min":2308.7,"max":2515.7,"n":30,"changePercent":4.14}]}]}],"effectGroups":[{"name":"Gradient mechanism","control":"Three float gathers: 1,368.0 µs mean, observed range 1,334-1,527 µs","items":[{"hypothesisId":"H-001","label":"One packed-code gather plus signed terms","effect":-0.427,"range":[-0.495,-0.373],"note":"AVX2; same-process BenchmarkDotNet comparison"}]}],"hypotheses":[{"id":"H-001","claim":"Encoding each restricted 3D gradient in one integer removes two of three random gathers.","mechanism":"M6/C3: reduce random table traffic from three VGATHERDPS to one VPGATHERDD per gradient","prediction":"At least 5% lower median gradient time and complete 3D caller time.","falsification":"Less than 5% repeatable gain, changed outputs, or a material control regression.","change":"Added GradientCodes3D and integer gather support; GradCoord3 decodes one packed code.","result":"Isolated operation improved 42.7%; FullOpts Perlin improved 30.6%; all correctness tests passed.","effectPercent":-42.7,"state":"retained","decision":"Adopted","evidence":["raw/h001-gradient-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.Gradient3DStrategy-report.csv","disassembly/candidate-open-simplex-2-sample3.asm.txt"],"risks":["AVX2-specific magnitude; software fallback is correctness-tested but not separately benchmarked on ARM/AVX-512 hardware."]},{"id":"H-002","parentId":"H-001","claim":"Apply packed sign bits directly to coordinates instead of reconstructing coefficients and multiplying.","mechanism":"C4: sign-bit XOR and zero-axis selection remove three vector multiplies and recover register pressure.","prediction":"Preserve H-001's gather reduction without increasing the OpenSimplex2 frame or code size.","falsification":"A larger frame/code body, output mismatch, or loss of caller benefit.","change":"Decode gradient signs with FlipSign on xd/yd/zd and select only the zero component.","result":"Final FullOpts body is 2,290 bytes with a 0x4A0 frame versus baseline 2,294 bytes/0x4A0; six float gathers became two integer gathers per Sample3 call.","state":"retained","decision":"Adopted","evidence":["disassembly/baseline-open-simplex-2-sample3.asm.txt","disassembly/candidate-open-simplex-2-sample3.asm.txt"],"risks":[]},{"id":"H-003","claim":"Software spill-and-index gathers may beat AVX2 hardware gather on this CPU.","mechanism":"M6/C3: replace high-latency VGATHERDPS with independent scalar loads.","prediction":"Lower GatherStrategy time than the shipped AVX2 path.","falsification":"Software gather is slower beyond noise.","change":"No library change; compared existing VectorOps.GatherSoftware control.","result":"Software gather was 934.0 µs versus 356.9 µs for hardware gather (2.62× slower).","effectPercent":161.7,"state":"rejected","decision":"Rejected","evidence":["raw/baseline-bdn/gather/results/Tedd.FastNoise.Benchmark.Benchmarks.GatherStrategy-report.csv"],"risks":[]},{"id":"H-004","claim":"Hoisting coordinate broadcasts from GridFill.Rows3 could materially improve the caller.","mechanism":"C1/R2: remove repeated invariant vector construction.","prediction":"At least 5% complete-caller reduction.","falsification":"Grid traversal has less than 5% exclusive contribution.","change":"None.","result":"GridFill.Rows3 measured 1.60% exclusive CPU baseline; its Amdahl ceiling is below the acceptance threshold.","state":"not-applicable","decision":"Below materiality","evidence":["profiling/voxel-open-simplex-2-topn.txt"],"risks":[]},{"id":"H-005","claim":"Manual unrolling of the two-lattice loop could remove loop control.","mechanism":"C2: remove one predictable back-edge branch.","prediction":"At least 5% complete-caller reduction.","falsification":"The removable control is negligible relative to duplicated kernel code.","change":"None.","result":"Only one CMP/JNE controls a 2,294-byte body; duplicating it would approximately double hot code to remove one predictable branch.","state":"not-applicable","decision":"Below materiality","evidence":["disassembly/baseline-open-simplex-2-sample3.asm.txt"],"risks":[]},{"id":"H-006","claim":"Kernel dispatch is a material cost inside the representative caller.","mechanism":"R1/R2: specialize or reorder NoisePipeline.Single3 dispatch.","prediction":"Dispatch contributes at least 5% exclusive CPU.","falsification":"Measured exclusive contribution below 5% with direct kernel attribution dominant.","change":"None.","result":"NoisePipeline.Single3 was 1.70% exclusive baseline; kernel work dominated.","state":"not-applicable","decision":"Below materiality","evidence":["profiling/voxel-open-simplex-2-topn.txt"],"risks":[]},{"id":"H-007","claim":"The packed code should also replace GradCoordDual3's float gathers.","mechanism":"M6/C4: reuse the retained encoding in domain-warp dual gradients.","prediction":"Improve an exercised application caller.","falsification":"No production caller reaches GradCoordDual3 in the current repository.","change":"None.","result":"Repository call-graph search found only the definition; changing an uncalled path would not affect the measured workload.","state":"not-applicable","decision":"No current caller","evidence":[],"risks":[]},{"id":"H-008","claim":"Bounds-check removal or raw-pointer traversal can materially improve the fill.","mechanism":"M3/M4: remove loop-body range checks.","prediction":"At least 5% complete-caller reduction and visible range-check failure edges.","falsification":"Existing stores and gathers already use proven byrefs/pointers and the traversal is below 5% exclusive CPU.","change":"None.","result":"The hot lookup already lowers to hardware gather from a GC-tracked table base and the destination store uses Unsafe.WriteUnaligned under a proven loop bound.","state":"not-applicable","decision":"Already eliminated","evidence":["disassembly/baseline-open-simplex-2-sample3.asm.txt"],"risks":[]}],"retainedChanges":["Represent each of the 64 3D gradients as a five-bit code identifying its zero axis and sign bits.","Add scalar and portable-vector integer gather operations with an AVX2 hardware path and bounded software fallback.","Apply sign bits directly to coordinate terms, eliminating two random gathers and three coefficient multiplies per gradient.","Add a reusable Gradient3DStrategy benchmark and exhaustive table-encoding correctness test."],"decisions":[],"correctness":["Complete solution tests: 263 passed, 8 GPU-hardware tests skipped by existing environment guards, 0 failed.","The new exhaustive test verifies all 64 packed codes reconstruct all three reference-table components exactly.","Existing compatibility and backend-agreement tests compare scalar/SIMD results to the vendored FastNoiseLite reference across algorithms, rotations, fractals, and coordinates.","Controlled caller checksums were unchanged for OpenSimplex2, Perlin, Value, and Cellular across every baseline/candidate run."],"generatedCode":[{"hypothesisId":"H-001","summary":"Six float gathers per OpenSimplex2 Sample3 became two integer gathers.","before":"Six VGATHERDPS instructions; 2,294-byte body; 0x4A0 stack frame.","after":"Two VPGATHERDD instructions; 2,290-byte body; 0x4A0 stack frame.","artifact":"disassembly/candidate-open-simplex-2-sample3.asm.txt"}],"validityThreats":["The host showed material frequency/background-load drift and tier-transition bimodality. Whole-caller conclusions therefore emphasize same-process microbenchmarks, A/B/A repetition, unaffected controls, and FullOpts diagnostics rather than the rejected initial BDN means.","OpenSimplex2 FullOpts candidate repeats differed substantially (1.6% to 23.2% faster); only the conservative repeat is used in its scorecard. Tiered-PGO epoch-2 repeats were 7.4% and 12.0% faster.","Magnitude is established on one Zen 3 AVX2 host. The portable scalar fallback passed correctness tests, but performance on ARM, AVX-512, and non-AVX2 x64 remains unmeasured.","EventPipe sampling attributes heavily inlined work to large callers; percentages locate the kernel but do not distinguish individual instructions.","FullOpts disables deployment tiering to stabilize code generation; separate tiered-PGO measurements were retained to bound deployment behavior."],"reproduction":["python C:\\Users\\tedd\\.codex\\skills\\scientific-method-performance\\scripts\\run_with_performance_lock.py --cwd D:\\SourceCode\\Tedd.FastNoise -- powershell -NoProfile -ExecutionPolicy Bypass -File \"D:\\SourceCode\\Tedd.FastNoise\\Research\\2026-09-29 noise-hot-path-1\\raw\\run-h001-microbenchmark.ps1\"","Run raw/run-h001-controlled-caller.ps1 with -Label \u003cname\u003e and optional -FullOpts for complete-caller repetitions.","Run profiling/run-profile.ps1 under the performance lock for EventPipe hotspot evidence.","Run disassembly/run-baseline-disassembly.ps1 under the performance lock for optimized native code.","dotnet test src/Tedd.FastNoise.slnx -c Release --nologo under the performance lock."],"artifacts":[{"label":"Microbenchmark CSV","path":"raw/h001-gradient-bdn/results/Tedd.FastNoise.Benchmark.Benchmarks.Gradient3DStrategy-report.csv"},{"label":"Controlled caller measurements","path":"raw/"},{"label":"Baseline hotspot profile","path":"profiling/voxel-open-simplex-2-topn.txt"},{"label":"Candidate hotspot profile","path":"profiling/candidate-voxel-open-simplex-2-topn.txt"},{"label":"Baseline disassembly","path":"disassembly/baseline-open-simplex-2-sample3.asm.txt"},{"label":"Candidate disassembly","path":"disassembly/candidate-open-simplex-2-sample3.asm.txt"},{"label":"Environment","path":"raw/dotnet-info.txt"}]}</script>
+  <script>
+    (() => {
+      "use strict";
+      const data = JSON.parse(document.getElementById("report-data").textContent);
+      const $ = id => document.getElementById(id);
+      const text = (node, value) => { node.textContent = value ?? ""; return node; };
+      const el = (tag, className, value) => {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (value !== undefined) text(node, value);
+        return node;
+      };
+      const number = value => Number.isFinite(value) ? value.toLocaleString(undefined, { maximumFractionDigits: 3 }) : "—";
+      const signedPercent = value => Number.isFinite(value) ? `${value > 0 ? "+" : value < 0 ? "−" : ""}${number(Math.abs(value))}%` : "—";
+      const effectPercent = value => signedPercent(value * 100);
+      const roundColors = ["var(--before)", "var(--mid)", "var(--after)", "#123d72", "#739ecf"];
+
+      function niceMax(value) {
+        if (!Number.isFinite(value) || value <= 0) return 1;
+        const magnitude = 10 ** Math.floor(Math.log10(value));
+        for (const step of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) {
+          if (step * magnitude >= value) return step * magnitude;
+        }
+        return 10 * magnitude;
+      }
+
+      function safeHref(value) {
+        if (typeof value !== "string") return "#";
+        if (!/^[a-z][a-z0-9+.-]*:/i.test(value)) return value;
+        try {
+          const protocol = new URL(value).protocol;
+          return ["http:", "https:", "file:"].includes(protocol) ? value : "#";
+        } catch { return "#"; }
+      }
+
+      document.title = `${data.title} — Scientific performance report`;
+      text($("eyebrow"), `${data.primaryMetric} · performance investigation`);
+      text($("title"), data.title);
+      text($("headline"), data.summary.headline);
+      text($("status"), data.status.replaceAll("-", " "));
+      text($("generated"), `Generated ${data.generatedAt}`);
+      text($("scope"), data.scope);
+      text($("question"), data.question);
+
+      const scorecards = $("scorecards");
+      if (!data.scorecards.length) {
+        scorecards.append(el("p", "empty", "No headline measurements recorded."));
+      }
+      for (const item of data.scorecards) {
+        const card = el("article", "kpi");
+        card.append(el("div", "kpi-label", item.title));
+        const value = el("div", "kpi-value", number(item.value));
+        value.append(el("small", "", item.unit));
+        card.append(value);
+        const delta = el("div", "kpi-delta");
+        if (Number.isFinite(item.wallChangePercent)) {
+          const higherIsBetter = item.higherIsBetter === true;
+          const good = higherIsBetter ? item.wallChangePercent > 0 : item.wallChangePercent < 0;
+          const arrow = item.wallChangePercent > 0 ? "▲" : item.wallChangePercent < 0 ? "▼" : "◆";
+          const primary = el("strong", good ? "good" : item.wallChangePercent === 0 ? "" : "bad", `${arrow} ${signedPercent(item.wallChangePercent)} ${item.changeLabel || "wall"}`);
+          delta.append(primary);
+          if (Number.isFinite(item.baseline)) delta.append(document.createTextNode(` from ${number(item.baseline)} ${item.unit}`));
+        }
+        if (item.secondaryMetric && Number.isFinite(item.secondaryChangePercent)) {
+          delta.append(document.createTextNode(` · ${item.secondaryMetric} ${signedPercent(item.secondaryChangePercent)}`));
+        }
+        card.append(delta);
+        if (item.progression) card.append(el("div", "kpi-steps", item.progression));
+        scorecards.append(card);
+      }
+
+      function addGrid(track, maximum) {
+        const step = niceMax(maximum) / 4;
+        for (let value = 0; value <= maximum + step / 10; value += step) {
+          const line = el("i", `gridline${value === 0 ? " zero" : ""}`);
+          line.style.left = `${value / maximum * 100}%`;
+          track.append(line);
+        }
+      }
+
+      function renderSeries(series) {
+        const figure = el("figure", "chart");
+        const head = el("div", "chart-head");
+        const intro = el("div", "");
+        intro.append(el("h2", "", series.title), el("p", "", series.description || `Values in ${series.unit}.`));
+        const legend = el("div", "legend");
+        series.rounds.forEach((round, index) => {
+          const entry = el("span", "");
+          const swatch = el("i", "swatch"); swatch.style.setProperty("--swatch", roundColors[index % roundColors.length]);
+          entry.append(swatch, document.createTextNode(round)); legend.append(entry);
+        });
+        head.append(intro, legend); figure.append(head);
+
+        const plot = el("div", "plot");
+        const maximum = niceMax(Math.max(1, ...series.rows.flatMap(row => row.measurements.map(item => item.max ?? item.median))) * 1.18);
+        for (const row of series.rows) {
+          const rowNode = el("div", "chart-row");
+          const label = el("div", "row-label"); label.append(el("b", "", row.label));
+          if (row.detail) label.append(el("small", "", row.detail));
+          const track = el("div", "track");
+          const plotArea = el("div", "bar-plot-area"); addGrid(plotArea, maximum);
+          row.measurements.forEach((measurement, index) => {
+            const line = el("div", "bar-line");
+            const ratio = Math.max(0, measurement.median / maximum * 100);
+            const bar = el("i", "bar");
+            bar.style.width = `${ratio}%`; bar.style.setProperty("--bar-color", roundColors[index % roundColors.length]);
+            bar.title = `${row.label}, ${series.rounds[index]}: ${number(measurement.median)} ${series.unit}`;
+            line.append(bar);
+            if (Number.isFinite(measurement.min) && Number.isFinite(measurement.max)) {
+              const whisker = el("i", "whisker");
+              whisker.style.left = `${Math.max(0, measurement.min / maximum * 100)}%`;
+              whisker.style.width = `${Math.max(0, (measurement.max - measurement.min) / maximum * 100)}%`;
+              line.append(whisker);
+            }
+            const rangeEnd = Number.isFinite(measurement.max) ? Math.max(measurement.median, measurement.max) : measurement.median;
+            const labelAnchor = Math.max(0, rangeEnd / maximum * 100);
+            const value = el("span", "bar-value"); value.style.left = `calc(${labelAnchor}% + 8px)`;
+            value.append(el("strong", "", `${number(measurement.median)} ${series.unit}`));
+            if (Number.isFinite(measurement.changePercent)) {
+              const improved = series.lowerIsBetter === false ? measurement.changePercent > 0 : measurement.changePercent < 0;
+              value.append(el("span", improved ? "improve" : measurement.changePercent === 0 ? "" : "regress", signedPercent(measurement.changePercent)));
+            }
+            line.append(value); plotArea.append(line);
+          });
+          track.append(plotArea);
+          rowNode.append(label, track); plot.append(rowNode);
+        }
+        const axis = el("div", "axis"); axis.append(el("div", ""));
+        const ticks = el("div", "axis-ticks");
+        const step = maximum / 4;
+        for (let value = 0; value <= maximum + step / 10; value += step) {
+          const tick = el("span", "", number(value)); tick.style.left = `${value / maximum * 100}%`; ticks.append(tick);
+        }
+        axis.append(ticks); plot.append(axis); figure.append(plot);
+        return figure;
+      }
+
+      const charts = $("charts");
+      for (const series of data.series) charts.append(renderSeries(series));
+      if (!data.series.length) {
+        charts.hidden = true;
+        $("measurements-section").hidden = true;
+      }
+
+      const measurementBody = $("measurements-table").querySelector("tbody");
+      for (const series of data.series) {
+        for (const row of series.rows) {
+          row.measurements.forEach((measurement, index) => {
+            const tr = document.createElement("tr");
+            const range = Number.isFinite(measurement.min) && Number.isFinite(measurement.max)
+              ? `${number(measurement.min)}–${number(measurement.max)} ${series.unit}` : "—";
+            tr.append(
+              el("td", "", series.title), el("td", "", row.label), el("td", "", series.rounds[index]),
+              el("td", "num", `${number(measurement.median)} ${series.unit}`), el("td", "num", range),
+              el("td", "num", Number.isFinite(measurement.n) ? number(measurement.n) : "—")
+            );
+            measurementBody.append(tr);
+          });
+        }
+      }
+
+      function effectScale() {
+        const values = data.effectGroups.flatMap(group => group.items.flatMap(item => [item.effect, item.range[0], item.range[1]]));
+        const low = Math.min(-.05, ...values), high = Math.max(.05, ...values);
+        const pad = Math.max(.02, (high - low) * .08);
+        return { min: low - pad, max: high + pad };
+      }
+
+      if (!data.effectGroups.length) $("effects-chart").hidden = true;
+      else {
+        const scale = effectScale();
+        const x = value => (value - scale.min) / (scale.max - scale.min) * 100;
+        const effects = $("effects");
+        for (const group of data.effectGroups) {
+          const groupNode = el("div", "effect-group");
+          const head = el("div", "effect-head"); head.append(el("b", "", group.name));
+          if (group.control) head.append(el("small", "", group.control));
+          groupNode.append(head);
+          for (const item of group.items) {
+            const row = el("div", "effect-row");
+            const label = el("div", "effect-label");
+            if (item.hypothesisId) label.append(el("span", "id", item.hypothesisId));
+            label.append(document.createTextNode(item.label));
+            const track = el("div", "effect-track");
+            const plotArea = el("div", "effect-plot-area");
+            for (let i = 0; i <= 6; i++) {
+              const point = scale.min + (scale.max - scale.min) * i / 6;
+              const grid = el("i", Math.abs(point) < (scale.max - scale.min) / 100 ? "effect-zero" : "effect-grid");
+              grid.style.left = `${x(point)}%`; plotArea.append(grid);
+            }
+            const zero = el("i", "effect-zero"); zero.style.left = `${x(0)}%`; plotArea.append(zero);
+            const start = Math.min(0, item.effect), end = Math.max(0, item.effect);
+            const mixed = item.range[0] <= 0 && item.range[1] >= 0;
+            const direction = mixed ? "mixed" : item.effect < 0 ? "faster" : "slower";
+            const bar = el("i", `effect-bar ${direction}`); bar.style.left = `${x(start)}%`; bar.style.width = `${Math.abs(x(end) - x(start))}%`;
+            bar.title = `${item.label}: ${effectPercent(item.effect)}`; plotArea.append(bar);
+            const whisker = el("i", "effect-whisker"); whisker.style.left = `${x(item.range[0])}%`; whisker.style.width = `${Math.max(0, x(item.range[1]) - x(item.range[0]))}%`; plotArea.append(whisker);
+            const value = el("span", "effect-value");
+            if (item.effect < 0) {
+              const labelAnchor = Math.min(item.effect, item.range[0]);
+              value.dataset.side = "left";
+              value.style.left = `calc(${x(labelAnchor)}% - 8px)`;
+              value.style.transform = "translateX(-100%)";
+            } else {
+              const labelAnchor = Math.max(item.effect, item.range[1]);
+              value.dataset.side = "right";
+              value.style.left = `calc(${x(labelAnchor)}% + 8px)`;
+            }
+            value.append(el("strong", "", effectPercent(item.effect)));
+            if (item.secondaryMetric && Number.isFinite(item.secondaryEffect)) value.append(el("span", "secondary", ` · ${item.secondaryMetric} ${effectPercent(item.secondaryEffect)}`));
+            plotArea.append(value); track.append(plotArea); row.append(label, track); groupNode.append(row);
+          }
+          effects.append(groupNode);
+        }
+        const axis = el("div", "effect-axis"); axis.append(el("div", ""));
+        const ticks = el("div", "axis-ticks");
+        for (let i = 0; i <= 6; i++) {
+          const point = scale.min + (scale.max - scale.min) * i / 6;
+          const tick = el("span", "", effectPercent(point)); tick.style.left = `${x(point)}%`; ticks.append(tick);
+        }
+        axis.append(ticks); effects.append(axis);
+      }
+
+      function updateLabelGutters() {
+        for (const figure of charts.querySelectorAll(".chart")) {
+          let width = 0;
+          for (const label of figure.querySelectorAll(".bar-value")) width = Math.max(width, label.getBoundingClientRect().width);
+          const trackWidth = figure.querySelector(".track")?.getBoundingClientRect().width ?? 0;
+          const gutter = Math.min(Math.ceil(width) + 12, Math.max(0, trackWidth - 160));
+          figure.style.setProperty("--bar-label-gutter", `${gutter}px`);
+        }
+        const effects = $("effects");
+        let left = 0, right = 0;
+        for (const label of effects.querySelectorAll(".effect-value")) {
+          const width = label.getBoundingClientRect().width;
+          if (label.dataset.side === "left") left = Math.max(left, width);
+          else right = Math.max(right, width);
+        }
+        left = Math.ceil(left) + 12;
+        right = Math.ceil(right) + 12;
+        const trackWidth = effects.querySelector(".effect-track")?.getBoundingClientRect().width ?? 0;
+        const budget = Math.max(0, trackWidth - 180);
+        const total = left + right;
+        const factor = total > budget && total > 0 ? budget / total : 1;
+        effects.style.setProperty("--effect-left-gutter", `${Math.floor(left * factor)}px`);
+        effects.style.setProperty("--effect-right-gutter", `${Math.floor(right * factor)}px`);
+      }
+
+      updateLabelGutters();
+      document.fonts?.ready.then(updateLabelGutters);
+      window.addEventListener("resize", updateLabelGutters, { passive: true });
+
+      const hypothesisBody = $("hypotheses");
+      text($("hypothesis-title"), `${data.hypotheses.length} ${data.hypotheses.length === 1 ? "hypothesis" : "hypotheses"}`);
+      if (!data.hypotheses.length) {
+        const row = document.createElement("tr"); const cell = el("td", "empty", "None recorded."); cell.colSpan = 4; row.append(cell); hypothesisBody.append(row);
+      }
+      const icons = { retained: "✓", rejected: "×", inconclusive: "○", "decision-required": "○", pending: "…", blocked: "!", "not-applicable": "—" };
+      for (const item of data.hypotheses) {
+        const row = document.createElement("tr");
+        row.append(el("td", "id", item.id));
+        const claim = el("td", ""); claim.append(document.createTextNode(item.claim));
+        if (item.mechanism) claim.append(el("div", "cell-note", item.mechanism));
+        const measured = el("td", "", item.result || "Not yet measured.");
+        if (item.prediction && !item.result) measured.append(el("div", "cell-note", `Prediction: ${item.prediction}`));
+        const verdict = el("td", ""); verdict.append(el("span", `chip ${item.state}`, `${icons[item.state]} ${item.decision}`));
+        row.append(claim, measured, verdict); hypothesisBody.append(row);
+      }
+
+      function renderList(id, items, ordered = false) {
+        const host = $(id);
+        if (!items.length) { host.append(el("p", "empty", "None recorded.")); return; }
+        const list = document.createElement(ordered ? "ol" : "ul");
+        items.forEach(item => list.append(el("li", "", item))); host.append(list);
+      }
+      renderList("retainedChanges", data.retainedChanges);
+      renderList("decisions", data.decisions);
+      renderList("correctness", data.correctness);
+      renderList("validityThreats", data.validityThreats);
+      renderList("reproduction", data.reproduction, true);
+
+      const environment = $("environment");
+      if (!data.environment.length) environment.replaceWith(el("p", "empty", "None recorded."));
+      else for (const item of data.environment) environment.append(el("dt", "", item.label), el("dd", "", item.value));
+
+      const hotspots = $("hotspots");
+      if (!data.hotspots.length) hotspots.append(el("p", "empty", "None recorded."));
+      for (const item of data.hotspots) {
+        const card = el("article", "card"); card.append(el("h3", "", item.name));
+        if (item.location) card.append(el("div", "small mono", item.location));
+        const shares = [];
+        if (Number.isFinite(item.inclusivePercent)) shares.push(`${number(item.inclusivePercent)}% inclusive`);
+        if (Number.isFinite(item.exclusivePercent)) shares.push(`${number(item.exclusivePercent)}% exclusive`);
+        if (shares.length) card.append(el("div", "metric", shares.join(" · ")));
+        if (item.evidence) card.append(el("p", "", item.evidence));
+        if (item.limit) card.append(el("p", "small", `Suspected limit: ${item.limit}`)); hotspots.append(card);
+      }
+
+      const areas = $("areas");
+      if (!data.areas.length) areas.append(el("p", "empty", "None recorded."));
+      for (const item of data.areas) {
+        const card = el("article", "card"); card.append(el("h3", "", item.name));
+        if (item.boundary) card.append(el("p", "", item.boundary));
+        if (item.evidence) card.append(el("p", "small", `Evidence: ${item.evidence}`));
+        if (item.catalogue) card.append(el("p", "small", `Catalogue: ${item.catalogue}`));
+        if (item.hypothesisIds?.length) card.append(el("div", "metric", item.hypothesisIds.join(" · ")));
+        if (item.disposition) card.append(el("p", "", item.disposition)); areas.append(card);
+      }
+
+      const generated = $("generatedCode");
+      if (!data.generatedCode.length) generated.append(el("p", "empty", "None recorded."));
+      for (const item of data.generatedCode) {
+        const note = el("article", "code-note"); note.append(el("h3", "", `${item.hypothesisId || "Unlinked"}: ${item.summary || "Observation"}`));
+        if (item.before) note.append(el("p", "", `Before: ${item.before}`));
+        if (item.after) note.append(el("p", "", `After: ${item.after}`));
+        if (item.artifact) { const link = el("a", "", item.artifact); link.href = safeHref(item.artifact); note.append(link); }
+        generated.append(note);
+      }
+
+      const artifacts = $("artifacts");
+      if (!data.artifacts.length) artifacts.append(el("p", "empty", "None recorded."));
+      else {
+        const list = document.createElement("ul");
+        for (const item of data.artifacts) {
+          const entry = document.createElement("li"); const link = el("a", "", item.label || item.path);
+          link.href = safeHref(item.path); entry.append(link); list.append(entry);
+        }
+        artifacts.append(list);
+      }
+    })();
+  </script>
+</body>
+</html>
