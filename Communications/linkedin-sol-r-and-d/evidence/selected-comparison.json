@@ -1,0 +1,47 @@
+[
+  {
+    "Method": "'Tedd.FastNoise SIMD + parallel'",
+    "Job": "net10",
+    "Size": "1024",
+    "Octaves": "1",
+    "Mean": "529.60 μs",
+    "Median": "529.07 μs",
+    "StdDev": "60.795 μs"
+  },
+  {
+    "Method": "'Tedd.FastNoise SIMD'",
+    "Job": "net10",
+    "Size": "1024",
+    "Octaves": "1",
+    "Mean": "5,945.71 μs",
+    "Median": "5,935.90 μs",
+    "StdDev": "475.679 μs"
+  },
+  {
+    "Method": "'FastNoiseLite reference, per sample'",
+    "Job": "net10",
+    "Size": "1024",
+    "Octaves": "1",
+    "Mean": "11,257.43 μs",
+    "Median": "11,255.15 μs",
+    "StdDev": "30.117 μs"
+  },
+  {
+    "Method": "'v1 archive (2020, scalar double)'",
+    "Job": "net10",
+    "Size": "1024",
+    "Octaves": "1",
+    "Mean": "16,583.78 μs",
+    "Median": "16,571.19 μs",
+    "StdDev": "188.585 μs"
+  },
+  {
+    "Method": "'Tedd.FastNoise scalar'",
+    "Job": "net10",
+    "Size": "1024",
+    "Octaves": "1",
+    "Mean": "21,871.86 μs",
+    "Median": "22,898.18 μs",
+    "StdDev": "3,735.423 μs"
+  }
+]

@@ -1,0 +1,86 @@
+How Sol helped engineer a 21× performance advantage in .NET noise generation
+
+Generating a terrain tile means calculating thousands of samples. Generating a voxel world means calculating millions. At that scale, the API, memory layout and execution strategy matter as much as the noise algorithm.
+
+I worked with Sol, my AI coding agent, on the research and development behind Tedd.FastNoise. The objective was to push .NET procedural noise throughput while preserving deterministic results. The work combined bulk generation, SIMD, multicore execution, profiling, native-code inspection and controlled experiments.
+
+One earlier local BenchmarkDotNet run illustrates the architectural advantage: a 1024 × 1024 single-octave OpenSimplex2 field took a median 11.255 milliseconds through the FastNoiseLite reference loop and 0.529 milliseconds through Tedd.FastNoise's parallel SIMD fill. That is 21.3× the throughput for this workload on the measured host.
+
+The more useful story is how that advantage was built and tested.
+
+Start with the unit of work
+
+FastNoiseLite provides the algorithmic foundation and the reference implementation used in compatibility tests. Its per-point API answers one coordinate at a time. Tedd.FastNoise makes a complete region the primary unit of work.
+
+A Fill call receives a destination buffer and a grid region. Adjacent X coordinates occupy adjacent elements, so SIMD lanes calculate neighboring samples and store contiguous results. Parallel workers process disjoint row ranges. Configuration is resolved before row execution.
+
+The kernels share generic arithmetic between scalar and vector operation sets. This makes it possible to maintain one mathematical implementation while letting the runtime select the vector width.
+
+The benchmark separates those effects. For that same million-sample field, single-threaded SIMD took 5.936 milliseconds: approximately 1.9× the throughput of the FastNoiseLite reference loop. Parallel SIMD reached 21.3× by also using the host's available cores. The large multiplier includes multicore execution; it is not a claim that every individual sample became twenty times cheaper.
+
+Find the expensive instructions
+
+The subsequent 3D investigation began with profiling. In a warmed OpenSimplex2 SIMD voxel-fill workload, the main sampling kernel accounted for roughly 70% of sampled CPU time. Traversal and dispatch were much smaller contributors.
+
+Sol's investigation examined the generated machine code and identified repeated gradient-table gathers. The original 3D gradient operation retrieved three floating-point coefficients separately.
+
+Those gradients have restricted coefficients. Each table entry can be represented by a five-bit code describing its zero axis and signs. The retained implementation gathers one integer code and applies the signs directly to coordinate terms.
+
+In the inspected OpenSimplex2 sampling body, six floating-point gathers became two integer gathers. The isolated gradient benchmark reported a 42.7% reduction in execution time. Controlled complete four-octave Perlin fills of a 16 × 256 × 16 volume improved from approximately 5.540 to 3.845 milliseconds, a 30.6% reduction.
+
+These are separate results: the gradient experiment concerns 3D kernel work; the 21.3× comparison concerns an earlier 2D bulk-generation benchmark. They cannot be combined into a larger multiplier.
+
+Preserve the world while changing the implementation
+
+For procedural terrain, numerical equivalence has practical consequences. A small floating-point difference near a density threshold can change whether a voxel becomes solid.
+
+CPU backend agreement is therefore checked exactly. Compatibility tests compare supported configurations with the vendored FastNoiseLite reference. The packed-gradient change also received an exhaustive test that reconstructs all 64 gradient-table entries.
+
+The recorded investigation completed with 263 tests passing, zero failures and eight GPU tests skipped by existing environment guards. Caller checksums remained unchanged across the measured baseline and candidate configurations.
+
+Fused multiply-add is deliberately excluded from CPU kernels to preserve agreement in arithmetic across backends. A faster expression is useful only when it satisfies the required output contract.
+
+Reject ideas that do not survive measurement
+
+The research record contains eighteen hypotheses. Two complementary changes were retained. Other proposals were rejected, remained inconclusive, or lacked an applicable mechanism.
+
+A software gather alternative was 2.62× slower than hardware gather. A simplified selection expression ran faster in an isolated finite-input benchmark but changed NaN behavior. Another candidate removed instructions yet failed to demonstrate a consistent improvement across complete point and bulk APIs under host contention.
+
+Tiered compilation and background activity also distorted timings. The investigation used controlled warmups, repeated baseline/candidate runs, unchanged control kernels and diagnostics with tiering disabled to examine those effects. OpenSimplex2 repeats varied substantially; the report retained the conservative result instead of selecting the largest apparent gain.
+
+Sol's contribution was this experimental discipline: identifying mechanisms, implementing candidates, inspecting the compiler's output, checking semantics and recording decisions. An attractive microbenchmark did not automatically become a production change.
+
+Remove unnecessary work at higher levels
+
+The same architectural direction extends beyond individual kernels. Compiled layer stacks blend into a register accumulator rather than materializing a separate field buffer for every layer. Level-of-detail policies remove frequencies the sample grid cannot represent. Procedural graphs fold constants, share expressions and eliminate unreachable work.
+
+The optional Vulkan package generates fields and terrain directly into GPU buffers. Those capabilities require their own complete-workload measurements; the CPU comparison does not establish a GPU speedup.
+
+What the evidence supports
+
+Tedd.FastNoise demonstrates a substantial bulk-generation advantage over the measured FastNoiseLite reference loop. The illustrated benchmark used an AMD Ryzen 9 5950X with 16 cores and 32 logical processors, .NET 10.0.11 and BenchmarkDotNet 0.15.4, with destination allocation outside the timed method.
+
+The image also includes the project's 2020 v1 implementation as historical context. It uses double-precision Perlin, so its timing is not an equivalent OpenSimplex2 comparison or a second independent competitor.
+
+The current published access matrix separately records medians, dispersion, raw observations and reproduction instructions for six kernels across 2D and 3D workloads. It compares Tedd.FastNoise access modes, rather than surveying competing packages.
+
+Calling the library the fastest across all of NuGet would require a broader, current comparison. The defensible result is already substantial: a measured 21.3× bulk-throughput advantage in the illustrated workload, backed by a development process that preserves exact CPU results and rejects unsupported improvements.
+
+Explore the implementation and reproduce the measurements:
+
+GitHub Pages and published CPU matrix:
+https://tedd.no/Tedd.FastNoise/#benchmarks
+
+Source and benchmark harness:
+https://github.com/tedd/Tedd.FastNoise/tree/main/src/Tedd.FastNoise.Benchmark
+
+3D optimization research and experiment record:
+https://github.com/tedd/Tedd.FastNoise/tree/main/Research/2026-09-29%20noise-hot-path-1
+
+Published matrix raw observations and methodology:
+https://github.com/tedd/Tedd.FastNoise/tree/main/Research/2026-09-29%20access-matrix-1
+
+NuGet package:
+https://www.nuget.org/packages/Tedd.FastNoise/
+
+#DotNet #PerformanceEngineering #ProceduralGeneration #SIMD #GameDevelopment #AIEngineering

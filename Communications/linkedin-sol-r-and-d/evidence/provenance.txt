@@ -1,0 +1,28 @@
+Scope and provenance
+
+The comparison image uses selected medians from the existing local Heightmap2D BenchmarkDotNet report. The complete CSV and Markdown report are preserved beside this file. No benchmark was rerun for this editorial task.
+
+Original paths:
+src/Tedd.FastNoise.Benchmark/BenchmarkDotNet.Artifacts/results/Tedd.FastNoise.Benchmark.Benchmarks.Heightmap2D-report.csv
+src/Tedd.FastNoise.Benchmark/BenchmarkDotNet.Artifacts/results/Tedd.FastNoise.Benchmark.Benchmarks.Heightmap2D-report-github.md
+
+Selection: Job=net10, Size=1024, Octaves=1. The report includes other jobs and configurations; they are not pooled into this comparison. The Markdown report records BenchmarkDotNet 0.15.4, AMD Ryzen 9 5950X, 16 physical cores / 32 logical processors, and .NET 10.0.11. The execution date and source revision are not embedded in these reports. They are archival measurements, not validation of the currently published NuGet binary.
+
+Median calculations:
+FastNoiseLite reference / parallel SIMD = 11255.15 / 529.07 = 21.2734609787.
+FastNoiseLite reference / serial SIMD = 11255.15 / 5935.90 = 1.8961151637.
+The image rounds milliseconds to three decimal places and the headline ratio to one decimal place.
+
+The FastNoiseLite reference is the only independent implementation in this preserved comparison. Tedd.FastNoise SIMD and parallel are two modes of the same library. Tedd.FastNoise v1 is the historical 2020 implementation using double-precision Perlin, not an independent competitor or an equivalent OpenSimplex2 algorithm comparison. The complete report also includes the Tedd.FastNoise scalar mode; the graphic focuses on the two bulk acceleration modes and the reference baselines.
+
+The 21.3x ratio measures multicore SIMD against a serial per-sample reference loop. It does not measure an isolated kernel speedup, a GPU advantage, cross-machine performance, or a ranking across all NuGet packages.
+
+The 3D R&D figures and historical test outcomes in article.txt come from Research/2026-09-29 noise-hot-path-1/report-data.json at the task's starting revision 94bfc69ee41cad5f526378ab00de85fa73f5398c. The research report documents host drift, tier-transition effects, unchanged-control variation, and limited cross-architecture performance evidence. Its conservative conclusions are retained in the article.
+
+The article's 263 passing tests, zero failures, and eight skipped GPU tests are recorded research outcomes. No code tests were executed for this article/image task.
+
+The published access matrix in docs/benchmarks.json is a separate .NET 10.0.12 measurement set comparing Tedd.FastNoise access modes. Its results are not presented as competitor timings and are not combined with the archival Heightmap2D report.
+
+Design: inspected the live GitHub Pages site at https://tedd.no/Tedd.FastNoise/ and the local docs/style.css. Palette: #f7faf9, #13282f, #087f78, #dff4f0, #61747b, #d6e3df, #b65e28, #10262c. Font references: Space Grotesk, DM Sans, IBM Plex Mono. The generated image approximates these font styles; its decorative voxel landscape is not measured noise output.
+
+Authorship: the article is drafted in the maintainer's first-person voice for LinkedIn and credits Sol as the AI coding agent, as requested. Existing research records document the technical process and results; they do not independently establish a model identity.
