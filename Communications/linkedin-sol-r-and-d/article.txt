@@ -60,8 +60,6 @@ What the evidence supports
 
 Tedd.FastNoise demonstrates a substantial bulk-generation advantage over the measured FastNoiseLite reference loop. The illustrated benchmark used an AMD Ryzen 9 5950X with 16 cores and 32 logical processors, .NET 10.0.11 and BenchmarkDotNet 0.15.4, with destination allocation outside the timed method.
 
-The image also includes the project's 2020 v1 implementation as historical context. It uses double-precision Perlin, so its timing is not an equivalent OpenSimplex2 comparison or a second independent competitor.
-
 The current published access matrix separately records medians, dispersion, raw observations and reproduction instructions for six kernels across 2D and 3D workloads. It compares Tedd.FastNoise access modes, rather than surveying competing packages.
 
 Calling the library the fastest across all of NuGet would require a broader, current comparison. The defensible result is already substantial: a measured 21.3× bulk-throughput advantage in the illustrated workload, backed by a development process that preserves exact CPU results and rejects unsupported improvements.

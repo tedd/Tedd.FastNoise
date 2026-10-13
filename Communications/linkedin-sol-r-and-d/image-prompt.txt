@@ -2,26 +2,6 @@ Asset generation
 
 Mode: built-in image_gen.
 
-Initial prompt
-
-Create a polished landscape LinkedIn article comparison infographic, 1792 by 1024 or similar 16:9 composition, ultra-clear editorial typography. This is an evidence-based software engineering graphic for Tedd.FastNoise. Faithfully match the project's GitHub Pages visual system: off-white #f7faf9, very subtle thin teal grid, dark ink #13282f, saturated teal #087f78, pale teal #dff4f0, muted gray #61747b, divider #d6e3df, restrained burnt orange #b65e28. Headings in Space Grotesk (bold tight geometric sans), body DM Sans, figures IBM Plex Mono. Broad margins, ample whitespace, precise rectangular cards, very subtle shadows. No sci-fi/glow, no exaggerated trophies, no competitor logos.
-Top small wordmark exactly "TEDD/FASTNOISE", upper right small "R&D WITH SOL".
-Large main headline exactly "21.3× faster bulk noise".
-Subheading exactly "vs FastNoiseLite reference loop • measured CPU workload".
-Left two-thirds: clean horizontal elapsed-time bar chart in a white panel. Panel title exactly "1,048,576 samples • OpenSimplex2 • 1 octave"; small caption "Median time per 1024 × 1024 field • lower is better". Four rows, aligned labels, bars, numeric labels. Linear axis from zero to 18 ms, identical baseline for all bars; subtle ticks at 0, 6, 12, 18 labelled "ms". Render the exact four rows:
-"Tedd.FastNoise" with smaller second line "SIMD + parallel", teal bar length proportion 0.52907/18, value "0.529 ms".
-"Tedd.FastNoise" with smaller second line "SIMD • one thread", pale-teal bar length proportion 5.93590/18, value "5.936 ms".
-"FastNoiseLite" with smaller second line "Reference • per-sample loop", muted-gray bar length proportion 11.25515/18, value "11.255 ms".
-"Tedd.FastNoise v1" with smaller second line "2020 archive • double-precision Perlin", burnt-orange bar length proportion 16.57119/18, value "16.571 ms".
-IMPORTANT: v1 is a historical baseline with different algorithm and precision, NOT an independent competitor. Below chart prominently state "v1 is historical context; algorithm and precision differ."
-Right third: deep navy #10262c card with an elegant small teal isometric voxel landscape illustration in upper half, inspired by the site's voxel world graphic; illustration is decorative, not purported measured output. Beneath it headline exactly "Measure. Inspect. Verify." and three compact statements exactly "Bulk SIMD + multicore", "Packed gradient lookups", "Exact CPU backend agreement".
-Bottom full-width footer in readable medium-size text, not tiny: "AMD Ryzen 9 5950X • 16 cores / 32 threads • .NET 10.0.11 • BenchmarkDotNet 0.15.4".
-Next footer line exactly "Existing local benchmark medians. Parallel uses multiple cores. Host-specific; no NuGet-wide ranking."
-Small source line exactly "Source: Heightmap2D benchmark • tedd.no/Tedd.FastNoise".
-Render all text verbatim and numbers exactly. This is a final publishable infographic, not a screen mockup. No fabricated libraries, no other numerical claims, no watermarks. Maintain visual accuracy of bar lengths; narrow first bar must remain visible.
-
 Final applied edit prompt
 
-Edit only the white benchmark panel on the left of this infographic. REPLACE THE BAR CHART WITH A CLEAN NUMERIC COMPARISON TABLE to ensure numerical accuracy. Delete every horizontal bar, every axis, tick, dotted gridline and all 0ms/6ms/12ms/18ms labels. Keep four rows and existing exact library names, mode descriptions and numbers. Each row has library name and mode on left and a large right-aligned numeric time in a small rectangular badge of identical width, with generous whitespace between. Row1 Tedd.FastNoise / SIMD + parallel / 0.529 ms (teal badge, white type). Row2 Tedd.FastNoise / SIMD • one thread / 5.936 ms (pale teal badge, dark type). Row3 FastNoiseLite / Reference • per-sample loop / 11.255 ms (light gray badge, dark type). Row4 Tedd.FastNoise v1 / 2020 archive • double-precision Perlin / 16.571 ms (pale orange badge, dark type). ALL FOUR BADGES MUST HAVE THE SAME WIDTH, not encode magnitude. Thin pale row dividers. Times align in one column. Retain panel title '1,048,576 samples • OpenSimplex2 • 1 octave' and subtitle 'Median time per 1024 × 1024 field • lower is better'. Retain warning at bottom 'v1 is historical context; algorithm and precision differ.' Keep headline, wordmark, right illustration card, R&D WITH SOL, all footer text and every other element unchanged. No bars or quantitative geometric encoding anywhere. This is a polished benchmark comparison table, not a bar chart.
-
-The final deliverable uses a numeric comparison table. Intermediate bar-chart repair attempts were discarded.
+undefined

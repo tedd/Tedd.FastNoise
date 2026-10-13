@@ -13,7 +13,7 @@ FastNoiseLite reference / parallel SIMD = 11255.15 / 529.07 = 21.2734609787.
 FastNoiseLite reference / serial SIMD = 11255.15 / 5935.90 = 1.8961151637.
 The image rounds milliseconds to three decimal places and the headline ratio to one decimal place.
 
-The FastNoiseLite reference is the only independent implementation in this preserved comparison. Tedd.FastNoise SIMD and parallel are two modes of the same library. Tedd.FastNoise v1 is the historical 2020 implementation using double-precision Perlin, not an independent competitor or an equivalent OpenSimplex2 algorithm comparison. The complete report also includes the Tedd.FastNoise scalar mode; the graphic focuses on the two bulk acceleration modes and the reference baselines.
+The FastNoiseLite reference is the only independent implementation in the displayed comparison. Tedd.FastNoise SIMD and parallel are two modes of the same library. The graphic and selected-comparison.json contain the two bulk acceleration modes and the FastNoiseLite reference loop. The complete archival reports are preserved verbatim and contain additional rows not displayed in the image or discussed in the article.
 
 The 21.3x ratio measures multicore SIMD against a serial per-sample reference loop. It does not measure an isolated kernel speedup, a GPU advantage, cross-machine performance, or a ranking across all NuGet packages.
 

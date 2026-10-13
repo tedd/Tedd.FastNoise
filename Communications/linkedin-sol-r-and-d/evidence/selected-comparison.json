@@ -25,23 +25,5 @@
     "Mean": "11,257.43 μs",
     "Median": "11,255.15 μs",
     "StdDev": "30.117 μs"
-  },
-  {
-    "Method": "'v1 archive (2020, scalar double)'",
-    "Job": "net10",
-    "Size": "1024",
-    "Octaves": "1",
-    "Mean": "16,583.78 μs",
-    "Median": "16,571.19 μs",
-    "StdDev": "188.585 μs"
-  },
-  {
-    "Method": "'Tedd.FastNoise scalar'",
-    "Job": "net10",
-    "Size": "1024",
-    "Octaves": "1",
-    "Mean": "21,871.86 μs",
-    "Median": "22,898.18 μs",
-    "StdDev": "3,735.423 μs"
   }
 ]
