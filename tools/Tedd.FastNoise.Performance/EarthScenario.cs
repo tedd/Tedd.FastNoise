@@ -63,12 +63,15 @@ sealed class EarthScenario : ISynchronousScenario
     public ScenarioDescriptor Describe() => new($"earth-{(_land ? "land" : "noise")}-n{_samples}", "1",
         $"earth-a78ba56e-defaults-seed1337-step1-sixfaces-n{_samples}-v1", ResetLevel.LogicalState, ThreadAffinity.Any,
         false, _samples == 1 ? "one complete Earth point evaluation" : "one complete Earth datum batch",
-        new[] { "baseline", "candidate", "baseline-scalar", "candidate-scalar", "baseline-parallel", "candidate-parallel" },
+        new[] { "baseline", "candidate", "baseline-scalar", "candidate-scalar", "baseline-parallel", "candidate-parallel",
+            "entry-a", "entry-b", "entry-a-scalar", "entry-b-scalar", "entry-a-parallel", "entry-b-parallel" },
         Array.Empty<string>(), new Dictionary<string, int>());
 
     public void Prepare(ScenarioContext context)
     {
-        _variant = context.Variant;
+        // Fresh normal-build labels dispatch identically into each build's source-linked code.
+        _variant = context.Variant.StartsWith("entry-", StringComparison.Ordinal)
+            ? "candidate" + context.Variant[7..] : context.Variant;
         if (_samples == 1) _original.Evaluate(_inputs, _expected);
         else _original.Fill(_inputs, _expected, _samples);
     }

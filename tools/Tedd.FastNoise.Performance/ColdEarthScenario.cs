@@ -26,8 +26,12 @@ sealed class ColdEarthScenario : ISynchronousScenario
     public ScenarioDescriptor Describe() => new($"earth-{(_land ? "land" : "noise")}-first-fill-n256", "1",
         "earth-a78ba56e-defaults-seed1337-step1-sixfaces-n256-v1-new-graph-per-operation",
         ResetLevel.LogicalState, ThreadAffinity.Any, false, "one fresh Earth graph compilation and first complete 256-record Auto fill",
-        new[] { "baseline", "candidate" }, Array.Empty<string>(), new Dictionary<string, int>());
-    public void Prepare(ScenarioContext context) { _variant = context.Variant; FillOriginal(_expected); }
+        new[] { "baseline", "candidate", "entry-a", "entry-b" }, Array.Empty<string>(), new Dictionary<string, int>());
+    public void Prepare(ScenarioContext context)
+    {
+        _variant = context.Variant.StartsWith("entry-", StringComparison.Ordinal) ? "candidate" : context.Variant;
+        FillOriginal(_expected);
+    }
     public void Reset(ResetContext context) { }
     public long ExecuteBatch(int operationCount)
     {
