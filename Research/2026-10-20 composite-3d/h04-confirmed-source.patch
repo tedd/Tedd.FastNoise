@@ -1,0 +1,102 @@
+diff --git a/src/Tedd.FastNoise/CompiledNoiseStack.cs b/src/Tedd.FastNoise/CompiledNoiseStack.cs
+index 8597ec7..8d7ee7c 100644
+--- a/src/Tedd.FastNoise/CompiledNoiseStack.cs
++++ b/src/Tedd.FastNoise/CompiledNoiseStack.cs
+@@ -99,6 +99,9 @@ public sealed class CompiledNoiseStack
+                 continue;
+             }
+ 
++            if (plan.Blend == LayerBlend.Replace)
++                names.Clear();
++
+             (int octaves, float fade) = _lod.Resolve(plan.Frequency, plan.Lacunarity, plan.Octaves, step);
+             string name = plan.Name ?? plan.Kernel.NoiseType.ToString();
+ 
+@@ -255,6 +258,11 @@ public sealed class CompiledNoiseStack
+                     continue;
+                 }
+ 
++                // Replace discards the entire preceding accumulator. Resolve culling first: a
++                // replacement omitted at this LOD must leave its predecessors intact.
++                if (plan.Blend == LayerBlend.Replace)
++                    resolved.Clear();
++
+                 (int octaves, float fade) = _lod.Resolve(plan.Frequency, plan.Lacunarity, plan.Octaves, step);
+ 
+                 resolved.Add(new ResolvedLayer
+diff --git a/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs b/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs
+index eefb060..f42a674 100644
+--- a/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs
++++ b/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs
+@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
+ namespace Tedd.FastNoise.Procedural;
+ 
+ /// <summary>A reusable, immutable procedural program with explicit ordered arithmetic.</summary>
+-/// <remarks>Execution is thread-safe and generated execution is allocation-free. Compilation generates dynamic CPU code when
++/// <remarks>Execution is thread-safe and sequential generated execution is allocation-free. Compilation generates dynamic CPU code when
+ /// supported; NativeAOT uses a scalar interpreter with pooled scratch space and reports this through <see cref="UsesDynamicCode"/>.
+ /// Inputs and outputs use doubles as a lossless wire representation for float, 32-bit integers and Boolean.
+ /// Nodes retain their declared arithmetic precision. Dynamic branches may evaluate both pure dependency arms.</remarks>
+@@ -60,8 +60,8 @@ public sealed class CompiledProceduralGraph
+     }
+ 
+     /// <summary>Evaluates tightly interleaved records; inputs and outputs must not overlap.</summary>
+-    /// <remarks>Scalar disables SIMD. Other backend selections use the generated CPU SIMD path when
+-    /// available; this method does not schedule worker threads or GPU work. Explicit GPU recording lives
++    /// <remarks>Scalar disables SIMD. Parallel partitions sufficiently large batches across CPU workers;
++    /// other backend selections use a single CPU thread with SIMD when available. Explicit GPU recording lives
+     /// in Tedd.FastNoise.Gpu, allowing callers to retain generated data on the device.</remarks>
+     public void Fill(ReadOnlySpan<double> inputs, Span<double> outputs, int sampleCount, NoiseBackend backend = NoiseBackend.Auto)
+     {
+@@ -69,14 +69,50 @@ public sealed class CompiledProceduralGraph
+         if (inputs.Length < checked(sampleCount * InputCount)) throw new ArgumentException("Input buffer is too short.", nameof(inputs));
+         if (outputs.Length < checked(sampleCount * OutputCount)) throw new ArgumentException("Output buffer is too short.", nameof(outputs));
+         if (inputs.Overlaps(outputs)) throw new ArgumentException("Bulk input and output buffers must not overlap.", nameof(outputs));
++        if (backend == NoiseBackend.Parallel && sampleCount >= 2048 && Environment.ProcessorCount > 1)
++        {
++            FillParallel(inputs, outputs, sampleCount);
++            return;
++        }
++        FillSequential(inputs, outputs, sampleCount, backend != NoiseBackend.Scalar);
++    }
++
++    private void FillSequential(ReadOnlySpan<double> inputs, Span<double> outputs, int sampleCount, bool wide)
++    {
+         int i = 0;
+-        if (backend != NoiseBackend.Scalar && _executeWide is not null)
++        if (wide && _executeWide is not null)
+             for (; i <= sampleCount - Vector<float>.Count; i += Vector<float>.Count)
+                 _executeWide(inputs.Slice(i * InputCount), outputs.Slice(i * OutputCount));
+         for (; i < sampleCount; i++)
+             _execute(inputs.Slice(i * InputCount, InputCount), outputs.Slice(i * OutputCount, OutputCount));
+     }
+ 
++    private unsafe void FillParallel(ReadOnlySpan<double> inputs, Span<double> outputs, int sampleCount)
++    {
++        int lanes = _executeWide is null ? 1 : Vector<float>.Count;
++        int groups = sampleCount / lanes;
++        int workers = Math.Min(Environment.ProcessorCount, sampleCount / 1024);
++        int groupsPerWorker = 1 + (groups - 1) / workers;
++
++        // Partition whole SIMD groups so every record uses exactly the same SIMD/scalar path as
++        // a sequential fill. Only the final range may contain the original scalar tail.
++        fixed (double* inputOrigin = inputs)
++        fixed (double* outputOrigin = outputs)
++        {
++            nint inputAddress = (nint)inputOrigin, outputAddress = (nint)outputOrigin;
++            System.Threading.Tasks.Parallel.For(0, workers, worker =>
++            {
++                int firstGroup = worker * groupsPerWorker;
++                if (firstGroup >= groups) return;
++                int lastGroup = firstGroup + Math.Min(groups - firstGroup, groupsPerWorker);
++                int first = firstGroup * lanes;
++                int count = lastGroup == groups ? sampleCount - first : (lastGroup - firstGroup) * lanes;
++                FillSequential(new ReadOnlySpan<double>((double*)inputAddress + first * InputCount, count * InputCount),
++                    new Span<double>((double*)outputAddress + first * OutputCount, count * OutputCount), count, true);
++            });
++        }
++    }
++
+     private Executor CompileWide()
+     {
+         var inputs = Expression.Parameter(typeof(ReadOnlySpan<double>), "inputs");

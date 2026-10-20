@@ -1,0 +1,128 @@
+diff --git a/src/Tedd.FastNoise.Tests/GradientEncodingTests.cs b/src/Tedd.FastNoise.Tests/GradientEncodingTests.cs
+index 19a7f5f..d6aa0b9 100644
+--- a/src/Tedd.FastNoise.Tests/GradientEncodingTests.cs
++++ b/src/Tedd.FastNoise.Tests/GradientEncodingTests.cs
+@@ -1,10 +1,24 @@
+ using System;
++using System.Numerics;
+ using Tedd.FastNoise.Internal;
+ 
+ namespace Tedd.FastNoise.Tests;
+ 
+ public class GradientEncodingTests
+ {
++    [Fact]
++    public void Vector3DGradientCodeLookupMatchesEveryPackedEntry()
++    {
++        Span<int> indices = stackalloc int[Vector<int>.Count];
++        for (int first = 0; first < 64; first += indices.Length)
++        {
++            for (int lane = 0; lane < indices.Length; lane++) indices[lane] = (first + lane) % 64;
++            Vector<int> actual = VectorOps.GradientCode3(new Vector<int>(indices));
++            for (int lane = 0; lane < indices.Length; lane++)
++                Assert.Equal(Tables.GradientCodes3D[indices[lane]], actual[lane]);
++        }
++    }
++
+     [Fact]
+     public void Packed3DGradientCodes_ReconstructTheReferenceTableExactly()
+     {
+diff --git a/src/Tedd.FastNoise/Internal/Hashing.cs b/src/Tedd.FastNoise/Internal/Hashing.cs
+index 228323d..6b76c5e 100644
+--- a/src/Tedd.FastNoise/Internal/Hashing.cs
++++ b/src/Tedd.FastNoise/Internal/Hashing.cs
+@@ -112,7 +112,7 @@ internal static class Hashing
+         hash = TOps.XorI(hash, TOps.ShiftRightArithmetic(hash, 15));
+         hash = TOps.AndI(hash, TOps.I(63 << 2));
+ 
+-        TI code = TOps.GatherI(Tables.GradientCodes3D, TOps.ShiftRightLogical(hash, 2));
++        TI code = TOps.GradientCode3(TOps.ShiftRightLogical(hash, 2));
+         TI zeroAxis = TOps.AndI(code, TOps.I(3));
+         TF zero = TOps.F(0f);
+ 
+diff --git a/src/Tedd.FastNoise/Internal/ISimdOps.cs b/src/Tedd.FastNoise/Internal/ISimdOps.cs
+index b1071e6..cf5a59c 100644
+--- a/src/Tedd.FastNoise/Internal/ISimdOps.cs
++++ b/src/Tedd.FastNoise/Internal/ISimdOps.cs
+@@ -123,6 +123,9 @@ internal interface ISimdOps<TF, TI>
+     /// </summary>
+     static abstract TI GatherI(ReadOnlySpan<int> table, TI indices);
+ 
++    /// <summary>Looks up the packed 3D gradient codes; indices must be in [0, 63].</summary>
++    static abstract TI GradientCode3(TI indices);
++
+     // ---- memory -------------------------------------------------------------
+ 
+     /// <summary>Reads <see cref="Count"/> lanes starting at the beginning of <paramref name="source"/>.</summary>
+diff --git a/src/Tedd.FastNoise/Internal/ScalarOps.cs b/src/Tedd.FastNoise/Internal/ScalarOps.cs
+index 238ebfe..28995de 100644
+--- a/src/Tedd.FastNoise/Internal/ScalarOps.cs
++++ b/src/Tedd.FastNoise/Internal/ScalarOps.cs
+@@ -12,6 +12,9 @@ namespace Tedd.FastNoise.Internal;
+ /// </remarks>
+ internal readonly struct ScalarOps : ISimdOps<float, int>
+ {
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    public static int GradientCode3(int indices) => Tables.GradientCodes3D[indices];
++
+     public static int Count
+     {
+         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+diff --git a/src/Tedd.FastNoise/Internal/Tables.cs b/src/Tedd.FastNoise/Internal/Tables.cs
+index 7959794..d44b381 100644
+--- a/src/Tedd.FastNoise/Internal/Tables.cs
++++ b/src/Tedd.FastNoise/Internal/Tables.cs
+@@ -40,6 +40,8 @@ internal static class Tables
+     /// </summary>
+     public static ReadOnlySpan<int> GradientCodes3D => GradientCodes3DData;
+ 
++    internal static ReadOnlySpan<byte> GradientCodeBytes3D => GradientCodeBytes3DData;
++
+     /// <summary>256 unit-length 3D feature-point offsets for cellular noise, padded to four floats each.</summary>
+     public static ReadOnlySpan<float> RandVecs3D => RandVecs3DData;
+ 
+@@ -147,6 +149,8 @@ internal static class Tables
+          2,  8,  6, 24,
+     };
+ 
++    private static readonly byte[] GradientCodeBytes3DData = Array.ConvertAll(GradientCodes3DData, code => (byte)code);
++
+     private static readonly float[] RandVecs3DData =
+     {
+         -0.7292736885f, -0.6618439697f, 0.1735581948f, 0, 0.790292081f, -0.5480887466f, -0.2739291014f, 0, 0.7217578935f, 0.6226212466f, -0.3023380997f, 0, 0.565683137f, -0.8208298145f, -0.0790000257f, 0, 0.760049034f, -0.5555979497f, -0.3370999617f, 0, 0.3713945616f, 0.5011264475f, 0.7816254623f, 0, -0.1277062463f, -0.4254438999f, -0.8959289049f, 0, -0.2881560924f, -0.5815838982f, 0.7607405838f, 0,
+diff --git a/src/Tedd.FastNoise/Internal/VectorOps.cs b/src/Tedd.FastNoise/Internal/VectorOps.cs
+index b78a0fd..cf2df28 100644
+--- a/src/Tedd.FastNoise/Internal/VectorOps.cs
++++ b/src/Tedd.FastNoise/Internal/VectorOps.cs
+@@ -192,6 +192,31 @@ internal readonly unsafe struct VectorOps : ISimdOps<Vector<float>, Vector<int>>
+         return new Vector<float>(values);
+     }
+ 
++    /// <summary>Looks up packed gradient codes with byte shuffles, retaining the portable gather fallback.</summary>
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    public static Vector<int> GradientCode3(Vector<int> indices)
++    {
++        if (Avx2.IsSupported && Vector<int>.Count == Vector256<int>.Count)
++        {
++            Vector256<int> idx = Unsafe.As<Vector<int>, Vector256<int>>(ref indices);
++            Vector256<byte> control = ((idx & Vector256.Create(15)) | Vector256.Create(unchecked((int)0x80808000))).AsByte();
++            ref byte origin = ref MemoryMarshal.GetReference(Tables.GradientCodeBytes3D);
++            var a = Vector128.LoadUnsafe(ref origin);
++            var b = Vector128.LoadUnsafe(ref origin, 16);
++            var c = Vector128.LoadUnsafe(ref origin, 32);
++            var d = Vector128.LoadUnsafe(ref origin, 48);
++            var r0 = Avx2.Shuffle(Vector256.Create(a, a), control);
++            var r1 = Avx2.Shuffle(Vector256.Create(b, b), control);
++            var r2 = Avx2.Shuffle(Vector256.Create(c, c), control);
++            var r3 = Avx2.Shuffle(Vector256.Create(d, d), control);
++            var bit4 = Avx2.CompareGreaterThan(idx & Vector256.Create(16), Vector256<int>.Zero).AsByte();
++            var bit5 = Avx2.CompareGreaterThan(idx & Vector256.Create(32), Vector256<int>.Zero).AsByte();
++            var result = Avx2.BlendVariable(Avx2.BlendVariable(r0, r1, bit4), Avx2.BlendVariable(r2, r3, bit4), bit5).AsInt32();
++            return Unsafe.As<Vector256<int>, Vector<int>>(ref result);
++        }
++        return GatherI(Tables.GradientCodes3D, indices);
++    }
++
+     /// <summary>Per-lane integer table read, using AVX2 gather when it matches the portable vector width.</summary>
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     [SkipLocalsInit]
