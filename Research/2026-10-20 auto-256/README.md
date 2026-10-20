@@ -149,3 +149,18 @@ H12 exploration completed all144runs; exact validation/quiescence retained. Desc
 | earth-land-first-fill-n256 | cold | 1.034435 | 0.091975 | `exec-39b4b592bef5492fa035fda7c69a65b8` |
 
 PrimaryNoise and callerLand warrant the already frozen two-case fresh confirmation. Cold first-fill estimates1.10/1.03 are uncertain (logSE.090/.092), not established regressions; managed allocation and absolute setup cost will be reported separately. Unchanged negative-control effects do not establish treatment benefits or regressions. No H12 adoption yet.
+
+H12 matched diagnostic captures establish normalized instruction identity for optimized scalar Sample3, scalar procedural/fractal wrappers, legacy VectorOps kernel/procedural/fractal wrappers, and ordinary-stack Sample3. Only PGO counts and relocated static references differ; instruction order, registers, numeric constants, calls and frame sizes were not normalized. Stack-specific Fill wrappers were not captured. Source identity for the four legacy operation/hash files remains exact. These are bounded captured-code controls, not proof for every runtime context.
+
+H12 fresh normal confirmation completed all 96 sessions without replacements, exclusions, duration changes or extra sampling. All were exact, quiescent and joined successfully. Family-adjusted 97.5% difference intervals:
+
+| Case | Elapsed ratio | Interval | Noninferiority | Useful benefit |
+| --- | ---: | --- | --- | --- |
+| earth-noise-n256 | 0.875129 | [0.764572, 1.001674] | True | False |
+| earth-land-n256 | 0.833028 | [0.784526, 0.884529] | True | True |
+
+Decision required: the complete terrain caller has a confirmed16.7% elapsed-time reduction (1.20x throughput), but the prespecified noise-only primary is inconclusive. Its estimate is12.5% lower and its adjusted difference interval includes1.0; no confirmed noise-only benefit is claimed. The frozen automatic adoption criterion therefore does not pass. No additional H12 sampling or threshold revision is permitted. A user decision could prioritize the confirmed complete caller, explicitly as a post-result change in adoption policy; that would not relabel the original primary outcome.
+
+Final proposed-source solution validation:289 passed,8 GPU-dependent tests skipped,0 failed. Default and AVX2-disabled CPU gates each passed279 tests; exact Earth/cold checks passed. Source remains the frozen patch3619bb167140d114111f7231ab8434099863295aadcfbc17d60a039dd4bc363d. No new package or runtime change.
+
+Exploratory target allocations: warm Noise256/Land256 both zero process/current-thread bytes per operation. Median first-fill cost is16.66/18.11ms control/candidate forNoise and17.97/20.26ms forLand; uncertain timing estimates, not confirmed cold regressions. Respective median managed allocation bytes per new graph:379560/379376 and531432/531024. Cold compile is separate from reused-kernel throughput. Parallel fill allocations include worker scheduling and are not a zero-allocation claim.
