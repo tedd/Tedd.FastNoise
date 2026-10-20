@@ -1,0 +1,250 @@
+diff --git a/src/Tedd.FastNoise.Tests/ProceduralWideWriteTests.cs b/src/Tedd.FastNoise.Tests/ProceduralWideWriteTests.cs
+new file mode 100644
+index 0000000..50dc394
+--- /dev/null
++++ b/src/Tedd.FastNoise.Tests/ProceduralWideWriteTests.cs
+@@ -0,0 +1,191 @@
++// Uses an independent copy of the released scatter loop to check payload bits and failure effects.
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using System.Linq.Expressions;
++using System.Numerics;
++using System.Reflection;
++using System.Runtime.InteropServices;
++using Tedd.FastNoise.Procedural;
++
++namespace Tedd.FastNoise.Tests;
++
++public sealed class ProceduralWideWriteTests
++{
++    private delegate void WideExecutor(ReadOnlySpan<double> inputs, Span<double> outputs);
++    private static readonly long[] PayloadBits =
++    [
++        0, long.MinValue, 0x7FF8123456789ABC, unchecked((long)0xFFF856789ABC1234),
++        0x7FF0123456789ABC, unchecked((long)0xFFF056789ABC1234),
++        0x7FF0000000000000, unchecked((long)0xFFF0000000000000),
++        1, unchecked((long)0x8000000000000001), 0x3FF0000000000000, unchecked((long)0xBFF0000000000000),
++        0x7FEFFFFFFFFFFFFF, unchecked((long)0xFFEFFFFFFFFFFFFF), 0x0010000000000000, unchecked((long)0x8010000000000000),
++    ];
++    private static readonly MethodInfo OriginalWriteMethod = typeof(ProceduralWideWriteTests)
++        .GetMethod(nameof(OriginalWrite), BindingFlags.NonPublic | BindingFlags.Static)!;
++
++    [Fact]
++    public void StridedWritesRetainEveryPayloadBitAndSliceBoundary()
++    {
++        int count = Vector<double>.Count * 2;
++        foreach (int payloadOffset in new[] { 0, 4, 8, 12 })
++        foreach (int stride in new[] { -11, -3, -1, 0, 1, 3, 11 })
++        {
++            int length = (count - 1) * Math.Abs(stride) + 5;
++            int index = stride < 0 ? 2 + (count - 1) * -stride : 2;
++            CompareWrites(length, index, stride, Payload(payloadOffset));
++        }
++    }
++
++    [Fact]
++    public void InvalidAndOverflowingIndicesRetainExceptionAndPartialWrites()
++    {
++        int count = Vector<double>.Count * 2;
++        foreach (int payloadOffset in new[] { 0, 4, 8, 12 })
++        {
++            var value = Payload(payloadOffset);
++            for (int length = 0; length <= count + 2; length++)
++            foreach (int index in new[] { -1, 0, 1, length - 1, length })
++            foreach (int stride in new[] { -3, -1, 0, 1, 3 })
++                CompareWrites(length, index, stride, value);
++            foreach (int index in new[] { int.MinValue, -1, 0, 1, int.MaxValue })
++            foreach (int stride in new[] { int.MinValue, int.MaxValue, int.MinValue / 2, int.MaxValue / 2 + 1 })
++                CompareWrites(count + 2, index, stride, value);
++        }
++    }
++
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public void MixedGraphArithmeticNoiseAndScalarTailsMatchOriginalWriter(bool exceptionalCoordinates)
++    {
++        var graph = new ProceduralGraph();
++        var x = graph.Input(0, ProceduralType.Float32);
++        var y = graph.Input(1, ProceduralType.Float32);
++        var z = graph.Input(2, ProceduralType.Float32);
++        var a = graph.Input(3, ProceduralType.Float32);
++        var b = graph.Input(4, ProceduralType.Float32);
++        var c = graph.Input(5, ProceduralType.Float64);
++        var d = graph.Input(6, ProceduralType.Float64);
++        var noise = graph.Noise3D(new NoiseGenerator(int.MaxValue - 1)
++        {
++            NoiseType = NoiseType.OpenSimplex2, FractalType = FractalType.FBm,
++            Frequency = .0037f, Octaves = 4, WeightedStrength = .4f, Lod = LodPolicy.Disabled,
++        }, x, y, z);
++        var ridge = graph.Noise3D(new NoiseGenerator(-317)
++        {
++            NoiseType = NoiseType.OpenSimplex2, FractalType = FractalType.Ridged,
++            Frequency = .0008f, Octaves = 2, RotationType3D = RotationType3D.ImproveXYPlanes,
++            Lod = LodPolicy.Disabled,
++        }, x, y, z);
++        var constant = graph.Constant(BitConverter.Int64BitsToDouble(PayloadBits[2]));
++        var program = graph.Compile(noise, ridge, a, b, c, d, a + b, a - b, a * b, a / b,
++            graph.Min(a, b), graph.Max(a, b), c + d, c - d, c * d, c / d,
++            graph.Min(c, d), graph.Max(c, d), c + constant,
++            graph.Convert(noise, ProceduralType.Float64) + c);
++        var original = CompileOriginalWriter(program);
++        int lanes = Vector<float>.Count, count = lanes * 3 + 3;
++        double[] input = new double[count * program.InputCount];
++        var inputBits = MemoryMarshal.Cast<double, long>(input.AsSpan());
++        for (int i = 0; i < count; i++)
++        {
++            int first = i * program.InputCount;
++            input[first] = i * .125; input[first + 1] = i * -.25; input[first + 2] = 11d;
++            for (int j = exceptionalCoordinates ? 0 : 3; j < program.InputCount; j++)
++                inputBits[first + j] = PayloadBits[(i + j * 3) % PayloadBits.Length];
++        }
++        double[] expected = new double[count * program.OutputCount + 7];
++        FillSentinels(expected);
++        double[] actual = (double[])expected.Clone();
++        int record = 0;
++        if (program.IsVectorised)
++            for (; record <= count - lanes; record += lanes)
++                original(input.AsSpan(record * program.InputCount), expected.AsSpan(3 + record * program.OutputCount));
++        for (; record < count; record++)
++            program.Evaluate(input.AsSpan(record * program.InputCount), expected.AsSpan(3 + record * program.OutputCount));
++        foreach (var backend in new[] { NoiseBackend.Auto, NoiseBackend.Simd })
++        {
++            FillSentinels(actual);
++            program.Fill(input, actual.AsSpan(3), count, backend);
++            EqualBits(expected, actual, $"Exceptional XYZ={exceptionalCoordinates}, backend={backend}");
++        }
++    }
++
++    private static DoublePair Payload(int offset)
++    {
++        int lanes = Vector<double>.Count;
++        long[] bits = new long[lanes * 2];
++        for (int i = 0; i < bits.Length; i++) bits[i] = PayloadBits[(offset + i) % PayloadBits.Length];
++        var values = MemoryMarshal.Cast<long, double>(bits.AsSpan());
++        var value = new DoublePair(new(values), new(values[lanes..]));
++        for (int i = 0; i < lanes; i++)
++        {
++            Assert.Equal(bits[i], BitConverter.DoubleToInt64Bits(value.Low[i]));
++            Assert.Equal(bits[lanes + i], BitConverter.DoubleToInt64Bits(value.High[i]));
++        }
++        return value;
++    }
++
++    private static void CompareWrites(int length, int index, int stride, DoublePair value)
++    {
++        double[] expected = new double[length + 5];
++        FillSentinels(expected);
++        double[] actual = (double[])expected.Clone();
++        var expectedException = AttemptWrite(expected, length, index, stride, value, original: true);
++        var actualException = AttemptWrite(actual, length, index, stride, value, original: false);
++        Assert.Equal(expectedException, actualException);
++        if (expectedException is not null) Assert.Equal(typeof(IndexOutOfRangeException), expectedException);
++        EqualBits(expected, actual, $"length={length}, index={index}, stride={stride}");
++    }
++
++    private static Type? AttemptWrite(double[] output, int length, int index, int stride, DoublePair value, bool original)
++    {
++        try
++        {
++            if (original) OriginalWrite(output.AsSpan(2, length), index, stride, value);
++            else ProceduralWideRuntime.Write(output.AsSpan(2, length), index, stride, value);
++            return null;
++        }
++        catch (Exception exception) { return exception.GetType(); }
++    }
++
++    private static void FillSentinels(double[] values)
++    {
++        var bits = MemoryMarshal.Cast<double, long>(values.AsSpan());
++        for (int i = 0; i < bits.Length; i++) bits[i] = 0x3FD0000000000000 + i;
++    }
++
++    private static void EqualBits(double[] expected, double[] actual, string context)
++    {
++        for (int i = 0; i < expected.Length; i++)
++            Assert.True(BitConverter.DoubleToInt64Bits(expected[i]) == BitConverter.DoubleToInt64Bits(actual[i]),
++                $"{context}; element={i}; expected={BitConverter.DoubleToInt64Bits(expected[i]):X16} actual={BitConverter.DoubleToInt64Bits(actual[i]):X16}");
++    }
++
++    // Frozen from the released implementation: do not call the production writer from this oracle.
++    private static void OriginalWrite(Span<double> outputs, int index, int stride, DoublePair value)
++    {
++        for (int i = 0; i < Vector<double>.Count; i++)
++        {
++            outputs[index + i * stride] = value.Low[i];
++            outputs[index + (i + Vector<double>.Count) * stride] = value.High[i];
++        }
++    }
++
++    // Mirrors released wide compilation, changing only the output writer to the frozen loop above.
++    private static WideExecutor CompileOriginalWriter(CompiledProceduralGraph program)
++    {
++        var input = Expression.Parameter(typeof(ReadOnlySpan<double>), "input");
++        var output = Expression.Parameter(typeof(Span<double>), "output");
++        var locals = program.Nodes.Select(node => Expression.Variable(ProceduralWideRuntime.ClrType(node.Type), $"original{node.Id}")).ToArray();
++        List<Expression> body = [];
++        foreach (var node in program.Nodes)
++            body.Add(Expression.Assign(locals[node.Id], node.Operation == ProceduralOperation.Input
++                ? ProceduralWideRuntime.Read(input, node.InputIndex, program.InputCount, node.Type)
++                : ProceduralWideRuntime.Emit(node, id => locals[id], id => program.Nodes[id].Type)));
++        for (int i = 0; i < program.OutputCount; i++)
++            body.Add(Expression.Call(OriginalWriteMethod, output, Expression.Constant(i), Expression.Constant(program.OutputCount),
++                ProceduralWideRuntime.ToOutput(locals[program.Outputs[i]], program.Nodes[program.Outputs[i]].Type)));
++        return Expression.Lambda<WideExecutor>(Expression.Block(locals, body), input, output).Compile();
++    }
++}
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+index 4e9e39d..95883ff 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+@@ -102,6 +102,48 @@ internal static class ProceduralWideRuntime
+     }
+     public static void Write(Span<double> outputs, int index, int stride, DoublePair value)
+     {
++        // Constant lane indices remove the scatter loop while retaining each store's bounds check
++        // and the interleaved write order, including partial writes when a later index is invalid.
++        if (Vector<double>.Count == 2)
++        {
++            outputs[index] = value.Low[0];
++            outputs[index + 2 * stride] = value.High[0];
++            outputs[index + stride] = value.Low[1];
++            outputs[index + 3 * stride] = value.High[1];
++            return;
++        }
++        if (Vector<double>.Count == 4)
++        {
++            outputs[index] = value.Low[0];
++            outputs[index + 4 * stride] = value.High[0];
++            outputs[index + stride] = value.Low[1];
++            outputs[index + 5 * stride] = value.High[1];
++            outputs[index + 2 * stride] = value.Low[2];
++            outputs[index + 6 * stride] = value.High[2];
++            outputs[index + 3 * stride] = value.Low[3];
++            outputs[index + 7 * stride] = value.High[3];
++            return;
++        }
++        if (Vector<double>.Count == 8)
++        {
++            outputs[index] = value.Low[0];
++            outputs[index + 8 * stride] = value.High[0];
++            outputs[index + stride] = value.Low[1];
++            outputs[index + 9 * stride] = value.High[1];
++            outputs[index + 2 * stride] = value.Low[2];
++            outputs[index + 10 * stride] = value.High[2];
++            outputs[index + 3 * stride] = value.Low[3];
++            outputs[index + 11 * stride] = value.High[3];
++            outputs[index + 4 * stride] = value.Low[4];
++            outputs[index + 12 * stride] = value.High[4];
++            outputs[index + 5 * stride] = value.Low[5];
++            outputs[index + 13 * stride] = value.High[5];
++            outputs[index + 6 * stride] = value.Low[6];
++            outputs[index + 14 * stride] = value.High[6];
++            outputs[index + 7 * stride] = value.Low[7];
++            outputs[index + 15 * stride] = value.High[7];
++            return;
++        }
+         for (int i = 0; i < Vector<double>.Count; i++)
+         {
+             outputs[index + i * stride] = value.Low[i];

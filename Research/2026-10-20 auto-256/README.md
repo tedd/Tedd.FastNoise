@@ -74,3 +74,23 @@ H09b completed all64runs. Descriptive elapsed ratios (logSE):
 Reject H09b. Noise256 aggregate is driven by two slow baseline blocks (376.44/383.01us versus other baseline136.34–146.94us); all observations remain included. Land256 regresses and both cold paths cost1.84–2.25x. No reliable useful gain warrants confirmation or added emitter complexity. Pooled wide lambda51,339nativebytes versus49,412 unpooled and15,888 released. Numeric gates passed, but code syntax/cache mechanism does not establish a speedup. No H09 implementation is adopted.
 
 H10 prospective experiment: independently unroll only the output writer for Vector<double>.Count2/4/8. Retain Low0/High0/Low1/High1 write order, unchecked index arithmetic, per-store span checks and the released fallback loop. Fresh raw-bit old-loop differential covers exceptional payloads and failing partial writes; whole-graph tests must target the frozen writer, because an oracle sharing production Write is insufficient. Preserve exact Earth semantics. Reuse the original nine-case8pair matrix,144runs, same budgets/profile/seed. No H10 implementation/timing exists at this freeze.
+
+H10 `hyp-262266e9a6b24c9794d9a5224dc5495f`:275/275 CPUcases and exact Earth/cold validation passed. Frozen source SHA256 `5d387ba4eadeab43418fc695be22c5cca0df1f79e421af5cc5a8f301ddb4f0e1`. Separate optimized Write grows98 to233nativebytes and removes its lane loop. One build attempt could not acquire the Global mutex and performed no build/execution; execution resumed only after exclusive acquisition.
+
+All144 H10 runs completed. Descriptive ratios:
+
+| Case | Ratio | logSE | Execution |
+| --- | ---: | ---: | --- |
+| earth-noise-n256 auto | 0.981276 | 0.061372 | `exec-1f46d892745c4f569c1f43989096fcd5` |
+| earth-land-n256 auto | 1.030963 | 0.062213 | `exec-eb114fd46cd14b268ff2decde566d838` |
+| earth-land-n1 auto | 1.053992 | 0.145505 | `exec-38675165224543c1b4b88548da6ec69a` |
+| earth-land-n4096 auto | 0.990696 | 0.048254 | `exec-240a1d4adc034bea9f461ae9f777f45b` |
+| earth-land-n65536 parallel | 0.972467 | 0.010558 | `exec-d62e8b1b354d462fa670c4a250d0b493` |
+| earth-noise-n256 scalar | 1.141989 | 0.075401 | `exec-fbe01073994d42c98f8ab159d77a1eae` |
+| composite-3d-w16-l4 auto | 0.910432 | 0.057879 | `exec-a000be35a07042fb8a4b0aa0236b477f` |
+| earth-noise-first-fill-n256 cold | 1.029290 | 0.054226 | `exec-03c3d21c44a34e09800ec4ed6330ea9d` |
+| earth-land-first-fill-n256 cold | 0.951988 | 0.065149 | `exec-74a4a5e8bcdc4a73bd8401a8725baa8b` |
+
+Reject H10: no useful primary improvement, no confirmation/adoption. Ordinary-stack and scalar paths do not call the changed writer, so their effects are controls for fixture/runtime/temporal variability, not gains/regressions caused by unrolling. Keep every observation.
+
+H11 prospective experiment (V05/C04): replace only AVX2 eight-lane3D gradient-code gather with transposed nibble encoding: one vpermd selects one of8 packed IDwords, variable shift extracts one4bit ID, one duplicated16-byte pshufb table decodes original code. This differs from H05 four shuffles/three blends; it remains uncertain whether a7-op dependency chain beats the hot gather. Exact64-entry table includes special tailIDs[8,1,9,3]. Keep zero-axis/sign extraction and every FP operation unchanged; original gather fallback when AVX2/width guard fails. Full64index mixed-lane lookup, released-gradient raw-bit oracle and wholegraph exceptional inputs must pass before timing; additionally test AVX2-disabled fallback. Reuse nine-case8pair exploration/144runs and original budgets/profile/seed. PrimaryNoise256, mandatoryLand256 and related cases. No H11 implementation/result exists at this freeze.
