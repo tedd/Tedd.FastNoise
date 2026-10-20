@@ -12,6 +12,41 @@ namespace Tedd.FastNoise.Tests;
 public sealed class ProceduralGraphTests
 {
     [Theory]
+    [InlineData(FractalType.None)]
+    [InlineData(FractalType.FBm)]
+    [InlineData(FractalType.Ridged)]
+    [InlineData(FractalType.PingPong)]
+    public void SpecializedOpenSimplexRetainsGeneralFractalArithmetic(FractalType fractal)
+    {
+        foreach (var rotation in Enum.GetValues<RotationType3D>())
+        foreach (int octaves in new[] { 1, 4 })
+        foreach (float weighted in new[] { 0f, .4f })
+        foreach (float step in new[] { 1f, 16f })
+        {
+            var source = new NoiseGenerator(unchecked(int.MaxValue - 1))
+            {
+                NoiseType = NoiseType.OpenSimplex2, FractalType = fractal, RotationType3D = rotation,
+                Frequency = .0037f, Octaves = octaves, Gain = .65f, Lacunarity = 2.3f,
+                WeightedStrength = weighted, PingPongStrength = 2.7f, Lod = LodPolicy.Automatic,
+            };
+            var graph = new ProceduralGraph();
+            var x = graph.Input(0, ProceduralType.Float32);
+            var y = graph.Input(1, ProceduralType.Float32);
+            var z = graph.Input(2, ProceduralType.Float32);
+            var program = graph.Compile(graph.Noise3D(source, x, y, z, step));
+            var region = new GridRegion3D(-257.25f, 0f, 0f, 33, 1, 1, step);
+            float[] expected = source.Create(region, NoiseBackend.Scalar);
+            double[] input = new double[33 * 3], actual = new double[33];
+            for (int i = 0; i < actual.Length; i++) input[3 * i] = region.OriginX + i * step;
+            foreach (var backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd })
+            {
+                program.Fill(input, actual, actual.Length, backend);
+                for (int i = 0; i < actual.Length; i++) EqualBits(expected[i], actual[i]);
+            }
+        }
+    }
+
+    [Theory]
     [InlineData(2047)]
     [InlineData(2048)]
     [InlineData(4097)]

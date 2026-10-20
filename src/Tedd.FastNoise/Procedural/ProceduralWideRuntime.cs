@@ -87,7 +87,9 @@ internal static class ProceduralWideRuntime
                     ProceduralRuntime.Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample2Wide), typeof(Vector<float>), typeof(Vector<float>)), a, b());
             case ProceduralOperation.Noise3D:
                 return Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)),
-                    ProceduralRuntime.Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample3Wide), typeof(Vector<float>), typeof(Vector<float>), typeof(Vector<float>)), a, b(), operand(node.C));
+                    ProceduralRuntime.Method(typeof(ProceduralNoise),
+                        node.NoiseRequest!.Value.NoiseType == NoiseType.OpenSimplex2 ? nameof(ProceduralNoise.SampleOpenSimplex3Wide) : nameof(ProceduralNoise.Sample3Wide),
+                        typeof(Vector<float>), typeof(Vector<float>), typeof(Vector<float>)), a, b(), operand(node.C));
             default: throw new NotSupportedException($"Unsupported SIMD operation {node.Operation}.");
         }
     }

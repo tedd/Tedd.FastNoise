@@ -18,7 +18,7 @@ sealed class EarthScenario : ISynchronousScenario
     private readonly baseline::Tedd.FastNoise.Procedural.CompiledProceduralGraph _original;
     private string _variant = "baseline";
 
-    public EarthScenario(int samples, bool land)
+    public EarthScenario(int samples, bool land, double step = 1d)
     {
         _samples = samples; _land = land; _outputs = land ? 11 : 9;
         _inputs = new double[samples * 3]; _output = new double[samples * _outputs]; _expected = new double[_output.Length];
@@ -33,10 +33,31 @@ sealed class EarthScenario : ISynchronousScenario
             _inputs[3 * i + (axis + 1) % 3] = u;
             _inputs[3 * i + (axis + 2) % 3] = v;
         }
-        _graph = land ? Current.EarthRecipe.CreateLand(1337, new Current.RegionServerConfig(), 1d)
-            : Current.EarthRecipe.CreateNoise(1337, new Current.ReliefOptions(), 1d);
-        _original = land ? Original.EarthRecipe.CreateLand(1337, new Original.RegionServerConfig(), 1d)
-            : Original.EarthRecipe.CreateNoise(1337, new Original.ReliefOptions(), 1d);
+        _graph = land ? Current.EarthRecipe.CreateLand(1337, new Current.RegionServerConfig(), step)
+            : Current.EarthRecipe.CreateNoise(1337, new Current.ReliefOptions(), step);
+        _original = land ? Original.EarthRecipe.CreateLand(1337, new Original.RegionServerConfig(), step)
+            : Original.EarthRecipe.CreateNoise(1337, new Original.ReliefOptions(), step);
+    }
+
+    // Pure correctness mode also supplies a reproducible generated-code inspection workload.
+    public void Check()
+    {
+        _original.Fill(_inputs, _expected, _samples);
+        foreach (string variant in new[] { "candidate", "candidate-scalar", "candidate-parallel" })
+        {
+            _variant = variant;
+            ExecuteBatch(1);
+            var validation = Validate();
+            if (!validation.Correct) throw new InvalidOperationException(validation.ToString());
+        }
+        Span<double> point = stackalloc double[_outputs];
+        for (int i = 0; i < _samples; i++)
+        {
+            _graph.Evaluate(_inputs.AsSpan(3 * i, 3), point);
+            for (int j = 0; j < _outputs; j++)
+                if (BitConverter.DoubleToInt64Bits(point[j]) != BitConverter.DoubleToInt64Bits(_expected[i * _outputs + j]))
+                    throw new InvalidOperationException($"Earth point {i}, output {j} differs.");
+        }
     }
 
     public ScenarioDescriptor Describe() => new($"earth-{(_land ? "land" : "noise")}-n{_samples}", "1",

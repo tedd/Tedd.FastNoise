@@ -195,6 +195,84 @@ internal static class FractalKernel
         return sum;
     }
 
+    // Direct algorithm selection for immutable procedural requests. The general octave loop
+    // stays in its own method so callers can inline it without an extra generic call boundary.
+    /// <summary>Runs <paramref name="octaves"/> octaves in 3D over already-transformed coordinates.</summary>
+    /// <param name="kernel">Which algorithm each octave runs.</param>
+    /// <param name="fractal">Octave count, falloff and shaping at full detail.</param>
+    /// <param name="seed">Seed of the first octave; each subsequent octave adds one.</param>
+    /// <param name="x">Transformed X coordinate.</param>
+    /// <param name="y">Transformed Y coordinate.</param>
+    /// <param name="z">Transformed Z coordinate.</param>
+    /// <param name="octaves">Octaves to actually run, at or below <see cref="FractalConfig.Octaves"/>.</param>
+    /// <param name="lastOctaveFade">Amplitude multiplier for the final octave, in (0, 1].</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static TF OpenSimplex3<TOps, TF, TI>(
+        in KernelConfig kernel, in FractalConfig fractal, int seed, TF x, TF y, TF z, int octaves, float lastOctaveFade)
+        where TOps : ISimdOps<TF, TI>
+        where TF : struct
+        where TI : struct
+    {
+        if (fractal.Type == FractalType.None || octaves <= 1)
+        {
+            TF single = OpenSimplex2Kernel.Sample3<TOps, TF, TI>(TOps.I(seed), x, y, z);
+
+            // The fade applies to a plain single-octave source too, not just to a fractal that level
+            // of detail has worn down to one octave. Without this a non-fractal layer keeps full
+            // amplitude at every zoom, which is exactly the layer whose detail should disappear first.
+            TF shaped = fractal.Type == FractalType.None ? single : ShapeSingle<TOps, TF, TI>(fractal, single);
+            return TOps.Mul(shaped, TOps.F(lastOctaveFade));
+        }
+
+        TF sum = TOps.F(0f);
+        TF amp = TOps.F(fractal.Bounding);
+        TF lacunarity = TOps.F(fractal.Lacunarity);
+        TF gain = TOps.F(fractal.Gain);
+        TF weighted = TOps.F(fractal.WeightedStrength);
+
+        for (int octave = 0; octave < octaves; octave++)
+        {
+            // Level of detail may ask for the finest surviving octave at reduced amplitude, so it
+            // ramps in rather than popping into existence as the camera approaches.
+            if (lastOctaveFade != 1f && octave == octaves - 1)
+            {
+                amp = TOps.Mul(amp, TOps.F(lastOctaveFade));
+            }
+
+            TF noise = OpenSimplex2Kernel.Sample3<TOps, TF, TI>(TOps.I(seed + octave), x, y, z);
+
+            TF weight;
+            switch (fractal.Type)
+            {
+                case FractalType.Ridged:
+                    noise = TOps.Abs(noise);
+                    sum = TOps.Add(sum, TOps.Mul(TOps.Add(TOps.Mul(noise, TOps.F(-2f)), TOps.F(1f)), amp));
+                    weight = TOps.Sub(TOps.F(1f), noise);
+                    break;
+
+                case FractalType.PingPong:
+                    noise = NoiseMath.PingPong<TOps, TF, TI>(
+                        TOps.Mul(TOps.Add(noise, TOps.F(1f)), TOps.F(fractal.PingPongStrength)));
+                    sum = TOps.Add(sum, TOps.Mul(TOps.Mul(TOps.Sub(noise, TOps.F(0.5f)), TOps.F(2f)), amp));
+                    weight = noise;
+                    break;
+
+                default:
+                    sum = TOps.Add(sum, TOps.Mul(noise, amp));
+                    weight = TOps.Mul(TOps.Add(noise, TOps.F(1f)), TOps.F(0.5f));
+                    break;
+            }
+
+            amp = TOps.Mul(amp, NoiseMath.Lerp<TOps, TF, TI>(TOps.F(1f), weight, weighted));
+            x = TOps.Mul(x, lacunarity);
+            y = TOps.Mul(y, lacunarity);
+            z = TOps.Mul(z, lacunarity);
+            amp = TOps.Mul(amp, gain);
+        }
+
+        return sum;
+    }
+
     /// <summary>
     /// Applies a fractal's per-octave shaping to a single octave.
     /// </summary>

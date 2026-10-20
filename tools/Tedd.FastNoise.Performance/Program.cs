@@ -8,6 +8,23 @@ using Tedd.DotNetLab.Harness;
 using Tedd.FastNoise;
 using Original = baseline::Tedd.FastNoise;
 
+if (args.Length > 0 && args[0] == "--inspect-earth")
+{
+    var scenario = new EarthScenario(256, true);
+    for (int i = 0; i < 512; i++) scenario.Check();
+    Console.WriteLine("Earth inspection workload completed with exact output validation.");
+    return;
+}
+
+if (args.Length > 0 && args[0] == "--validate-earth")
+{
+    foreach (int samples in new[] { 1, 7, 8, 9, 256, 4097 })
+        foreach (double step in new[] { .125, 1d, 8d, 128d, 1024d })
+            new EarthScenario(samples, true, step).Check();
+    Console.WriteLine("Earth outputs match original bits across backends, scalar tails and disabled-LOD strides.");
+    return;
+}
+
 var registry = new ScenarioRegistry();
 foreach (int samples in new[] { 1, 256, 4096, 65536 })
     registry.Register(new EarthScenario(samples, true));

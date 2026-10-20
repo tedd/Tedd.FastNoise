@@ -175,7 +175,9 @@ internal static class ProceduralRuntime
             ProceduralOperation.Lookup => FromBoundary(Call(typeof(ProceduralRuntime), nameof(Lookup),
                 Expression.Constant(node.Table, typeof(IReadOnlyList<double>)), a), node.Type),
             ProceduralOperation.Noise2D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample2), typeof(float), typeof(float)), a, b()),
-            ProceduralOperation.Noise3D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample3), typeof(float), typeof(float), typeof(float)), a, b(), operand(node.C)),
+            ProceduralOperation.Noise3D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise),
+                node.NoiseRequest!.Value.NoiseType == NoiseType.OpenSimplex2 ? nameof(ProceduralNoise.SampleOpenSimplex3) : nameof(ProceduralNoise.Sample3),
+                typeof(float), typeof(float), typeof(float)), a, b(), operand(node.C)),
             _ => throw new NotSupportedException($"Unsupported procedural operation {node.Operation}."),
         };
     }
@@ -221,5 +223,15 @@ internal sealed class ProceduralNoise
     {
         NoisePipeline.Transform3<VectorOps, Vector<float>, Vector<int>>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
         return FractalKernel.Fractal3<VectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
+    }
+    public float SampleOpenSimplex3(float x, float y, float z)
+    {
+        NoisePipeline.Transform3<ScalarOps, float, int>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
+        return FractalKernel.OpenSimplex3<ScalarOps, float, int>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
+    }
+    public Vector<float> SampleOpenSimplex3Wide(Vector<float> x, Vector<float> y, Vector<float> z)
+    {
+        NoisePipeline.Transform3<VectorOps, Vector<float>, Vector<int>>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
+        return FractalKernel.OpenSimplex3<VectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
     }
 }

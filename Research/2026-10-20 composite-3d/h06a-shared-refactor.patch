@@ -1,0 +1,118 @@
+diff --git a/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs b/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs
+index 706dab9..1ccb5da 100644
+--- a/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs
++++ b/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs
+@@ -134,10 +134,29 @@ internal static class FractalKernel
+         where TOps : ISimdOps<TF, TI>
+         where TF : struct
+         where TI : struct
++        => Fractal3<TOps, TF, TI, GeneralKernel3>(kernel, fractal, seed, x, y, z, octaves, lastOctaveFade);
++
++    // Procedural graphs know the immutable algorithm at compilation. A type-selected sampler
++    // avoids carrying every algorithm's dispatch through the hot octave loop; arithmetic is shared.
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static TF OpenSimplex3<TOps, TF, TI>(
++        in KernelConfig kernel, in FractalConfig fractal, int seed, TF x, TF y, TF z, int octaves, float lastOctaveFade)
++        where TOps : ISimdOps<TF, TI>
++        where TF : struct
++        where TI : struct
++        => Fractal3<TOps, TF, TI, OpenSimplexKernel3>(kernel, fractal, seed, x, y, z, octaves, lastOctaveFade);
++
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    private static TF Fractal3<TOps, TF, TI, TKernel>(
++        in KernelConfig kernel, in FractalConfig fractal, int seed, TF x, TF y, TF z, int octaves, float lastOctaveFade)
++        where TOps : ISimdOps<TF, TI>
++        where TF : struct
++        where TI : struct
++        where TKernel : struct, IKernel3
+     {
+         if (fractal.Type == FractalType.None || octaves <= 1)
+         {
+-            TF single = NoisePipeline.Single3<TOps, TF, TI>(kernel, TOps.I(seed), x, y, z);
++            TF single = TKernel.Sample<TOps, TF, TI>(kernel, TOps.I(seed), x, y, z);
+ 
+             // The fade applies to a plain single-octave source too, not just to a fractal that level
+             // of detail has worn down to one octave. Without this a non-fractal layer keeps full
+@@ -161,7 +180,7 @@ internal static class FractalKernel
+                 amp = TOps.Mul(amp, TOps.F(lastOctaveFade));
+             }
+ 
+-            TF noise = NoisePipeline.Single3<TOps, TF, TI>(kernel, TOps.I(seed + octave), x, y, z);
++            TF noise = TKernel.Sample<TOps, TF, TI>(kernel, TOps.I(seed + octave), x, y, z);
+ 
+             TF weight;
+             switch (fractal.Type)
+@@ -195,6 +214,28 @@ internal static class FractalKernel
+         return sum;
+     }
+ 
++    private interface IKernel3
++    {
++        static abstract TF Sample<TOps, TF, TI>(in KernelConfig kernel, TI seed, TF x, TF y, TF z)
++            where TOps : ISimdOps<TF, TI> where TF : struct where TI : struct;
++    }
++
++    private readonly struct GeneralKernel3 : IKernel3
++    {
++        [MethodImpl(MethodImplOptions.AggressiveInlining)]
++        public static TF Sample<TOps, TF, TI>(in KernelConfig kernel, TI seed, TF x, TF y, TF z)
++            where TOps : ISimdOps<TF, TI> where TF : struct where TI : struct
++            => NoisePipeline.Single3<TOps, TF, TI>(kernel, seed, x, y, z);
++    }
++
++    private readonly struct OpenSimplexKernel3 : IKernel3
++    {
++        [MethodImpl(MethodImplOptions.AggressiveInlining)]
++        public static TF Sample<TOps, TF, TI>(in KernelConfig kernel, TI seed, TF x, TF y, TF z)
++            where TOps : ISimdOps<TF, TI> where TF : struct where TI : struct
++            => OpenSimplex2Kernel.Sample3<TOps, TF, TI>(seed, x, y, z);
++    }
++
+     /// <summary>
+     /// Applies a fractal's per-octave shaping to a single octave.
+     /// </summary>
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs b/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs
+index d1434bc..ed75273 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs
+@@ -175,7 +175,9 @@ internal static class ProceduralRuntime
+             ProceduralOperation.Lookup => FromBoundary(Call(typeof(ProceduralRuntime), nameof(Lookup),
+                 Expression.Constant(node.Table, typeof(IReadOnlyList<double>)), a), node.Type),
+             ProceduralOperation.Noise2D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample2), typeof(float), typeof(float)), a, b()),
+-            ProceduralOperation.Noise3D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample3), typeof(float), typeof(float), typeof(float)), a, b(), operand(node.C)),
++            ProceduralOperation.Noise3D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise),
++                node.NoiseRequest!.Value.NoiseType == NoiseType.OpenSimplex2 ? nameof(ProceduralNoise.SampleOpenSimplex3) : nameof(ProceduralNoise.Sample3),
++                typeof(float), typeof(float), typeof(float)), a, b(), operand(node.C)),
+             _ => throw new NotSupportedException($"Unsupported procedural operation {node.Operation}."),
+         };
+     }
+@@ -222,4 +224,14 @@ internal sealed class ProceduralNoise
+         NoisePipeline.Transform3<VectorOps, Vector<float>, Vector<int>>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
+         return FractalKernel.Fractal3<VectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
+     }
++    public float SampleOpenSimplex3(float x, float y, float z)
++    {
++        NoisePipeline.Transform3<ScalarOps, float, int>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
++        return FractalKernel.OpenSimplex3<ScalarOps, float, int>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
++    }
++    public Vector<float> SampleOpenSimplex3Wide(Vector<float> x, Vector<float> y, Vector<float> z)
++    {
++        NoisePipeline.Transform3<VectorOps, Vector<float>, Vector<int>>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
++        return FractalKernel.OpenSimplex3<VectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
++    }
+ }
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+index b230585..4e9e39d 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+@@ -87,7 +87,9 @@ internal static class ProceduralWideRuntime
+                     ProceduralRuntime.Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample2Wide), typeof(Vector<float>), typeof(Vector<float>)), a, b());
+             case ProceduralOperation.Noise3D:
+                 return Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)),
+-                    ProceduralRuntime.Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample3Wide), typeof(Vector<float>), typeof(Vector<float>), typeof(Vector<float>)), a, b(), operand(node.C));
++                    ProceduralRuntime.Method(typeof(ProceduralNoise),
++                        node.NoiseRequest!.Value.NoiseType == NoiseType.OpenSimplex2 ? nameof(ProceduralNoise.SampleOpenSimplex3Wide) : nameof(ProceduralNoise.Sample3Wide),
++                        typeof(Vector<float>), typeof(Vector<float>), typeof(Vector<float>)), a, b(), operand(node.C));
+             default: throw new NotSupportedException($"Unsupported SIMD operation {node.Operation}.");
+         }
+     }

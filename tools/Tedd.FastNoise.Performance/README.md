@@ -1,6 +1,12 @@
 # Coordinated 3D composite measurements
 
+On Windows, standalone builds, tests, JIT inspection, and harness startup must acquire `Global\Tedd.DotNetLab.Measurement.v1`. `MachineMutex` adds `Global\` to its logical name; an unprefixed mutex does not coordinate with the service. DotNetLab jobs acquire the shared mutex themselves, so release any standalone lease before submitting a job.
+
 The harness compares the current library with an immutable source snapshot through the `baseline` assembly alias. Scenarios cover 3D stacks, overwritten stack prefixes, and four-source procedural batches. Every measured batch is checked bit for bit against the original implementation outside timing. One operation means one complete output volume or record batch.
+
+Earth scenarios reproduce the frozen Forcecraft nine-field recipe and its eleven-output land graph. They cover single-point evaluation, the current 256-record column batch, and larger batches. Noise uses float arithmetic before double terrain calculations; LOD remains disabled. `EarthRecipe.cs` records the source revision and SHA256. Both implementations compile that same recipe source; no Forcecraft server dependencies or world writes are involved.
+
+Run the built harness with `--validate-earth` for exact scalar/SIMD/parallel checks across tails and strides. `--inspect-earth` executes a sustained correctness workload for a separately configured JIT disassembly process. Inspection runs and timed runs must use separate processes and the shared host mutex.
 
 Requires Python, .NET SDK, exact CoreCLR 10.0.13, and a compatible DotNetLab installation. All generated files belong in a dedicated task directory beneath `D:\Workspaces\AI`.
 

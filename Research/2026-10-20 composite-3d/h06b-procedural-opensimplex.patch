@@ -1,0 +1,236 @@
+diff --git a/src/Tedd.FastNoise/CompiledNoiseStack.cs b/src/Tedd.FastNoise/CompiledNoiseStack.cs
+index 8597ec7..8d7ee7c 100644
+--- a/src/Tedd.FastNoise/CompiledNoiseStack.cs
++++ b/src/Tedd.FastNoise/CompiledNoiseStack.cs
+@@ -99,6 +99,9 @@ public sealed class CompiledNoiseStack
+                 continue;
+             }
+ 
++            if (plan.Blend == LayerBlend.Replace)
++                names.Clear();
++
+             (int octaves, float fade) = _lod.Resolve(plan.Frequency, plan.Lacunarity, plan.Octaves, step);
+             string name = plan.Name ?? plan.Kernel.NoiseType.ToString();
+ 
+@@ -255,6 +258,11 @@ public sealed class CompiledNoiseStack
+                     continue;
+                 }
+ 
++                // Replace discards the entire preceding accumulator. Resolve culling first: a
++                // replacement omitted at this LOD must leave its predecessors intact.
++                if (plan.Blend == LayerBlend.Replace)
++                    resolved.Clear();
++
+                 (int octaves, float fade) = _lod.Resolve(plan.Frequency, plan.Lacunarity, plan.Octaves, step);
+ 
+                 resolved.Add(new ResolvedLayer
+diff --git a/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs b/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs
+index 706dab9..fd9469d 100644
+--- a/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs
++++ b/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs
+@@ -195,6 +195,84 @@ internal static class FractalKernel
+         return sum;
+     }
+ 
++    // Direct algorithm selection for immutable procedural requests. The general octave loop
++    // stays in its own method so callers can inline it without an extra generic call boundary.
++    /// <summary>Runs <paramref name="octaves"/> octaves in 3D over already-transformed coordinates.</summary>
++    /// <param name="kernel">Which algorithm each octave runs.</param>
++    /// <param name="fractal">Octave count, falloff and shaping at full detail.</param>
++    /// <param name="seed">Seed of the first octave; each subsequent octave adds one.</param>
++    /// <param name="x">Transformed X coordinate.</param>
++    /// <param name="y">Transformed Y coordinate.</param>
++    /// <param name="z">Transformed Z coordinate.</param>
++    /// <param name="octaves">Octaves to actually run, at or below <see cref="FractalConfig.Octaves"/>.</param>
++    /// <param name="lastOctaveFade">Amplitude multiplier for the final octave, in (0, 1].</param>
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static TF OpenSimplex3<TOps, TF, TI>(
++        in KernelConfig kernel, in FractalConfig fractal, int seed, TF x, TF y, TF z, int octaves, float lastOctaveFade)
++        where TOps : ISimdOps<TF, TI>
++        where TF : struct
++        where TI : struct
++    {
++        if (fractal.Type == FractalType.None || octaves <= 1)
++        {
++            TF single = OpenSimplex2Kernel.Sample3<TOps, TF, TI>(TOps.I(seed), x, y, z);
++
++            // The fade applies to a plain single-octave source too, not just to a fractal that level
++            // of detail has worn down to one octave. Without this a non-fractal layer keeps full
++            // amplitude at every zoom, which is exactly the layer whose detail should disappear first.
++            TF shaped = fractal.Type == FractalType.None ? single : ShapeSingle<TOps, TF, TI>(fractal, single);
++            return TOps.Mul(shaped, TOps.F(lastOctaveFade));
++        }
++
++        TF sum = TOps.F(0f);
++        TF amp = TOps.F(fractal.Bounding);
++        TF lacunarity = TOps.F(fractal.Lacunarity);
++        TF gain = TOps.F(fractal.Gain);
++        TF weighted = TOps.F(fractal.WeightedStrength);
++
++        for (int octave = 0; octave < octaves; octave++)
++        {
++            // Level of detail may ask for the finest surviving octave at reduced amplitude, so it
++            // ramps in rather than popping into existence as the camera approaches.
++            if (lastOctaveFade != 1f && octave == octaves - 1)
++            {
++                amp = TOps.Mul(amp, TOps.F(lastOctaveFade));
++            }
++
++            TF noise = OpenSimplex2Kernel.Sample3<TOps, TF, TI>(TOps.I(seed + octave), x, y, z);
++
++            TF weight;
++            switch (fractal.Type)
++            {
++                case FractalType.Ridged:
++                    noise = TOps.Abs(noise);
++                    sum = TOps.Add(sum, TOps.Mul(TOps.Add(TOps.Mul(noise, TOps.F(-2f)), TOps.F(1f)), amp));
++                    weight = TOps.Sub(TOps.F(1f), noise);
++                    break;
++
++                case FractalType.PingPong:
++                    noise = NoiseMath.PingPong<TOps, TF, TI>(
++                        TOps.Mul(TOps.Add(noise, TOps.F(1f)), TOps.F(fractal.PingPongStrength)));
++                    sum = TOps.Add(sum, TOps.Mul(TOps.Mul(TOps.Sub(noise, TOps.F(0.5f)), TOps.F(2f)), amp));
++                    weight = noise;
++                    break;
++
++                default:
++                    sum = TOps.Add(sum, TOps.Mul(noise, amp));
++                    weight = TOps.Mul(TOps.Add(noise, TOps.F(1f)), TOps.F(0.5f));
++                    break;
++            }
++
++            amp = TOps.Mul(amp, NoiseMath.Lerp<TOps, TF, TI>(TOps.F(1f), weight, weighted));
++            x = TOps.Mul(x, lacunarity);
++            y = TOps.Mul(y, lacunarity);
++            z = TOps.Mul(z, lacunarity);
++            amp = TOps.Mul(amp, gain);
++        }
++
++        return sum;
++    }
++
+     /// <summary>
+     /// Applies a fractal's per-octave shaping to a single octave.
+     /// </summary>
+diff --git a/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs b/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs
+index eefb060..f42a674 100644
+--- a/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs
++++ b/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs
+@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
+ namespace Tedd.FastNoise.Procedural;
+ 
+ /// <summary>A reusable, immutable procedural program with explicit ordered arithmetic.</summary>
+-/// <remarks>Execution is thread-safe and generated execution is allocation-free. Compilation generates dynamic CPU code when
++/// <remarks>Execution is thread-safe and sequential generated execution is allocation-free. Compilation generates dynamic CPU code when
+ /// supported; NativeAOT uses a scalar interpreter with pooled scratch space and reports this through <see cref="UsesDynamicCode"/>.
+ /// Inputs and outputs use doubles as a lossless wire representation for float, 32-bit integers and Boolean.
+ /// Nodes retain their declared arithmetic precision. Dynamic branches may evaluate both pure dependency arms.</remarks>
+@@ -60,8 +60,8 @@ public sealed class CompiledProceduralGraph
+     }
+ 
+     /// <summary>Evaluates tightly interleaved records; inputs and outputs must not overlap.</summary>
+-    /// <remarks>Scalar disables SIMD. Other backend selections use the generated CPU SIMD path when
+-    /// available; this method does not schedule worker threads or GPU work. Explicit GPU recording lives
++    /// <remarks>Scalar disables SIMD. Parallel partitions sufficiently large batches across CPU workers;
++    /// other backend selections use a single CPU thread with SIMD when available. Explicit GPU recording lives
+     /// in Tedd.FastNoise.Gpu, allowing callers to retain generated data on the device.</remarks>
+     public void Fill(ReadOnlySpan<double> inputs, Span<double> outputs, int sampleCount, NoiseBackend backend = NoiseBackend.Auto)
+     {
+@@ -69,14 +69,50 @@ public sealed class CompiledProceduralGraph
+         if (inputs.Length < checked(sampleCount * InputCount)) throw new ArgumentException("Input buffer is too short.", nameof(inputs));
+         if (outputs.Length < checked(sampleCount * OutputCount)) throw new ArgumentException("Output buffer is too short.", nameof(outputs));
+         if (inputs.Overlaps(outputs)) throw new ArgumentException("Bulk input and output buffers must not overlap.", nameof(outputs));
++        if (backend == NoiseBackend.Parallel && sampleCount >= 2048 && Environment.ProcessorCount > 1)
++        {
++            FillParallel(inputs, outputs, sampleCount);
++            return;
++        }
++        FillSequential(inputs, outputs, sampleCount, backend != NoiseBackend.Scalar);
++    }
++
++    private void FillSequential(ReadOnlySpan<double> inputs, Span<double> outputs, int sampleCount, bool wide)
++    {
+         int i = 0;
+-        if (backend != NoiseBackend.Scalar && _executeWide is not null)
++        if (wide && _executeWide is not null)
+             for (; i <= sampleCount - Vector<float>.Count; i += Vector<float>.Count)
+                 _executeWide(inputs.Slice(i * InputCount), outputs.Slice(i * OutputCount));
+         for (; i < sampleCount; i++)
+             _execute(inputs.Slice(i * InputCount, InputCount), outputs.Slice(i * OutputCount, OutputCount));
+     }
+ 
++    private unsafe void FillParallel(ReadOnlySpan<double> inputs, Span<double> outputs, int sampleCount)
++    {
++        int lanes = _executeWide is null ? 1 : Vector<float>.Count;
++        int groups = sampleCount / lanes;
++        int workers = Math.Min(Environment.ProcessorCount, sampleCount / 1024);
++        int groupsPerWorker = 1 + (groups - 1) / workers;
++
++        // Partition whole SIMD groups so every record uses exactly the same SIMD/scalar path as
++        // a sequential fill. Only the final range may contain the original scalar tail.
++        fixed (double* inputOrigin = inputs)
++        fixed (double* outputOrigin = outputs)
++        {
++            nint inputAddress = (nint)inputOrigin, outputAddress = (nint)outputOrigin;
++            System.Threading.Tasks.Parallel.For(0, workers, worker =>
++            {
++                int firstGroup = worker * groupsPerWorker;
++                if (firstGroup >= groups) return;
++                int lastGroup = firstGroup + Math.Min(groups - firstGroup, groupsPerWorker);
++                int first = firstGroup * lanes;
++                int count = lastGroup == groups ? sampleCount - first : (lastGroup - firstGroup) * lanes;
++                FillSequential(new ReadOnlySpan<double>((double*)inputAddress + first * InputCount, count * InputCount),
++                    new Span<double>((double*)outputAddress + first * OutputCount, count * OutputCount), count, true);
++            });
++        }
++    }
++
+     private Executor CompileWide()
+     {
+         var inputs = Expression.Parameter(typeof(ReadOnlySpan<double>), "inputs");
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs b/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs
+index d1434bc..ed75273 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs
+@@ -175,7 +175,9 @@ internal static class ProceduralRuntime
+             ProceduralOperation.Lookup => FromBoundary(Call(typeof(ProceduralRuntime), nameof(Lookup),
+                 Expression.Constant(node.Table, typeof(IReadOnlyList<double>)), a), node.Type),
+             ProceduralOperation.Noise2D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample2), typeof(float), typeof(float)), a, b()),
+-            ProceduralOperation.Noise3D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample3), typeof(float), typeof(float), typeof(float)), a, b(), operand(node.C)),
++            ProceduralOperation.Noise3D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise),
++                node.NoiseRequest!.Value.NoiseType == NoiseType.OpenSimplex2 ? nameof(ProceduralNoise.SampleOpenSimplex3) : nameof(ProceduralNoise.Sample3),
++                typeof(float), typeof(float), typeof(float)), a, b(), operand(node.C)),
+             _ => throw new NotSupportedException($"Unsupported procedural operation {node.Operation}."),
+         };
+     }
+@@ -222,4 +224,14 @@ internal sealed class ProceduralNoise
+         NoisePipeline.Transform3<VectorOps, Vector<float>, Vector<int>>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
+         return FractalKernel.Fractal3<VectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
+     }
++    public float SampleOpenSimplex3(float x, float y, float z)
++    {
++        NoisePipeline.Transform3<ScalarOps, float, int>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
++        return FractalKernel.OpenSimplex3<ScalarOps, float, int>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
++    }
++    public Vector<float> SampleOpenSimplex3Wide(Vector<float> x, Vector<float> y, Vector<float> z)
++    {
++        NoisePipeline.Transform3<VectorOps, Vector<float>, Vector<int>>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
++        return FractalKernel.OpenSimplex3<VectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
++    }
+ }
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+index b230585..4e9e39d 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+@@ -87,7 +87,9 @@ internal static class ProceduralWideRuntime
+                     ProceduralRuntime.Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample2Wide), typeof(Vector<float>), typeof(Vector<float>)), a, b());
+             case ProceduralOperation.Noise3D:
+                 return Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)),
+-                    ProceduralRuntime.Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample3Wide), typeof(Vector<float>), typeof(Vector<float>), typeof(Vector<float>)), a, b(), operand(node.C));
++                    ProceduralRuntime.Method(typeof(ProceduralNoise),
++                        node.NoiseRequest!.Value.NoiseType == NoiseType.OpenSimplex2 ? nameof(ProceduralNoise.SampleOpenSimplex3Wide) : nameof(ProceduralNoise.Sample3Wide),
++                        typeof(Vector<float>), typeof(Vector<float>), typeof(Vector<float>)), a, b(), operand(node.C));
+             default: throw new NotSupportedException($"Unsupported SIMD operation {node.Operation}.");
+         }
+     }
