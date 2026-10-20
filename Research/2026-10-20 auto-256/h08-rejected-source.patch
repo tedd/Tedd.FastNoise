@@ -1,0 +1,130 @@
+diff --git a/src/Tedd.FastNoise.Tests/ProceduralConstantTests.cs b/src/Tedd.FastNoise.Tests/ProceduralConstantTests.cs
+new file mode 100644
+index 0000000..1c14cac
+--- /dev/null
++++ b/src/Tedd.FastNoise.Tests/ProceduralConstantTests.cs
+@@ -0,0 +1,99 @@
++// Compares literal emission with the released boxed-constant oracle, including consuming arithmetic.
++// Scalar/SIMD agreement alone does not establish identical NaN payload selection after JIT changes.
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using System.Linq.Expressions;
++using System.Numerics;
++using Tedd.FastNoise.Procedural;
++
++namespace Tedd.FastNoise.Tests;
++
++public sealed class ProceduralConstantTests
++{
++    private static readonly double[] Values =
++    [
++        0d, BitConverter.Int64BitsToDouble(long.MinValue), 1d, -1d, .5d,
++        int.MinValue, int.MaxValue, uint.MaxValue, double.Epsilon, float.Epsilon,
++        double.MaxValue, double.MinValue, double.PositiveInfinity, double.NegativeInfinity,
++        BitConverter.Int64BitsToDouble(0x7ff8123456789abc),
++        BitConverter.Int64BitsToDouble(unchecked((long)0xfff8543212345678)),
++        BitConverter.Int64BitsToDouble(0x7ff0123456789abc),
++    ];
++
++    [Fact]
++    public void FloatConstantsRetainBitsAndArithmetic()
++    {
++        foreach (double value in Values)
++        {
++            var emitted = ProceduralWideRuntime.Constant(value, ProceduralType.Float32);
++            var released = Expression.Constant(new Vector<float>((float)value));
++            Check(emitted, released, Values.Select(x => new Vector<float>((float)x)),
++                (a, b) => { for (int i = 0; i < Vector<float>.Count; i++) Assert.Equal(BitConverter.SingleToInt32Bits(a[i]), BitConverter.SingleToInt32Bits(b[i])); });
++        }
++    }
++
++    [Fact]
++    public void DoubleConstantsRetainBitsAndArithmetic()
++    {
++        foreach (double value in Values)
++        {
++            var emitted = ProceduralWideRuntime.Constant(value, ProceduralType.Float64);
++            var released = Expression.Constant(new DoublePair(new(value), new(value)));
++            Check(emitted, released, Values.Select(x => new DoublePair(new(x), new(x))), (a, b) =>
++            {
++                for (int i = 0; i < Vector<double>.Count; i++)
++                {
++                    Assert.Equal(BitConverter.DoubleToInt64Bits(a.Low[i]), BitConverter.DoubleToInt64Bits(b.Low[i]));
++                    Assert.Equal(BitConverter.DoubleToInt64Bits(a.High[i]), BitConverter.DoubleToInt64Bits(b.High[i]));
++                }
++            });
++        }
++    }
++
++    [Theory]
++    [InlineData(ProceduralType.Int32)]
++    [InlineData(ProceduralType.UInt32)]
++    [InlineData(ProceduralType.Bool)]
++    public void IntegerAndBooleanConstantsRetainConversionBits(ProceduralType type)
++    {
++        foreach (double value in Values)
++        {
++            var emitted = ProceduralWideRuntime.Constant(value, type);
++            object expected = type == ProceduralType.UInt32
++                ? new Vector<uint>(ProceduralRuntime.ToUInt32(value))
++                : new Vector<int>(type == ProceduralType.Bool ? value != 0 ? -1 : 0 : ProceduralRuntime.ToInt32(value));
++            object actual = Expression.Lambda<Func<object>>(Expression.Convert(emitted, typeof(object))).Compile()();
++            Assert.Equal(expected, actual);
++        }
++    }
++
++    private static void Check<T>(Expression emitted, Expression released, IEnumerable<T> inputs, Action<T, T> equal)
++    {
++        equal(Expression.Lambda<Func<T>>(emitted).Compile()(), Expression.Lambda<Func<T>>(released).Compile()());
++        var parameter = Expression.Parameter(typeof(T));
++        foreach (var operation in new[] { ExpressionType.Add, ExpressionType.Subtract, ExpressionType.Multiply, ExpressionType.Divide })
++        foreach (bool constantFirst in new[] { false, true })
++        {
++            Expression Consume(Expression constant) => Expression.MakeBinary(operation,
++                constantFirst ? constant : parameter, constantFirst ? parameter : constant);
++            var candidate = Expression.Lambda<Func<T, T>>(Consume(emitted), parameter).Compile();
++            var control = Expression.Lambda<Func<T, T>>(Consume(released), parameter).Compile();
++            foreach (T input in inputs)
++            {
++                try { equal(candidate(input), control(input)); }
++                catch (Xunit.Sdk.XunitException error)
++                {
++                    throw new Xunit.Sdk.XunitException($"{operation}, constantFirst={constantFirst}, constant={Bits(Expression.Lambda<Func<T>>(emitted).Compile()()!)}, input={Bits(input!)}: {error.Message}");
++                }
++            }
++        }
++    }
++
++    private static string Bits(object value) => value switch
++    {
++        Vector<float> vector => $"{BitConverter.SingleToInt32Bits(vector[0]):x8}",
++        DoublePair pair => $"{BitConverter.DoubleToInt64Bits(pair.Low[0]):x16}",
++        _ => value.ToString()!,
++    };
++}
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+index 4e9e39d..505c733 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+@@ -24,13 +24,15 @@ internal static class ProceduralWideRuntime
+         ProceduralType.UInt32 => typeof(Vector<uint>), _ => typeof(Vector<int>),
+     };
+     private static Expression Call(string name, params Expression[] args) => ProceduralRuntime.Call(typeof(ProceduralWideRuntime), name, args);
++    private static Expression Broadcast<T>(T value) where T : struct
++        => Expression.New(typeof(Vector<T>).GetConstructor([typeof(T)])!, Expression.Constant(value));
+     internal static Expression Constant(double value, ProceduralType type) => type switch
+     {
+-        ProceduralType.Float32 => Expression.Constant(new Vector<float>((float)value)),
+-        ProceduralType.Float64 => Expression.Constant(new DoublePair(new(value), new(value))),
+-        ProceduralType.Int32 => Expression.Constant(new Vector<int>(ProceduralRuntime.ToInt32(value))),
+-        ProceduralType.UInt32 => Expression.Constant(new Vector<uint>(ProceduralRuntime.ToUInt32(value))),
+-        ProceduralType.Bool => Expression.Constant(new Vector<int>(value != 0 ? -1 : 0)),
++        ProceduralType.Float32 => Broadcast((float)value),
++        ProceduralType.Float64 => Expression.New(typeof(DoublePair).GetConstructor([typeof(Vector<double>), typeof(Vector<double>)])!, Broadcast(value), Broadcast(value)),
++        ProceduralType.Int32 => Broadcast(ProceduralRuntime.ToInt32(value)),
++        ProceduralType.UInt32 => Broadcast(ProceduralRuntime.ToUInt32(value)),
++        ProceduralType.Bool => Broadcast(value != 0 ? -1 : 0),
+         _ => throw new ArgumentOutOfRangeException(nameof(type)),
+     };
+     internal static Expression Read(ParameterExpression inputs, int index, int stride, ProceduralType type)
