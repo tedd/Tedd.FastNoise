@@ -127,3 +127,25 @@ H11 fresh normal confirmation completed all192sessions without duration changes,
 Global H11 is NOT adopted: Noise/Land show useful gains, Point is equivalent, but the frozen ordinary-stack guard does not establish5% noninferiority (one-sided bound1.055209). An inconclusive guard is not evidence of a regression and is not a pass. No threshold change, extra H11 samples or favorable exclusion. Exact normal build/source manifests, comparisons and all192raw measurements are retained. Administrative launch gaps varied; the original600second plans all completed and no workspace policy changed.
 
 H12 prospective scoped mechanism: restore released Hashing, ISimdOps, ScalarOps and VectorOps exactly. Use a new forwarding procedural SIMD operation type only in SampleOpenSimplex3Wide. Its integer gather recognizes the exact gradient-table base reference and uses the packed decoder there; every other table and unsupported ISA uses original GatherI. JIT inspection must verify the table-identity guard folds and that ordinary-stack/scalar paths retain released source and native code. This is a different treatment confined to the proven procedural caller; no attempt to relabel global H11 as passing. Preserve full NaN/overflow/other-table tests. Fixed nine-case8pair/144run exploration and previous budgets/seed/profile; ordinary-stack and scalar/point cases are negative controls rather than affected treatment guards. If promising, fresh Noise256(primary) and Land256(caller guard) confirmation:24paired fresh-process blocks each,96processes total, family2/alpha.05, same.95 useful/1.05 regression thresholds, seed20261030,1024operations/8warmups, max600sec perplan. Adoption additionally requires strict bits, released source/native negative-control identity and suitable cold costs. No H12 implementation/timing exists at this freeze.
+
+H12 initial correctness:278passed/1wholegraph failed before timing. ExceptionalXYZ record8/output2 (PerlinFBm, unchanged algorithm) expected7FF82468A0000000 but producedFFF8A86420000000. Initial source patchSHA256 `c145e55380b36cc37ce6b41f79b72d25e853fb5bb12c5f515dd588795a1f1e7a`. Under the Global mutex, temporarily restoring only released ProceduralRuntime.cs made both focused wholegraph cases pass; candidate bytes restored in finally. Thus the forwarding oracle passes a released-source control; no numeric assertion/oracle change is justified. Changing a neighboring wide entry can affect enclosing JIT context and payload selection. Next minimal revision removes only the added outer ISA branch, preserving the original single-return entry shape with scoped ops; the internal gather still guards AVX2/width and preserves fallback. No H12 timing exists.
+
+H12b strict gates:279/279 CPU cases pass with AVX2 enabled and disabled; Earth and cold validations pass exactly. Only the outer branch was removed; no oracle or expected bits changed. Source patch SHA256 `3619bb167140d114111f7231ab8434099863295aadcfbc17d60a039dd4bc363d`. No H12 timing yet.
+
+H12b optimized Tier1 Sample3 uses both packed decoders inline with no gather, lookup helper, or ISA/reference check. A static table-root load remains; no total-load elimination or hardware cause is claimed. Scoped kernel2283bytes/frame984; wide graph15888bytes unchanged. Ordinary-stack Sample3 retains gathers and normalized native body identity. Scalar graph lambdas also match release after only method-table relocations; further matched scalar-kernel capture is pending.
+
+H12 exploration completed all144runs; exact validation/quiescence retained. Descriptive elapsed ratios:
+
+| Case | Kind | Ratio | logSE | Execution |
+| --- | --- | ---: | ---: | --- |
+| earth-noise-n256 | auto | 0.810283 | 0.058952 | `exec-e82fa6b1675d488cbd27d891396d3ac9` |
+| earth-land-n256 | auto | 0.910162 | 0.038974 | `exec-fcc9b48baa10496d989eb70456b0fa40` |
+| earth-land-n1 | auto | 1.075234 | 0.177854 | `exec-e1b9f38e06f94e1cafb328d3e24db69c` |
+| earth-land-n4096 | auto | 0.904183 | 0.062110 | `exec-7836dca8e42d4ab98303855312d27b1d` |
+| earth-land-n65536 | parallel | 0.833512 | 0.030496 | `exec-d1354f090c4a4af39009297763e86929` |
+| earth-noise-n256 | scalar | 1.038885 | 0.152601 | `exec-2536444ab8444e05be41adde9d120375` |
+| composite-3d-w16-l4 | auto | 0.941857 | 0.037621 | `exec-c8bd555eeeab40259dc77bc17e89b145` |
+| earth-noise-first-fill-n256 | cold | 1.098017 | 0.089862 | `exec-0c112785bf7945178de5fd039876abd4` |
+| earth-land-first-fill-n256 | cold | 1.034435 | 0.091975 | `exec-39b4b592bef5492fa035fda7c69a65b8` |
+
+PrimaryNoise and callerLand warrant the already frozen two-case fresh confirmation. Cold first-fill estimates1.10/1.03 are uncertain (logSE.090/.092), not established regressions; managed allocation and absolute setup cost will be reported separately. Unchanged negative-control effects do not establish treatment benefits or regressions. No H12 adoption yet.
