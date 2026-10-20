@@ -470,7 +470,7 @@ the source changes. Binary sample payloads remain local.
 Pushes and pull requests do not start hosted tests. Routine validation and sample generation run
 locally; the deployment workflows only package and publish.
 
-Manually dispatch `deploy.yml` from the **`deploy`** branch to ship:
+Manually dispatch `nuget-publish.yml` from the **`deploy`** branch to ship:
 
 - matching versions of `Tedd.FastNoise` and `Tedd.FastNoise.Gpu`, using GitHub OIDC trusted publishing
 - a GitHub release carrying the self-contained Windows designer
@@ -479,16 +479,17 @@ Manually dispatch `deploy.yml` from the **`deploy`** branch to ship:
 It installs no .NET or Vulkan runtime and generates no samples on hosted runners. Documentation
 updates therefore do not require a package release.
 
-The `<Version>` value supplies the major and minor release line. Each new deploy workflow run adds
-its stable run number to the patch component; rerunning the same workflow retains the same version.
+The `<Version>` value supplies the release line and minimum patch version. Packaging selects the
+next unused stable patch across both NuGet packages. Rerunning only the publication job reuses the
+existing package artifacts and version.
 After local validation and merging to `main`, publish the site and dispatch the package release:
 
 ```bash
 git push origin main:deploy
-gh workflow run deploy.yml --ref deploy
+gh workflow run nuget-publish.yml --ref deploy
 ```
 
-NuGet.org must trust repository `tedd/Tedd.FastNoise` and workflow file `deploy.yml` for both packages. No persistent
+NuGet.org must trust repository `tedd/Tedd.FastNoise` and workflow file `nuget-publish.yml` for both packages. No persistent
 NuGet API key is stored. GitHub Pages must use **GitHub Actions** as its source.
 
 ---

@@ -38,8 +38,20 @@ jobs:
           }
 
           $baseVersion = [version]$versionNode.InnerText
-          # A workflow rerun retains its version; each new deploy run advances the patch.
-          $packageVersion = '{0}.{1}.{2}' -f $baseVersion.Major, $baseVersion.Minor, ($baseVersion.Build + [int]$env:GITHUB_RUN_NUMBER)
+          # Keep versions monotonic across workflow renames and partially published releases.
+          # Rerunning only the publish job reuses the frozen package artifacts and version.
+          $nextPatch = $baseVersion.Build
+          foreach ($id in @('tedd.fastnoise', 'tedd.fastnoise.gpu')) {
+            $published = Invoke-RestMethod -Uri "https://api.nuget.org/v3-flatcontainer/$id/index.json"
+            foreach ($text in $published.versions) {
+              if ($text -notmatch '^\d+\.\d+\.\d+$') { continue }
+              $version = [version]$text
+              if ($version.Major -eq $baseVersion.Major -and $version.Minor -eq $baseVersion.Minor) {
+                $nextPatch = [Math]::Max($nextPatch, $version.Build + 1)
+              }
+            }
+          }
+          $packageVersion = '{0}.{1}.{2}' -f $baseVersion.Major, $baseVersion.Minor, $nextPatch
           $versionNode.InnerText = $packageVersion
           $project.Save((Resolve-Path -LiteralPath $projectPath))
           $gpuPath = 'src/Tedd.FastNoise.Gpu/Tedd.FastNoise.Gpu.csproj'
