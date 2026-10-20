@@ -32,8 +32,18 @@ if (args.Length > 0 && args[0] == "--validate-earth")
     return;
 }
 
+if (args.Length > 0 && args[0] == "--validate-earth-cold")
+{
+    new ColdEarthScenario(false).Check();
+    new ColdEarthScenario(true).Check();
+    Console.WriteLine("Fresh Earth graph construction and first fills match released bits.");
+    return;
+}
+
 var registry = new ScenarioRegistry();
 registry.Register(new ColdCompositeScenario());
+registry.Register(new ColdEarthScenario(false));
+registry.Register(new ColdEarthScenario(true));
 foreach (int samples in new[] { 1, 256, 4096, 65536 })
     registry.Register(new EarthScenario(samples, true));
 registry.Register(new EarthScenario(256, false));

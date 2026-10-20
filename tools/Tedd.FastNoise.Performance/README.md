@@ -8,6 +8,8 @@ Earth scenarios reproduce the frozen Forcecraft nine-field recipe and its eleven
 
 The first-fill composite scenario constructs a new stack for every operation and includes its first complete fill; output storage is reused. Compare it with the warm composite scenario to assess preparation cost and reuse amortization. `-p:NoiseProject=<isolated library project>` selects an experimental checkout for exploratory runs. `--inspect-stack` supplies a separate, exact-output workload for JIT inspection.
 
+Earth first-fill scenarios include fresh graph construction, compilation and one complete 256-record Auto fill. They reuse input/output buffers in a warm process. `--validate-earth-cold` checks both the nine-field Noise and eleven-output Land cases against the immutable baseline.
+
 Run the built harness with `--validate-earth` for exact scalar/SIMD/parallel checks across tails and strides. `--inspect-earth` executes a sustained correctness workload for a separately configured JIT disassembly process. Inspection runs and timed runs must use separate processes and the shared host mutex.
 
 Requires Python, .NET SDK, exact CoreCLR 10.0.13, and a compatible DotNetLab installation. All generated files belong in a dedicated task directory beneath `D:\Workspaces\AI`.

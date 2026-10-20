@@ -13,6 +13,7 @@
     <Compile Include="EarthRecipe.cs" />
     <Compile Include="EarthScenario.cs" />
     <Compile Include="ColdCompositeScenario.cs" />
+    <Compile Include="ColdEarthScenario.cs" />
     <ProjectReference Include="EarthBaseline/EarthBaseline.csproj" />
     <ProjectReference Include="$(NoiseProject)" Condition="'$(NoiseSourceDirectory)' == ''" />
     <Compile Include="$(NoiseSourceDirectory)/**/*.cs" Exclude="$(NoiseSourceDirectory)/**/obj/**/*.cs;$(NoiseSourceDirectory)/**/bin/**/*.cs" Condition="'$(NoiseSourceDirectory)' != ''" />
