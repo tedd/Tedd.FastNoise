@@ -88,7 +88,7 @@ sealed class CompositeScenario : ISynchronousScenario
     public ScenarioDescriptor Describe() => new($"composite-3d-w{_width}-l{_layers}{(_replace ? "-replace" : "")}", "1",
         $"opensimplex2-fbm4-1337-origin-137-87-23-w{_width}-64-16-step1-l{_layers}{(_replace ? "-replace" : "")}",
         ResetLevel.LogicalState, ThreadAffinity.Any, false, "one complete 3D composite volume",
-        new[] { "baseline", "candidate", "baseline-parallel", "candidate-parallel" }, Array.Empty<string>(), new Dictionary<string, int>());
+        new[] { "baseline", "candidate", "baseline-scalar", "candidate-scalar", "baseline-parallel", "candidate-parallel" }, Array.Empty<string>(), new Dictionary<string, int>());
     public void Prepare(ScenarioContext context)
     {
         _variant = context.Variant;
@@ -101,6 +101,8 @@ sealed class CompositeScenario : ISynchronousScenario
             switch (_variant)
             {
                 case "baseline": _original.Fill(_output, _originalRegion, Original.NoiseBackend.Simd); break;
+                case "baseline-scalar": _original.Fill(_output, _originalRegion, Original.NoiseBackend.Scalar); break;
+                case "candidate-scalar": _stack.Fill(_output, _region, NoiseBackend.Scalar); break;
                 case "baseline-parallel": _original.Fill(_output, _originalRegion, Original.NoiseBackend.Parallel); break;
                 case "candidate-parallel": _stack.Fill(_output, _region, NoiseBackend.Parallel); break;
                 default: _stack.Fill(_output, _region, NoiseBackend.Simd); break;
