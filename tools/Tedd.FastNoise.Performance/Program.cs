@@ -8,6 +8,13 @@ using Tedd.DotNetLab.Harness;
 using Tedd.FastNoise;
 using Original = baseline::Tedd.FastNoise;
 
+if (args.Length > 0 && args[0] == "--inspect-stack")
+{
+    new CompositeScenario(16, 4).Inspect();
+    Console.WriteLine("Stack inspection workload completed with exact output validation.");
+    return;
+}
+
 if (args.Length > 0 && args[0] == "--inspect-earth")
 {
     var scenario = new EarthScenario(256, true);
@@ -26,6 +33,7 @@ if (args.Length > 0 && args[0] == "--validate-earth")
 }
 
 var registry = new ScenarioRegistry();
+registry.Register(new ColdCompositeScenario());
 foreach (int samples in new[] { 1, 256, 4096, 65536 })
     registry.Register(new EarthScenario(samples, true));
 registry.Register(new EarthScenario(256, false));
@@ -107,6 +115,15 @@ sealed class CompositeScenario : ISynchronousScenario
         return new(true, "All samples match the original SIMD output bit for bit.");
     }
     public void Cleanup() { }
+    public void Inspect()
+    {
+        for (int i = 0; i < 512; i++)
+        {
+            _original.Fill(_expected, _originalRegion, Original.NoiseBackend.Simd);
+            _stack.Fill(_output, _region, NoiseBackend.Simd);
+            if (!Validate().Correct) throw new InvalidOperationException("Stack inspection output differs.");
+        }
+    }
 }
 
 sealed class GraphScenario : ISynchronousScenario

@@ -6,13 +6,15 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RuntimeFrameworkVersion>10.0.13</RuntimeFrameworkVersion>
     <RollForward>Disable</RollForward>
+    <NoiseProject Condition="'$(NoiseProject)' == ''">../../src/Tedd.FastNoise/Tedd.FastNoise.csproj</NoiseProject>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="EarthRecipe.cs" />
     <Compile Include="EarthScenario.cs" />
+    <Compile Include="ColdCompositeScenario.cs" />
     <ProjectReference Include="EarthBaseline/EarthBaseline.csproj" />
-    <ProjectReference Include="../../src/Tedd.FastNoise/Tedd.FastNoise.csproj" Condition="'$(NoiseSourceDirectory)' == ''" />
+    <ProjectReference Include="$(NoiseProject)" Condition="'$(NoiseSourceDirectory)' == ''" />
     <Compile Include="$(NoiseSourceDirectory)/**/*.cs" Exclude="$(NoiseSourceDirectory)/**/obj/**/*.cs;$(NoiseSourceDirectory)/**/bin/**/*.cs" Condition="'$(NoiseSourceDirectory)' != ''" />
     <ProjectReference Include="$(BaselineProject)" Aliases="baseline" />
     <Reference Include="Tedd.DotNetLab.Harness" HintPath="$(DotNetLabDirectory)/Tedd.DotNetLab.Harness.dll" />
