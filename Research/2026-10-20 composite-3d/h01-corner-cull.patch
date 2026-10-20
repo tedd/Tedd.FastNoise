@@ -1,0 +1,85 @@
+diff --git a/src/Tedd.FastNoise/Internal/ISimdOps.cs b/src/Tedd.FastNoise/Internal/ISimdOps.cs
+index b1071e6..fcad868 100644
+--- a/src/Tedd.FastNoise/Internal/ISimdOps.cs
++++ b/src/Tedd.FastNoise/Internal/ISimdOps.cs
+@@ -94,6 +94,9 @@ internal interface ISimdOps<TF, TI>
+     /// <summary>Per-lane <c>a &gt; b</c> over floats, as an integer mask.</summary>
+     static abstract TI GreaterThanF(TF a, TF b);
+ 
++    /// <summary>Whether at least one lane of a comparison mask is true.</summary>
++    static abstract bool AnyTrue(TI mask);
++
+     /// <summary>Per-lane <c>mask != 0 ? ifTrue : ifFalse</c> over floats.</summary>
+     static abstract TF SelectF(TI mask, TF ifTrue, TF ifFalse);
+ 
+diff --git a/src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs b/src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs
+index 13fff54..88e7357 100644
+--- a/src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs
++++ b/src/Tedd.FastNoise/Internal/Kernels/OpenSimplex2Kernel.cs
+@@ -160,19 +160,26 @@ internal static class OpenSimplex2Kernel
+ 
+                 TF axis = TOps.SelectF(leanX, ax0, TOps.SelectF(leanY, ay0, az0));
+                 TF b = TOps.Sub(TOps.Add(TOps.Add(a, axis), axis), TOps.F(1f));
+-
+-                TI ni = TOps.SubI(i, TOps.SelectI(leanX, TOps.MulI(xNSign, px), TOps.I(0)));
+-                TI nj = TOps.SubI(j, TOps.SelectI(leanY, TOps.MulI(yNSign, py), TOps.I(0)));
+-                TI nk = TOps.SubI(k, TOps.SelectI(leanZ, TOps.MulI(zNSign, pz), TOps.I(0)));
+-
+-                TF nx = TOps.Add(x0, TOps.SelectF(leanX, TOps.ToFloat(xNSign), zero));
+-                TF ny = TOps.Add(y0, TOps.SelectF(leanY, TOps.ToFloat(yNSign), zero));
+-                TF nz = TOps.Add(z0, TOps.SelectF(leanZ, TOps.ToFloat(zNSign), zero));
+-
+                 TI inside = TOps.GreaterThanF(b, zero);
+-                TF b2 = TOps.Mul(b, b);
+-                TF contribution = TOps.Mul(TOps.Mul(b2, b2), Hashing.GradCoord3<TOps, TF, TI>(seed, ni, nj, nk, nx, ny, nz));
+-                value = TOps.Add(value, TOps.SelectF(inside, contribution, zero));
++                TF selected = zero;
++
++                // Adjacent low-frequency samples often all miss this corner. Avoid computing its
++                // hash and gradient in that case; mixed vectors retain the original lane mask.
++                if (TOps.AnyTrue(inside))
++                {
++                    TI ni = TOps.SubI(i, TOps.SelectI(leanX, TOps.MulI(xNSign, px), TOps.I(0)));
++                    TI nj = TOps.SubI(j, TOps.SelectI(leanY, TOps.MulI(yNSign, py), TOps.I(0)));
++                    TI nk = TOps.SubI(k, TOps.SelectI(leanZ, TOps.MulI(zNSign, pz), TOps.I(0)));
++
++                    TF nx = TOps.Add(x0, TOps.SelectF(leanX, TOps.ToFloat(xNSign), zero));
++                    TF ny = TOps.Add(y0, TOps.SelectF(leanY, TOps.ToFloat(yNSign), zero));
++                    TF nz = TOps.Add(z0, TOps.SelectF(leanZ, TOps.ToFloat(zNSign), zero));
++
++                    TF b2 = TOps.Mul(b, b);
++                    TF contribution = TOps.Mul(TOps.Mul(b2, b2), Hashing.GradCoord3<TOps, TF, TI>(seed, ni, nj, nk, nx, ny, nz));
++                    selected = TOps.SelectF(inside, contribution, zero);
++                }
++                value = TOps.Add(value, selected);
+             }
+ 
+             if (pass == 1)
+diff --git a/src/Tedd.FastNoise/Internal/ScalarOps.cs b/src/Tedd.FastNoise/Internal/ScalarOps.cs
+index 238ebfe..5509098 100644
+--- a/src/Tedd.FastNoise/Internal/ScalarOps.cs
++++ b/src/Tedd.FastNoise/Internal/ScalarOps.cs
+@@ -111,6 +111,9 @@ internal readonly struct ScalarOps : ISimdOps<float, int>
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     public static int GreaterThanF(float a, float b) => a > b ? -1 : 0;
+ 
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    public static bool AnyTrue(int mask) => mask != 0;
++
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     public static float SelectF(int mask, float ifTrue, float ifFalse) => mask != 0 ? ifTrue : ifFalse;
+ 
+diff --git a/src/Tedd.FastNoise/Internal/VectorOps.cs b/src/Tedd.FastNoise/Internal/VectorOps.cs
+index b78a0fd..cb1aff2 100644
+--- a/src/Tedd.FastNoise/Internal/VectorOps.cs
++++ b/src/Tedd.FastNoise/Internal/VectorOps.cs
+@@ -125,6 +125,9 @@ internal readonly unsafe struct VectorOps : ISimdOps<Vector<float>, Vector<int>>
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     public static Vector<int> GreaterThanF(Vector<float> a, Vector<float> b) => Vector.AsVectorInt32(Vector.GreaterThan(a, b));
+ 
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    public static bool AnyTrue(Vector<int> mask) => !Vector.EqualsAll(mask, Vector<int>.Zero);
++
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     public static Vector<float> SelectF(Vector<int> mask, Vector<float> ifTrue, Vector<float> ifFalse)
+         => Vector.ConditionalSelect(Vector.AsVectorSingle(mask), ifTrue, ifFalse);

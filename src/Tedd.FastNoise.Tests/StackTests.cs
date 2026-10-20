@@ -119,6 +119,45 @@ public class StackTests
         }
     }
 
+    [Theory]
+    [InlineData(1)]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(9)]
+    [InlineData(17)]
+    [InlineData(65)]
+    public void BatchedLayers3D_PreserveBlendOrderAcrossTileAndVectorBoundaries(int width)
+    {
+        NoiseStack stack = new() { ParallelThreshold = 1 };
+        foreach (LayerBlend blend in Enum.GetValues<LayerBlend>())
+        {
+            var source = Source(71 + (int)blend, (int)blend % 2 == 0 ? NoiseType.OpenSimplex2 : NoiseType.Perlin, 0.03125f);
+            source.FractalType = (FractalType)((int)blend % 4);
+            source.Octaves = 3;
+            source.WeightedStrength = 0.4f;
+            stack.Add(new NoiseLayer { Source = source, Blend = blend,
+                Amplitude = -0.375f, Offset = 0.25f, BlendFactor = 0.3125f });
+        }
+
+        CompiledNoiseStack compiled = stack.Compile();
+        GridRegion3D region = new(-13.5f, 7.25f, -3.125f, width, 13, 5, 0.75f);
+        float[] expected = new float[region.SampleCount];
+        for (int z = 0; z < region.Depth; z++)
+            for (int y = 0; y < region.Height; y++)
+                for (int x = 0; x < width; x++)
+                    expected[x + width * (y + region.Height * z)] = compiled.GetNoise(
+                        region.OriginX + x * region.Step, region.OriginY + y * region.Step, region.OriginZ + z * region.Step);
+
+        foreach (NoiseBackend backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd, NoiseBackend.Parallel })
+        {
+            float[] actual = new float[region.SampleCount + 7];
+            Array.Fill(actual, 12345f);
+            compiled.Fill(actual, region, backend);
+            Assert.Equal(expected, actual[..region.SampleCount]);
+            Assert.All(actual[region.SampleCount..], value => Assert.Equal(12345f, value));
+        }
+    }
+
     /// <summary>
     /// A stack containing OpenSimplex2S cannot vectorise, but it still has to produce the right
     /// answer, and it still has to be able to run in parallel.

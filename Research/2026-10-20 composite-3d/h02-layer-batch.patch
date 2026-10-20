@@ -1,0 +1,71 @@
+diff --git a/src/Tedd.FastNoise/Internal/StackFill.cs b/src/Tedd.FastNoise/Internal/StackFill.cs
+index 5bbfece..875c4bd 100644
+--- a/src/Tedd.FastNoise/Internal/StackFill.cs
++++ b/src/Tedd.FastNoise/Internal/StackFill.cs
+@@ -111,6 +111,20 @@ internal static class StackFill
+         where TF : struct
+         where TI : struct
+     {
++        if (layers.Length > 1)
++        {
++            // A bounded tile keeps the accumulator hot while each layer runs a contiguous batch.
++            int rowsPerTile = Math.Max(1, 1024 / region.Width);
++            int end = firstRow + rowCount;
++            for (int first = firstRow; first < end; first += rowsPerTile)
++            {
++                int count = Math.Min(rowsPerTile, end - first);
++                for (int layer = 0; layer < layers.Length; layer++)
++                    LayerRows3<TOps, TF, TI>(layers[layer], layer == 0, region, destination, first, count);
++            }
++            return;
++        }
++
+         int lanes = TOps.Count;
+         int width = region.Width;
+         int height = region.Height;
+@@ -145,6 +159,45 @@ internal static class StackFill
+         }
+     }
+ 
++    private static void LayerRows3<TOps, TF, TI>(in ResolvedLayer layer, bool firstLayer,
++        in GridRegion3D region, Span<float> destination, int firstRow, int rowCount)
++        where TOps : ISimdOps<TF, TI>
++        where TF : struct
++        where TI : struct
++    {
++        int lanes = TOps.Count;
++        int width = region.Width;
++        for (int row = firstRow; row < firstRow + rowCount; row++)
++        {
++            float worldY = region.OriginY + (row % region.Height * region.Step);
++            float worldZ = region.OriginZ + (row / region.Height * region.Step);
++            int start = row * width;
++            int column = 0;
++            for (; column + lanes <= width; column += lanes)
++            {
++                TF x = TOps.Ramp(region.OriginX + column * region.Step, region.Step);
++                TF y = TOps.F(worldY), z = TOps.F(worldZ);
++                NoisePipeline.Transform3<TOps, TF, TI>(layer.Kernel.Transform3D, layer.Frequency, ref x, ref y, ref z);
++                TF value = FractalKernel.Fractal3<TOps, TF, TI>(layer.Kernel, layer.Fractal, layer.Seed,
++                    x, y, z, layer.Octaves, layer.LastOctaveFade);
++                value = TOps.Add(TOps.Mul(value, TOps.F(layer.Amplitude)), TOps.F(layer.Offset));
++                if (!firstLayer)
++                    value = Blend<TOps, TF, TI>(layer.Blend, TOps.Load(destination[(start + column)..]), value, layer.BlendFactor);
++                TOps.Store(value, destination, start + column);
++            }
++            for (; column < width; column++)
++            {
++                float x = region.OriginX + column * region.Step, y = worldY, z = worldZ;
++                NoisePipeline.Transform3<ScalarOps, float, int>(layer.Kernel.Transform3D, layer.Frequency, ref x, ref y, ref z);
++                float value = FractalKernel.Fractal3<ScalarOps, float, int>(layer.Kernel, layer.Fractal, layer.Seed,
++                    x, y, z, layer.Octaves, layer.LastOctaveFade);
++                value = value * layer.Amplitude + layer.Offset;
++                destination[start + column] = firstLayer ? value :
++                    Blend<ScalarOps, float, int>(layer.Blend, destination[start + column], value, layer.BlendFactor);
++            }
++        }
++    }
++
+     /// <summary>Runs every layer against one set of 2D coordinates and returns the blended result.</summary>
+     public static TF Evaluate2<TOps, TF, TI>(ResolvedLayer[] layers, TF worldX, TF worldY)
+         where TOps : ISimdOps<TF, TI>
