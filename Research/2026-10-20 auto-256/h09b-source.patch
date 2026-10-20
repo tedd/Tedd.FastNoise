@@ -1,0 +1,589 @@
+diff --git a/src/Tedd.FastNoise.Tests/OpenSimplex3WideExpressionTests.cs b/src/Tedd.FastNoise.Tests/OpenSimplex3WideExpressionTests.cs
+new file mode 100644
+index 0000000..587b155
+--- /dev/null
++++ b/src/Tedd.FastNoise.Tests/OpenSimplex3WideExpressionTests.cs
+@@ -0,0 +1,396 @@
++// Compares generated octave expressions with the released wide call, including raw NaN payloads.
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using System.Linq.Expressions;
++using System.Numerics;
++using Tedd.FastNoise.Procedural;
++
++namespace Tedd.FastNoise.Tests;
++
++public sealed class OpenSimplex3WideExpressionTests
++{
++    private delegate Vector<float> WideNoise(Vector<float> x, Vector<float> y, Vector<float> z);
++    private delegate void WideExecutor(ReadOnlySpan<double> inputs, Span<double> outputs);
++    private static readonly int[] PoolingNaNBits = [0x7FC12345, 0x7F812345, unchecked((int)0xFFC54321)];
++
++    [Fact]
++    public void FloatConstantPoolingRetainsRawBitsAndSourceScope()
++    {
++        var request = Request(FractalType.FBm, RotationType3D.None, 4) with
++        {
++            Frequency = -0f, WeightedStrength = 0f,
++            // Load bits at runtime so folding a scalar signaling NaN cannot invalidate the fixture.
++            FractalBounding = BitConverter.Int32BitsToSingle(PoolingNaNBits[0]),
++            Lacunarity = BitConverter.Int32BitsToSingle(PoolingNaNBits[1]),
++            LastOctaveFade = BitConverter.Int32BitsToSingle(PoolingNaNBits[2]),
++        };
++        Assert.Equal(PoolingNaNBits[0], BitConverter.SingleToInt32Bits(request.FractalBounding));
++        Assert.Equal(PoolingNaNBits[1], BitConverter.SingleToInt32Bits(request.Lacunarity));
++        Assert.Equal(PoolingNaNBits[2], BitConverter.SingleToInt32Bits(request.LastOctaveFade));
++        var input = Expression.Parameter(typeof(Vector<float>), "input");
++        Dictionary<int, ConstantExpression>? previousSource = null;
++        for (int source = 0; source < 2; source++)
++        {
++            int budget = 64;
++            Assert.True(OpenSimplex3WideExpression.TryEmit(request, input, input, input, ref budget, out var expression));
++            var visitor = new FloatConstants();
++            visitor.Visit(expression);
++            Dictionary<int, ConstantExpression> byBits = [];
++            foreach (var constant in visitor.Values)
++            {
++                var vector = (Vector<float>)constant.Value!;
++                int bits = BitConverter.SingleToInt32Bits(vector[0]);
++                for (int lane = 1; lane < Vector<float>.Count; lane++)
++                    Assert.Equal(bits, BitConverter.SingleToInt32Bits(vector[lane]));
++                if (byBits.TryGetValue(bits, out var previous)) Assert.Same(previous, constant);
++                else byBits.Add(bits, constant);
++            }
++            foreach (int bits in new[] { 0, int.MinValue, 0x7FC12345, 0x7F812345, unchecked((int)0xFFC54321) })
++                Assert.True(byBits.ContainsKey(bits), $"Missing raw constant bits {bits:X8}");
++            Assert.True(visitor.Values.Count > byBits.Count);
++            if (previousSource is not null)
++                foreach (var pair in byBits) Assert.NotSame(previousSource[pair.Key], pair.Value);
++            previousSource = byBits;
++        }
++    }
++
++    private sealed class FloatConstants : ExpressionVisitor
++    {
++        internal List<ConstantExpression> Values { get; } = [];
++        protected override Expression VisitConstant(ConstantExpression node)
++        {
++            if (node.Value is Vector<float>) Values.Add(node);
++            return base.VisitConstant(node);
++        }
++    }
++
++    [Theory]
++    [InlineData(FractalType.FBm, RotationType3D.None)]
++    [InlineData(FractalType.FBm, RotationType3D.ImproveXYPlanes)]
++    [InlineData(FractalType.FBm, RotationType3D.ImproveXZPlanes)]
++    [InlineData(FractalType.Ridged, RotationType3D.None)]
++    [InlineData(FractalType.Ridged, RotationType3D.ImproveXYPlanes)]
++    [InlineData(FractalType.Ridged, RotationType3D.ImproveXZPlanes)]
++    public void FiniteShapesRetainReleasedWideBits(FractalType fractal, RotationType3D rotation)
++    {
++        for (int octaves = 1; octaves <= 4; octaves++)
++        for (int variant = 0; variant < 4; variant++)
++        {
++            var request = Request(fractal, rotation, octaves) with
++            {
++                Seed = variant % 2 == 0 ? int.MaxValue - 1 : int.MinValue,
++                WeightedStrength = variant < 2 ? 0f : .4f,
++                LastOctaveFade = new[] { 1f, .375f, 0f, -0f }[variant],
++                // Bounding deliberately reflects more configured octaves than the surviving shape.
++                FractalBounding = .49382716f,
++            };
++            Compare(request, FiniteCoordinates());
++        }
++    }
++
++    [Theory]
++    [InlineData(FractalType.FBm, RotationType3D.None)]
++    [InlineData(FractalType.FBm, RotationType3D.ImproveXYPlanes)]
++    [InlineData(FractalType.FBm, RotationType3D.ImproveXZPlanes)]
++    [InlineData(FractalType.Ridged, RotationType3D.None)]
++    [InlineData(FractalType.Ridged, RotationType3D.ImproveXYPlanes)]
++    [InlineData(FractalType.Ridged, RotationType3D.ImproveXZPlanes)]
++    public void ExceptionalCoordinatesRetainReleasedWideBits(FractalType fractal, RotationType3D rotation)
++    {
++        foreach (int octaves in new[] { 1, 4 })
++            Compare(Request(fractal, rotation, octaves), ExceptionalCoordinates());
++    }
++
++    [Theory]
++    [InlineData(FractalType.FBm)]
++    [InlineData(FractalType.Ridged)]
++    public void ExceptionalParametersRetainReleasedWideBits(FractalType fractal)
++    {
++        float nanA = BitConverter.Int32BitsToSingle(0x7FC12345);
++        float nanB = BitConverter.Int32BitsToSingle(unchecked((int)0xFFC54321));
++        float signaling = BitConverter.Int32BitsToSingle(0x7F812345);
++        foreach (int octaves in new[] { 1, 4 })
++        {
++            var request = Request(fractal, RotationType3D.None, octaves);
++            NoiseFillRequest3D[] cases =
++            [
++                request with { Frequency = nanA },
++                request with { Frequency = signaling },
++                request with { Frequency = float.PositiveInfinity },
++                request with { Frequency = float.MaxValue, Lacunarity = float.MaxValue },
++                request with { Frequency = -0f, FractalBounding = -0f, LastOctaveFade = -0f },
++                request with { FractalBounding = nanA, LastOctaveFade = nanB },
++                request with { WeightedStrength = nanA, Gain = nanB },
++                request with { Lacunarity = nanA, WeightedStrength = nanB },
++                request with { Gain = float.PositiveInfinity, LastOctaveFade = 0f },
++                request with { FractalBounding = float.MaxValue, Gain = float.MaxValue },
++                request with { LastOctaveFade = signaling },
++            ];
++            foreach (var item in cases)
++            {
++                Compare(item, FiniteCoordinates());
++                Compare(item, ExceptionalCoordinates());
++            }
++        }
++    }
++
++    [Fact]
++    public void ExpansionBudgetAndUnsupportedShapesRetainLegacyCalls()
++    {
++        var x = Expression.Parameter(typeof(Vector<float>), "x");
++        var request = Request(FractalType.FBm, RotationType3D.None, 4);
++        int budget = OpenSimplex3WideExpression.GraphOctaveBudget;
++        for (int i = 0; i < 16; i++)
++            Assert.True(OpenSimplex3WideExpression.TryEmit(request, x, x, x, ref budget, out _));
++        Assert.Equal(0, budget);
++        Assert.False(OpenSimplex3WideExpression.TryEmit(request, x, x, x, ref budget, out _));
++        foreach (var unsupported in new[]
++        {
++            request with { NoiseType = NoiseType.Perlin },
++            request with { FractalType = FractalType.None },
++            request with { FractalType = FractalType.PingPong },
++            request with { Octaves = 0 }, request with { Octaves = 5 },
++        })
++        {
++            budget = 64;
++            Assert.False(OpenSimplex3WideExpression.TryEmit(unsupported, x, x, x, ref budget, out _));
++            Assert.Equal(64, budget);
++            var node = new ProceduralNode { Operation = ProceduralOperation.Noise3D, NoiseRequest = unsupported, A = 0, B = 0, C = 0 };
++            var call = Assert.IsAssignableFrom<MethodCallExpression>(ProceduralWideRuntime.Emit(node, _ => x, _ => ProceduralType.Float32, ref budget));
++            Assert.Equal(typeof(ProceduralNoise), call.Method.DeclaringType);
++            Assert.Equal(64, budget);
++        }
++    }
++
++    [Theory]
++    [InlineData(FractalType.FBm, false, false)]
++    [InlineData(FractalType.FBm, false, true)]
++    [InlineData(FractalType.FBm, true, false)]
++    [InlineData(FractalType.FBm, true, true)]
++    [InlineData(FractalType.Ridged, false, false)]
++    [InlineData(FractalType.Ridged, false, true)]
++    [InlineData(FractalType.Ridged, true, false)]
++    [InlineData(FractalType.Ridged, true, true)]
++    public void ExceptionalGraphBoundariesAndTailsRetainLegacyBits(FractalType fractal, bool exceptionalParameters, bool exceptionalCoordinates)
++    {
++        foreach (var rotation in Enum.GetValues<RotationType3D>())
++        {
++            var request = Request(fractal, rotation, 4);
++            var otherRequest = exceptionalParameters
++                ? request with { Seed = -317, FractalBounding = BitConverter.Int32BitsToSingle(0x7FC12345), LastOctaveFade = BitConverter.Int32BitsToSingle(unchecked((int)0xFFC54321)) }
++                : request with { Seed = -317 };
++            CompareGraph(request, otherRequest, exceptionalCoordinates ? ExceptionalCoordinates() : FiniteCoordinates());
++        }
++    }
++
++    [Theory]
++    [InlineData(FractalType.FBm)]
++    [InlineData(FractalType.Ridged)]
++    public void FiniteOverflowGraphsRetainLegacyBits(FractalType fractal)
++    {
++        foreach (var rotation in Enum.GetValues<RotationType3D>())
++        foreach (int variant in new[] { 0, 1 })
++        {
++            var request = Request(fractal, rotation, 4) with
++            {
++                Frequency = variant == 0 ? .0037f : float.MaxValue,
++                FractalBounding = float.MaxValue, Gain = float.MaxValue,
++                Lacunarity = float.MaxValue, WeightedStrength = float.MaxValue,
++            };
++            Assert.True(OpenSimplex3WideExpression.HasFiniteParameters(request));
++            CompareGraph(request, request with { Seed = -317 }, FiniteCoordinates());
++            CompareGraph(request, request with { Seed = -317 }, ExceptionalCoordinates());
++        }
++    }
++
++    private static void CompareGraph(NoiseFillRequest3D request, NoiseFillRequest3D otherRequest, float[] coordinates)
++    {
++        var nodes = new[]
++        {
++            new ProceduralNode { Id = 0, Operation = ProceduralOperation.Input, Type = ProceduralType.Float32, InputIndex = 0 },
++            new ProceduralNode { Id = 1, Operation = ProceduralOperation.Input, Type = ProceduralType.Float32, InputIndex = 1 },
++            new ProceduralNode { Id = 2, Operation = ProceduralOperation.Input, Type = ProceduralType.Float32, InputIndex = 2 },
++            new ProceduralNode { Id = 3, Operation = ProceduralOperation.Noise3D, Type = ProceduralType.Float32, A = 0, B = 1, C = 2, NoiseRequest = request },
++            new ProceduralNode { Id = 4, Operation = ProceduralOperation.Noise3D, Type = ProceduralType.Float32, A = 1, B = 2, C = 0,
++                NoiseRequest = otherRequest },
++            new ProceduralNode { Id = 5, Operation = ProceduralOperation.Add, Type = ProceduralType.Float32, A = 3, B = 4 },
++        };
++        var program = new CompiledProceduralGraph(nodes, [3, 4, 5], nodes.Length);
++        var legacy = CompileLegacy(program);
++        int lanes = Vector<float>.Count, count = lanes * 2 + 3;
++        double[] input = new double[count * 3], expected = new double[count * 3], actual = new double[count * 3 + 5];
++        for (int i = 0; i < input.Length; i++) input[i] = coordinates[(i * 5) % coordinates.Length];
++        Array.Fill(actual, 12345d);
++        int record = 0;
++        if (program.IsVectorised)
++            for (; record <= count - lanes; record += lanes)
++                legacy(input.AsSpan(record * 3), expected.AsSpan(record * 3));
++        for (; record < count; record++)
++            program.Evaluate(input.AsSpan(record * 3), expected.AsSpan(record * 3));
++        program.Fill(input, actual, count, NoiseBackend.Auto);
++        for (int i = 0; i < expected.Length; i++)
++            Assert.True(BitConverter.DoubleToInt64Bits(expected[i]) == BitConverter.DoubleToInt64Bits(actual[i]),
++                $"{request}; output={i}; expected={BitConverter.DoubleToInt64Bits(expected[i]):X16} actual={BitConverter.DoubleToInt64Bits(actual[i]):X16}");
++        Assert.All(actual[expected.Length..], value => Assert.Equal(12345d, value));
++    }
++
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public void IndependentExceptionalArithmeticRetainsLegacyBits(bool exceptionalConstant)
++    {
++        var graph = new ProceduralGraph();
++        var x = graph.Input(0, ProceduralType.Float32);
++        var y = graph.Input(1, ProceduralType.Float32);
++        var z = graph.Input(2, ProceduralType.Float32);
++        var a = graph.Input(3, ProceduralType.Float32);
++        var b = graph.Input(4, ProceduralType.Float32);
++        var c = graph.Input(5, ProceduralType.Float64);
++        var d = graph.Input(6, ProceduralType.Float64);
++        var noise = graph.Noise3D(new NoiseGenerator(1337)
++        {
++            NoiseType = NoiseType.OpenSimplex2, FractalType = FractalType.FBm,
++            Frequency = .0037f, Octaves = 4, WeightedStrength = .4f, Lod = LodPolicy.Disabled,
++        }, x, y, z);
++        var constant = graph.Constant(exceptionalConstant ? BitConverter.Int64BitsToDouble(unchecked((long)0xFFF8123456789ABC)) : .125d);
++        var program = graph.Compile(noise, a + b, a * b, a - b, a * graph.Constant(0f),
++            a + graph.Constant(-0f), c + d, c * d, c - d, c * graph.Constant(0d),
++            c + constant, graph.Convert(noise, ProceduralType.Float64) + c);
++        var legacy = CompileLegacy(program);
++        int lanes = Vector<float>.Count, count = lanes * 3 + 3;
++        double[] exceptional =
++        [
++            BitConverter.Int32BitsToSingle(0x7FC12345), BitConverter.Int32BitsToSingle(unchecked((int)0xFFC54321)),
++            BitConverter.Int64BitsToDouble(0x7FF0123456789ABC),
++            BitConverter.Int64BitsToDouble(unchecked((long)0xFFF056789ABC1234)),
++            double.PositiveInfinity, double.NegativeInfinity, 0d, -0d,
++        ];
++        double[] input = new double[count * 7], expected = new double[count * program.OutputCount], actual = new double[count * program.OutputCount];
++        for (int i = 0; i < count; i++)
++        {
++            input[i * 7] = i * .125; input[i * 7 + 1] = i * -.25; input[i * 7 + 2] = 11d;
++            for (int j = 3; j < 7; j++) input[i * 7 + j] = exceptional[(i + j * 3) % exceptional.Length];
++        }
++        int record = 0;
++        if (program.IsVectorised)
++            for (; record <= count - lanes; record += lanes)
++                legacy(input.AsSpan(record * 7), expected.AsSpan(record * program.OutputCount));
++        for (; record < count; record++)
++            program.Evaluate(input.AsSpan(record * 7), expected.AsSpan(record * program.OutputCount));
++        program.Fill(input, actual, count, NoiseBackend.Auto);
++        for (int i = 0; i < expected.Length; i++)
++            Assert.True(BitConverter.DoubleToInt64Bits(expected[i]) == BitConverter.DoubleToInt64Bits(actual[i]),
++                $"constantExceptional={exceptionalConstant}; record={i / program.OutputCount} output={i % program.OutputCount}; expected={BitConverter.DoubleToInt64Bits(expected[i]):X16} actual={BitConverter.DoubleToInt64Bits(actual[i]):X16}");
++    }
++
++    [Theory]
++    [InlineData(1)]
++    [InlineData(4)]
++    [InlineData(5)]
++    [InlineData(17)]
++    public void GraphBudgetMixedOutputsAndScalarTailsRetainLegacyBits(int sources)
++    {
++        var graph = new ProceduralGraph();
++        var x = graph.Input(0, ProceduralType.Float32);
++        var y = graph.Input(1, ProceduralType.Float32);
++        var z = graph.Input(2, ProceduralType.Float32);
++        List<ProceduralValue> fields = [];
++        for (int i = 0; i < sources; i++)
++            fields.Add(graph.Noise3D(new NoiseGenerator(int.MaxValue - i)
++            {
++                NoiseType = NoiseType.OpenSimplex2,
++                FractalType = i % 2 == 0 ? FractalType.FBm : FractalType.Ridged,
++                RotationType3D = (RotationType3D)(i % 3),
++                Frequency = .0037f, Octaves = 4, Gain = .65f, Lacunarity = 2.3f,
++                WeightedStrength = .4f, Lod = LodPolicy.Disabled,
++            }, x, y, z));
++        fields.Add(graph.Convert(x * y + z, ProceduralType.Float64));
++        var program = graph.Compile(fields.ToArray());
++        var legacy = CompileLegacy(program);
++        int lanes = Vector<float>.Count;
++        int count = lanes * 2 + 3;
++        double[] input = new double[count * 3];
++        for (int i = 0; i < input.Length; i++) input[i] = ((i * 83) % 257 - 128) * .125;
++        double[] expected = new double[count * program.OutputCount];
++        double[] actual = Enumerable.Repeat(12345d, expected.Length + 5).ToArray();
++        int record = 0;
++        if (program.IsVectorised)
++            for (; record <= count - lanes; record += lanes)
++                legacy(input.AsSpan(record * 3), expected.AsSpan(record * program.OutputCount));
++        for (; record < count; record++)
++            program.Evaluate(input.AsSpan(record * 3), expected.AsSpan(record * program.OutputCount));
++        foreach (var backend in new[] { NoiseBackend.Auto, NoiseBackend.Simd })
++        {
++            program.Fill(input, actual, count, backend);
++            for (int i = 0; i < expected.Length; i++)
++                Assert.Equal(BitConverter.DoubleToInt64Bits(expected[i]), BitConverter.DoubleToInt64Bits(actual[i]));
++            Assert.All(actual[expected.Length..], value => Assert.Equal(12345d, value));
++        }
++    }
++
++    private static void Compare(NoiseFillRequest3D request, float[] coordinates)
++    {
++        var x = Expression.Parameter(typeof(Vector<float>), "x");
++        var y = Expression.Parameter(typeof(Vector<float>), "y");
++        var z = Expression.Parameter(typeof(Vector<float>), "z");
++        int budget = 64;
++        Assert.True(OpenSimplex3WideExpression.TryEmit(request, x, y, z, ref budget, out var expression));
++        var emitted = Expression.Lambda<WideNoise>(expression, x, y, z).Compile();
++        var released = new ProceduralNoise(request);
++        int lanes = Vector<float>.Count;
++        for (int group = 0; group < 4; group++)
++        {
++            float[] a = new float[lanes], b = new float[lanes], c = new float[lanes];
++            for (int lane = 0; lane < lanes; lane++)
++            {
++                a[lane] = coordinates[(lane + group) % coordinates.Length];
++                b[lane] = coordinates[(lane * 3 + group + 1) % coordinates.Length];
++                c[lane] = coordinates[(lane * 5 + group + 2) % coordinates.Length];
++            }
++            var expected = released.SampleOpenSimplex3Wide(new(a), new(b), new(c));
++            var actual = emitted(new(a), new(b), new(c));
++            for (int lane = 0; lane < lanes; lane++)
++            {
++                int expectedBits = BitConverter.SingleToInt32Bits(expected[lane]);
++                int actualBits = BitConverter.SingleToInt32Bits(actual[lane]);
++                Assert.True(expectedBits == actualBits,
++                    $"{request}; group={group} lane={lane} XYZ={BitConverter.SingleToInt32Bits(a[lane]):X8}/{BitConverter.SingleToInt32Bits(b[lane]):X8}/{BitConverter.SingleToInt32Bits(c[lane]):X8}; expected={expectedBits:X8} actual={actualBits:X8}");
++            }
++        }
++    }
++
++    private static NoiseFillRequest3D Request(FractalType fractal, RotationType3D rotation, int octaves) => new()
++    {
++        Seed = int.MaxValue - 1, Frequency = .0037f, NoiseType = NoiseType.OpenSimplex2,
++        RotationType3D = rotation, FractalType = fractal, Octaves = octaves,
++        Gain = .65f, Lacunarity = 2.3f, WeightedStrength = .4f,
++        FractalBounding = .49382716f, LastOctaveFade = .375f,
++        Region = new GridRegion3D(0f, 0f, 0f, 1, 1, 1),
++    };
++
++    private static float[] FiniteCoordinates() => [-257.25f, 0f, -0f, 113f, 8192.125f, -.125f, 1e-20f, -98304.5f, 131071f];
++    private static float[] ExceptionalCoordinates() =>
++    [
++        0f, -0f, float.PositiveInfinity, float.NegativeInfinity, float.MaxValue, -float.MaxValue,
++        BitConverter.Int32BitsToSingle(0x7FC12345), BitConverter.Int32BitsToSingle(unchecked((int)0xFFC54321)),
++        BitConverter.Int32BitsToSingle(0x7F812345), float.Epsilon, -float.Epsilon, 1f,
++    ];
++
++    private static WideExecutor CompileLegacy(CompiledProceduralGraph program)
++    {
++        var input = Expression.Parameter(typeof(ReadOnlySpan<double>), "input");
++        var output = Expression.Parameter(typeof(Span<double>), "output");
++        var locals = program.Nodes.Select(node => Expression.Variable(ProceduralWideRuntime.ClrType(node.Type), $"legacy{node.Id}")).ToArray();
++        List<Expression> body = [];
++        foreach (var node in program.Nodes)
++            body.Add(Expression.Assign(locals[node.Id], node.Operation == ProceduralOperation.Input
++                ? ProceduralWideRuntime.Read(input, node.InputIndex, program.InputCount, node.Type)
++                : ProceduralWideRuntime.Emit(node, id => locals[id], id => program.Nodes[id].Type)));
++        for (int i = 0; i < program.OutputCount; i++)
++            body.Add(ProceduralRuntime.Call(typeof(ProceduralWideRuntime), nameof(ProceduralWideRuntime.Write),
++                output, Expression.Constant(i), Expression.Constant(program.OutputCount),
++                ProceduralWideRuntime.ToOutput(locals[program.Outputs[i]], program.Nodes[program.Outputs[i]].Type)));
++        return Expression.Lambda<WideExecutor>(Expression.Block(locals, body), input, output).Compile();
++    }
++}
+diff --git a/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs b/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs
+index f42a674..d2518d8 100644
+--- a/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs
++++ b/src/Tedd.FastNoise/Procedural/CompiledProceduralGraph.cs
+@@ -119,11 +119,17 @@ public sealed class CompiledProceduralGraph
+         var outputs = Expression.Parameter(typeof(Span<double>), "outputs");
+         var locals = _nodes.Select(n => Expression.Variable(ProceduralWideRuntime.ClrType(n.Type), $"v{n.Id}")).ToArray();
+         List<Expression> body = [];
++        // Expanding adjacent sources can change register ordering and hence which NaN payload an
++        // enclosing expression retains. Keep the complete legacy expression for exceptional constants.
++        int remainingOpenSimplexOctaves = _nodes.Any(node =>
++            (node.Operation == ProceduralOperation.Constant && !double.IsFinite(node.Constant))
++            || (node.NoiseRequest is { } request && !OpenSimplex3WideExpression.HasFiniteParameters(request)))
++            ? 0 : OpenSimplex3WideExpression.GraphOctaveBudget;
+         foreach (var node in _nodes)
+         {
+             Expression value = node.Operation == ProceduralOperation.Input
+                 ? ProceduralWideRuntime.Read(inputs, node.InputIndex, InputCount, node.Type)
+-                : ProceduralWideRuntime.Emit(node, id => locals[id], id => _nodes[id].Type);
++                : ProceduralWideRuntime.Emit(node, id => locals[id], id => _nodes[id].Type, ref remainingOpenSimplexOctaves);
+             body.Add(Expression.Assign(locals[node.Id], value));
+         }
+         for (int i = 0; i < _outputs.Length; i++)
+diff --git a/src/Tedd.FastNoise/Procedural/OpenSimplex3WideExpression.cs b/src/Tedd.FastNoise/Procedural/OpenSimplex3WideExpression.cs
+new file mode 100644
+index 0000000..62e6cbb
+--- /dev/null
++++ b/src/Tedd.FastNoise/Procedural/OpenSimplex3WideExpression.cs
+@@ -0,0 +1,137 @@
++// Expands a bounded immutable fractal shape into the enclosing SIMD procedural executor.
++// Coordinate products and octave accumulation retain the kernel's binary32 operation order.
++using System;
++using System.Collections.Generic;
++using System.Linq.Expressions;
++using System.Numerics;
++using System.Reflection;
++using Tedd.FastNoise.Internal;
++using Tedd.FastNoise.Internal.Kernels;
++
++namespace Tedd.FastNoise.Procedural;
++
++internal static class OpenSimplex3WideExpression
++{
++    internal const int GraphOctaveBudget = 64;
++    internal const int MaximumSourceOctaves = 4;
++
++    private static readonly MethodInfo Sample = typeof(OpenSimplex2Kernel)
++        .GetMethod(nameof(OpenSimplex2Kernel.Sample3))!
++        .MakeGenericMethod(typeof(VectorOps), typeof(Vector<float>), typeof(Vector<int>));
++    private static readonly MethodInfo Abs = typeof(VectorOps).GetMethod(nameof(VectorOps.Abs))!;
++
++    internal static bool HasFiniteParameters(in NoiseFillRequest3D request)
++        => float.IsFinite(request.Frequency) && float.IsFinite(request.FractalBounding)
++            && float.IsFinite(request.Gain) && float.IsFinite(request.Lacunarity)
++            && float.IsFinite(request.WeightedStrength) && float.IsFinite(request.LastOctaveFade);
++
++    internal static bool TryEmit(in NoiseFillRequest3D request, Expression inputX, Expression inputY,
++        Expression inputZ, ref int remainingOctaves, out Expression expression)
++    {
++        expression = null!;
++        if (request.NoiseType != NoiseType.OpenSimplex2
++            || request.FractalType is not (FractalType.FBm or FractalType.Ridged)
++            || request.Octaves is < 1 or > MaximumSourceOctaves
++            || request.Octaves > remainingOctaves)
++            return false;
++
++        remainingOctaves -= request.Octaves;
++        // Reusing the same box permits typed-local caching without changing its floating-point bits.
++        Dictionary<int, ConstantExpression> floatConstants = [];
++        ConstantExpression F(float value)
++        {
++            int bits = BitConverter.SingleToInt32Bits(value);
++            if (!floatConstants.TryGetValue(bits, out var constant))
++            {
++                constant = Expression.Constant(new Vector<float>(value));
++                floatConstants.Add(bits, constant);
++            }
++            return constant;
++        }
++
++        var x = Expression.Variable(typeof(Vector<float>), "noiseX");
++        var y = Expression.Variable(typeof(Vector<float>), "noiseY");
++        var z = Expression.Variable(typeof(Vector<float>), "noiseZ");
++        var rotation = Expression.Variable(typeof(Vector<float>), "rotation");
++        var skew = Expression.Variable(typeof(Vector<float>), "skew");
++        var noise = Expression.Variable(typeof(Vector<float>), "noise");
++        var sum = Expression.Variable(typeof(Vector<float>), "sum");
++        var amplitude = Expression.Variable(typeof(Vector<float>), "amplitude");
++        var weight = Expression.Variable(typeof(Vector<float>), "weight");
++        List<Expression> body =
++        [
++            Expression.Assign(x, Expression.Multiply(inputX, F(request.Frequency))),
++            Expression.Assign(y, Expression.Multiply(inputY, F(request.Frequency))),
++            Expression.Assign(z, Expression.Multiply(inputZ, F(request.Frequency))),
++        ];
++
++        switch (request.RotationType3D)
++        {
++            case RotationType3D.ImproveXYPlanes:
++                body.Add(Expression.Assign(rotation, Expression.Add(x, y)));
++                body.Add(Expression.Assign(skew, Expression.Multiply(rotation, F(-0.211324865405187f))));
++                body.Add(Expression.Assign(z, Expression.Multiply(z, F(0.577350269189626f))));
++                body.Add(Expression.Assign(x, Expression.Add(x, Expression.Subtract(skew, z))));
++                body.Add(Expression.Assign(y, Expression.Subtract(Expression.Add(y, skew), z)));
++                body.Add(Expression.Assign(z, Expression.Add(z, Expression.Multiply(rotation, F(0.577350269189626f)))));
++                break;
++            case RotationType3D.ImproveXZPlanes:
++                body.Add(Expression.Assign(rotation, Expression.Add(x, z)));
++                body.Add(Expression.Assign(skew, Expression.Multiply(rotation, F(-0.211324865405187f))));
++                body.Add(Expression.Assign(y, Expression.Multiply(y, F(0.577350269189626f))));
++                body.Add(Expression.Assign(x, Expression.Add(x, Expression.Subtract(skew, y))));
++                body.Add(Expression.Assign(z, Expression.Add(z, Expression.Subtract(skew, y))));
++                body.Add(Expression.Assign(y, Expression.Add(y, Expression.Multiply(rotation, F(0.577350269189626f)))));
++                break;
++            default:
++                body.Add(Expression.Assign(rotation, Expression.Multiply(Expression.Add(Expression.Add(x, y), z), F(2f / 3f))));
++                body.Add(Expression.Assign(x, Expression.Subtract(rotation, x)));
++                body.Add(Expression.Assign(y, Expression.Subtract(rotation, y)));
++                body.Add(Expression.Assign(z, Expression.Subtract(rotation, z)));
++                break;
++        }
++
++        bool ridged = request.FractalType == FractalType.Ridged;
++        Expression Shape(Expression value) => ridged
++            ? Expression.Add(Expression.Multiply(Expression.Call(Abs, value), F(-2f)), F(1f)) : value;
++        if (request.Octaves == 1)
++        {
++            body.Add(Expression.Assign(noise, Expression.Call(Sample, I(request.Seed), x, y, z)));
++            body.Add(Expression.Multiply(Expression.Multiply(Shape(noise), F(request.FractalBounding)), F(request.LastOctaveFade)));
++        }
++        else
++        {
++            body.Add(Expression.Assign(sum, F(0f)));
++            body.Add(Expression.Assign(amplitude, F(request.FractalBounding)));
++            for (int octave = 0; octave < request.Octaves; octave++)
++            {
++                if (request.LastOctaveFade != 1f && octave == request.Octaves - 1)
++                    body.Add(Expression.Assign(amplitude, Expression.Multiply(amplitude, F(request.LastOctaveFade))));
++                body.Add(Expression.Assign(noise, Expression.Call(Sample, I(unchecked(request.Seed + octave)), x, y, z)));
++                if (request.FractalType == FractalType.Ridged)
++                {
++                    body.Add(Expression.Assign(noise, Expression.Call(Abs, noise)));
++                    body.Add(Expression.Assign(sum, Expression.Add(sum,
++                        Expression.Multiply(Expression.Add(Expression.Multiply(noise, F(-2f)), F(1f)), amplitude))));
++                    body.Add(Expression.Assign(weight, Expression.Subtract(F(1f), noise)));
++                }
++                else
++                {
++                    body.Add(Expression.Assign(sum, Expression.Add(sum, Expression.Multiply(noise, amplitude))));
++                    body.Add(Expression.Assign(weight, Expression.Multiply(Expression.Add(noise, F(1f)), F(.5f))));
++                }
++                body.Add(Expression.Assign(amplitude, Expression.Multiply(amplitude,
++                    Expression.Add(F(1f), Expression.Multiply(F(request.WeightedStrength), Expression.Subtract(weight, F(1f)))))));
++                body.Add(Expression.Assign(x, Expression.Multiply(x, F(request.Lacunarity))));
++                body.Add(Expression.Assign(y, Expression.Multiply(y, F(request.Lacunarity))));
++                body.Add(Expression.Assign(z, Expression.Multiply(z, F(request.Lacunarity))));
++                body.Add(Expression.Assign(amplitude, Expression.Multiply(amplitude, F(request.Gain))));
++            }
++            body.Add(sum);
++        }
++        expression = Expression.Block([x, y, z, rotation, skew, noise, sum, amplitude, weight], body);
++        return true;
++    }
++
++    private static ConstantExpression I(int value) => Expression.Constant(new Vector<int>(value));
++}
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+index 4e9e39d..c7093db 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+@@ -38,6 +38,16 @@ internal static class ProceduralWideRuntime
+     internal static Expression ToOutput(Expression value, ProceduralType type)
+         => type == ProceduralType.Bool ? Call(nameof(BoolToDouble), value)
+             : type == ProceduralType.Float64 ? value : Call(nameof(ToDouble), value);
++    internal static Expression Emit(ProceduralNode node, Func<int, Expression> operand,
++        Func<int, ProceduralType> operandType, ref int remainingOpenSimplexOctaves)
++    {
++        if (node.Operation == ProceduralOperation.Noise3D
++            && OpenSimplex3WideExpression.TryEmit(node.NoiseRequest!.Value, operand(node.A),
++                operand(node.B), operand(node.C), ref remainingOpenSimplexOctaves, out var expression))
++            return expression;
++        return Emit(node, operand, operandType);
++    }
++
+     internal static Expression Emit(ProceduralNode node, Func<int, Expression> operand, Func<int, ProceduralType> operandType)
+     {
+         if (node.Operation == ProceduralOperation.Constant) return Constant(node.Constant, node.Type);

@@ -59,3 +59,18 @@ H09 completed all144 registered runs. Descriptive candidate/release elapsed rati
 H09a rejected: primary/caller show no useful warm gain and both cold paths regress above3x. No confirmation or adoption. All observations retained. Matched same-entry release controls were Noise2561.057015(logSE.025309) and Land2561.003780(logSE.046916); these are noise controls, not speedups.
 
 H09b prospective salvage: pool only identical boxed float ConstantExpression objects per source using raw-bit keys. Runtime BoundConstants caches references used more than twice into typed locals ([primary source](https://github.com/dotnet/runtime/blob/v10.0.0/src/libraries/System.Linq.Expressions/src/System/Linq/Expressions/Compiler/BoundConstants.cs#L108-L154)). H09a has438 static unbox sites versus32 released, including separately boxed XYZ frequency; many extract/insert sites lie on cold mismatch paths. Prediction: fewer closure loads/type guards, with possible longer-lived locals/spills. Preserve all operations, boxed representations and integer constants. Strict CPU/Earth checks precede timing. Fixed8paired blocks each for warmNoise256, warmLand256, coldNoise256 and coldLand256; prior operation/warmup budgets, seed20261028 and quiet profile.64runs total, no expansion. Compare combined H09b against release; this does not isolate pooling attribution. Fresh normal confirmation required if useful.
+
+H09b hypothesis `hyp-5600d051e23047149461a4e516bfda91`. Initial strict suite302passed/1new fixture failed: literal signaling-NaN construction did not preserve7F812345 in its expression constants. Runtime-loaded raw bits and pre-emission exact assertions corrected the fixture; no old numeric expectation changed. Final303/303 CPU cases pass, including signaling payloads and source-scoped constant identity. Failure test/log and final log retained. Combined source patch SHA256 `f4ba6202d3c2cac753ab4cc9167c71a07cd4cc53b73ab6f08ff6d54ae1cbbafe`. No H09b timing exists at this gate.
+
+H09b completed all64runs. Descriptive elapsed ratios (logSE):
+
+| Case | Ratio | logSE | Execution |
+| --- | ---: | ---: | --- |
+| earth-noise-n256 auto | 0.795806 | 0.189589 | `exec-a412c33096f1444caa588d2d356366da` |
+| earth-land-n256 auto | 1.078986 | 0.052751 | `exec-b6ee196144364478b5c635d010074cc8` |
+| earth-noise-first-fill-n256 cold | 2.248195 | 0.052535 | `exec-fce65d50bd8343bba52f8a254955a56f` |
+| earth-land-first-fill-n256 cold | 1.837646 | 0.050178 | `exec-87839fd7e6b94719b47fe0e9c4223f10` |
+
+Reject H09b. Noise256 aggregate is driven by two slow baseline blocks (376.44/383.01us versus other baseline136.34–146.94us); all observations remain included. Land256 regresses and both cold paths cost1.84–2.25x. No reliable useful gain warrants confirmation or added emitter complexity. Pooled wide lambda51,339nativebytes versus49,412 unpooled and15,888 released. Numeric gates passed, but code syntax/cache mechanism does not establish a speedup. No H09 implementation is adopted.
+
+H10 prospective experiment: independently unroll only the output writer for Vector<double>.Count2/4/8. Retain Low0/High0/Low1/High1 write order, unchecked index arithmetic, per-store span checks and the released fallback loop. Fresh raw-bit old-loop differential covers exceptional payloads and failing partial writes; whole-graph tests must target the frozen writer, because an oracle sharing production Write is insufficient. Preserve exact Earth semantics. Reuse the original nine-case8pair matrix,144runs, same budgets/profile/seed. No H10 implementation/timing exists at this freeze.
