@@ -23,7 +23,7 @@
     <PackageProjectUrl>https://github.com/tedd/Tedd.FastNoise</PackageProjectUrl>
     <RepositoryUrl>https://github.com/tedd/Tedd.FastNoise.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Reduced 3D gradient-table gathers in Perlin and OpenSimplex2 while preserving exact scalar, SIMD and parallel outputs. Includes typed procedural graphs and LOD-resolved noise stacks for CPU and Vulkan terrain generation.</PackageReleaseNotes>
+    <PackageReleaseNotes>Parallel bulk procedural evaluation, specialized OpenSimplex2 graph sampling, and elimination of noise-stack layers overwritten by Replace. Preserves exact outputs, arithmetic precision, and LOD behavior.</PackageReleaseNotes>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
