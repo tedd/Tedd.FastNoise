@@ -3,10 +3,14 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RuntimeFrameworkVersion>10.0.13</RuntimeFrameworkVersion>
+    <RollForward>Disable</RollForward>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <ProjectReference Include="../../src/Tedd.FastNoise/Tedd.FastNoise.csproj" />
+    <ProjectReference Include="../../src/Tedd.FastNoise/Tedd.FastNoise.csproj" Condition="'$(NoiseSourceDirectory)' == ''" />
+    <Compile Include="$(NoiseSourceDirectory)/**/*.cs" Exclude="$(NoiseSourceDirectory)/**/obj/**/*.cs;$(NoiseSourceDirectory)/**/bin/**/*.cs" Condition="'$(NoiseSourceDirectory)' != ''" />
     <ProjectReference Include="$(BaselineProject)" Aliases="baseline" />
     <Reference Include="Tedd.DotNetLab.Harness" HintPath="$(DotNetLabDirectory)/Tedd.DotNetLab.Harness.dll" />
     <Reference Include="Tedd.DotNetLab.Contracts" HintPath="$(DotNetLabDirectory)/Tedd.DotNetLab.Contracts.dll" />

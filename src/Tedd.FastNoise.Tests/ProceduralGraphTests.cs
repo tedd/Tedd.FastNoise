@@ -11,6 +11,41 @@ namespace Tedd.FastNoise.Tests;
 
 public sealed class ProceduralGraphTests
 {
+    [Theory]
+    [InlineData(2047)]
+    [InlineData(2048)]
+    [InlineData(4097)]
+    [InlineData(65543)]
+    public void ParallelFillPreservesSimdGroupsTailsAndOutputBoundaries(int count)
+    {
+        var graph = new ProceduralGraph();
+        var x = graph.Input(0, ProceduralType.Float32);
+        var y = graph.Input(1, ProceduralType.Float32);
+        var z = graph.Input(2, ProceduralType.Float32);
+        var noise = graph.Noise3D(new NoiseGenerator(1337) { NoiseType = NoiseType.OpenSimplex2,
+            FractalType = FractalType.FBm, Octaves = 3, Frequency = 0.017f }, x, y, z);
+        var program = graph.Compile(noise, graph.Convert(x * y + z, ProceduralType.Float64));
+        double[] inputs = new double[count * 3];
+        for (int i = 0; i < inputs.Length; i++) inputs[i] = (i % 257 - 128) * 0.125;
+        double[] expected = new double[count * 2], actual = new double[count * 2 + 7];
+        Array.Fill(actual, 12345d);
+        program.Fill(inputs, expected, count, NoiseBackend.Simd);
+        program.Fill(inputs, actual, count, NoiseBackend.Parallel);
+        for (int i = 0; i < expected.Length; i++) EqualBits(expected[i], actual[i]);
+        Assert.All(actual[expected.Length..], value => Assert.Equal(12345d, value));
+    }
+
+    [Fact]
+    public void ParallelConstantGraphAcceptsEmptyInputRecords()
+    {
+        var graph = new ProceduralGraph();
+        var program = graph.Compile(graph.Constant(17d), graph.Constant(-0d));
+        double[] expected = new double[8194], actual = new double[8194];
+        program.Fill([], expected, 4097, NoiseBackend.Simd);
+        program.Fill([], actual, 4097, NoiseBackend.Parallel);
+        for (int i = 0; i < expected.Length; i++) EqualBits(expected[i], actual[i]);
+    }
+
     [Fact]
     public void ConstantsSharedExpressionsAndDeadOutputsAreRemoved()
     {
