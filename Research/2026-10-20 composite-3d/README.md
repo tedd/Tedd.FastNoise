@@ -17,4 +17,8 @@ The reusable harness in `tools/Tedd.FastNoise.Performance` links the immutable o
 
 ## Status
 
-Scope and prospective protocol established. Baseline and bottleneck measurement pending.
+Baseline sanity execution: `exec-cf8b2f5fdfef487f81db6540ed7c8eb7`; unchanged source in separately named assemblies gave candidate/control ratio 0.934, exposing meaningful runtime/environment variability. Diagnostic execution: `exec-e3797f86f47845cc9784f8b951983fa0`, capture `cap-71fdc85bbc264f7cad8d3a620bce5ef5`, stack analysis `stack-analysis-d79c35de3683446db222ebdd9dbbfea2`. OpenSimplex2 Sample3 had 1,338 original and 1,261 candidate self samples out of 32,801 total; most other samples were waiting harness threads. Do not interpret that denominator as CPU utilization. Symbol coverage was 100%, stack coverage partial, loss unknown.
+
+H01 (C05/V01): skip face-neighbor hashing/gradient work if every SIMD lane is outside its attenuation radius. All 253 CPU tests passed; complete-volume output validation passed. Execution `exec-02e6a41d97e74bd8a368947e092d8ac5` measured candidate/control ratio **1.0209** across eight paired blocks (descriptive; log-ratio standard error 0.1084). Rejected: no useful gain established. Source restored. The original eight-operation blocks are too variable for small-effect conclusions; do not relabel this as an equivalence result.
+
+The first CLI-only asynchronous job was cancelled when its submitting process exited (`op-5d9c3a9a9eec4a77b0b16b2d85e43aad`); no evidence from that job is used. Subsequent jobs retain a live MCP connection until terminal status.
