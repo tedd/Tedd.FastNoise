@@ -1,0 +1,586 @@
+diff --git a/src/Tedd.FastNoise.Tests/CompiledStack3DTests.cs b/src/Tedd.FastNoise.Tests/CompiledStack3DTests.cs
+new file mode 100644
+index 0000000..e7d2075
+--- /dev/null
++++ b/src/Tedd.FastNoise.Tests/CompiledStack3DTests.cs
+@@ -0,0 +1,212 @@
++// Verifies typed stack fills against the retained fused executor, including backend-specific IEEE behavior.
++// Expected coordinates and blends come from the original grid path rather than the new DAG compiler.
++using System;
++using System.Linq;
++using System.Threading.Tasks;
++using Tedd.FastNoise.Internal;
++
++namespace Tedd.FastNoise.Tests;
++
++public class CompiledStack3DTests
++{
++    private static NoiseGenerator Source(int seed, NoiseType type = NoiseType.OpenSimplex2)
++        => new(seed)
++        {
++            NoiseType = type, Frequency = .013f, FractalType = FractalType.FBm, Octaves = 3,
++            WeightedStrength = .375f, Gain = .5f, Lacunarity = 2f, Lod = LodPolicy.Disabled,
++        };
++
++    private static void MatchesOriginal(CompiledNoiseStack stack, GridRegion3D region, NoiseBackend backend, string context = "")
++    {
++        const float sentinel = 12345.625f;
++        var expected = Enumerable.Repeat(sentinel, region.SampleCount + 3).ToArray();
++        var actual = Enumerable.Repeat(sentinel, expected.Length).ToArray();
++        var layers = stack.ResolveForProcedural(region.Step);
++        if (backend != NoiseBackend.Scalar && stack.IsVectorised)
++            StackFill.Rows3<VectorOps, System.Numerics.Vector<float>, System.Numerics.Vector<int>>(
++                layers, region, expected, 0, region.Height * region.Depth);
++        else
++            StackFill.Rows3<ScalarOps, float, int>(layers, region, expected, 0, region.Height * region.Depth);
++        stack.Fill(actual, region, backend);
++        for (int i = 0; i < expected.Length; i++)
++        {
++            int expectedBits = BitConverter.SingleToInt32Bits(expected[i]);
++            int actualBits = BitConverter.SingleToInt32Bits(actual[i]);
++            Assert.True(expectedBits == actualBits,
++                $"{context}; backend={backend}, region={region}, sample={i}, expected={expectedBits:X8}, actual={actualBits:X8}");
++        }
++    }
++
++    [Theory]
++    [InlineData(LayerBlend.Add)]
++    [InlineData(LayerBlend.Subtract)]
++    [InlineData(LayerBlend.Multiply)]
++    [InlineData(LayerBlend.Min)]
++    [InlineData(LayerBlend.Max)]
++    [InlineData(LayerBlend.Replace)]
++    [InlineData(LayerBlend.Lerp)]
++    public void EveryBlendPreservesScalarVectorAndParallelRows(LayerBlend blend)
++    {
++        var stack = new NoiseStack { ParallelThreshold = 1 };
++        NoiseType[] types = [NoiseType.OpenSimplex2, NoiseType.Perlin, NoiseType.ValueCubic, NoiseType.Cellular];
++        for (int i = 0; i < types.Length; i++)
++        {
++            var source = Source(1337 + i, types[i]);
++            source.FractalType = i % 2 == 0 ? FractalType.Ridged : FractalType.PingPong;
++            source.RotationType3D = i % 2 == 0 ? RotationType3D.ImproveXYPlanes : RotationType3D.ImproveXZPlanes;
++            stack.Add(new NoiseLayer { Source = source, Blend = blend, Amplitude = -.375f,
++                Offset = .125f, BlendFactor = .3125f });
++        }
++        var compiled = stack.Compile();
++        foreach (int width in new[] { 1, 7, 8, 9, 17, 64 })
++        foreach (float step in new[] { .75f, 13.25f })
++        foreach (var backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd, NoiseBackend.Parallel, NoiseBackend.Auto })
++            MatchesOriginal(compiled, new GridRegion3D(-131073.375f, 7.25f, -29.125f, width, 3, 2, step), backend);
++    }
++
++    [Theory]
++    [InlineData(LayerBlend.Min)]
++    [InlineData(LayerBlend.Max)]
++    public void BlendPreservesOriginalBackendNaNsAndSignedZeros(LayerBlend blend)
++    {
++        int[] bits = [0, int.MinValue, 0x3f800000, 0x7fc12345, unchecked((int)0xffc54321), 0x7f812345];
++        foreach (int first in bits)
++        foreach (int second in bits)
++        {
++            var stack = new NoiseStack { ParallelThreshold = 1 };
++            stack.Add(new NoiseLayer { Source = Source(1), Amplitude = 0f, Offset = BitConverter.Int32BitsToSingle(first) });
++            stack.Add(new NoiseLayer { Source = Source(2), Amplitude = 0f, Offset = BitConverter.Int32BitsToSingle(second), Blend = blend });
++            var compiled = stack.Compile();
++            foreach (var backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd, NoiseBackend.Parallel })
++                MatchesOriginal(compiled, new GridRegion3D(-2f, 3f, 5f, 17, 1, 1), backend);
++        }
++    }
++
++    [Theory]
++    [InlineData(LayerBlend.Add)]
++    [InlineData(LayerBlend.Multiply)]
++    [InlineData(LayerBlend.Lerp)]
++    public void ExceptionalCoordinatesAndContributionsPreserveOriginalBits(LayerBlend blend)
++    {
++        float nanA = BitConverter.Int32BitsToSingle(0x7fc12345);
++        float nanB = BitConverter.Int32BitsToSingle(unchecked((int)0xffc54321));
++        float negativeZero = BitConverter.Int32BitsToSingle(int.MinValue);
++        (float FirstAmplitude, float FirstOffset, float SecondAmplitude, float SecondOffset, float Factor)[] cases =
++        [
++            (nanA, nanB, nanB, nanA, .25f),
++            (float.PositiveInfinity, float.NegativeInfinity, 0f, negativeZero, nanB),
++            (negativeZero, negativeZero, 0f, 0f, float.PositiveInfinity),
++            (.5f, nanA, nanB, float.NegativeInfinity, nanA),
++        ];
++        int width = System.Numerics.Vector<float>.Count + 1;
++        foreach (var values in cases)
++        {
++            var stack = new NoiseStack { Lod = LodPolicy.Disabled };
++            // Identical noise requests exercise DAG common-subexpression elimination. The first
++            // layer's Lerp factor is deliberately NaN: its blend must remain completely ignored.
++            stack.Add(new NoiseLayer { Source = Source(91), Blend = LayerBlend.Lerp, BlendFactor = nanB,
++                Amplitude = values.FirstAmplitude, Offset = values.FirstOffset });
++            stack.Add(new NoiseLayer { Source = Source(91), Blend = blend, BlendFactor = values.Factor,
++                Amplitude = values.SecondAmplitude, Offset = values.SecondOffset });
++            var compiled = stack.Compile();
++            GridRegion3D[] regions =
++            [
++                new(-13.5f, 7.25f, -3.125f, width, 1, 1, .75f),
++                new(nanA, float.PositiveInfinity, float.NegativeInfinity, width, 1, 1, .75f),
++                new(float.NegativeInfinity, 7.25f, nanB, width, 1, 1, .75f),
++            ];
++            foreach (var region in regions)
++            foreach (var backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd })
++                MatchesOriginal(compiled, region, backend,
++                    $"blend={blend}; firstAmplitude={BitConverter.SingleToInt32Bits(values.FirstAmplitude):X8}; firstOffset={BitConverter.SingleToInt32Bits(values.FirstOffset):X8}; secondAmplitude={BitConverter.SingleToInt32Bits(values.SecondAmplitude):X8}; secondOffset={BitConverter.SingleToInt32Bits(values.SecondOffset):X8}; factor={BitConverter.SingleToInt32Bits(values.Factor):X8}");
++        }
++    }
++
++    [Theory]
++    [InlineData(LayerBlend.Add, false)]
++    [InlineData(LayerBlend.Add, true)]
++    [InlineData(LayerBlend.Multiply, false)]
++    [InlineData(LayerBlend.Multiply, true)]
++    [InlineData(LayerBlend.Lerp, false)]
++    [InlineData(LayerBlend.Lerp, true)]
++    public void FiniteContributionsPreserveNonfiniteCoordinatesAndOverflow(LayerBlend blend, bool commonNoise)
++    {
++        float nanA = BitConverter.Int32BitsToSingle(0x7fc12345);
++        float nanB = BitConverter.Int32BitsToSingle(unchecked((int)0xffc54321));
++        int width = System.Numerics.Vector<float>.Count + 1;
++        foreach (bool overflow in new[] { false, true })
++        {
++            var stack = new NoiseStack { Lod = LodPolicy.Disabled };
++            stack.Add(new NoiseLayer { Source = Source(91), Amplitude = overflow ? float.MaxValue : .75f,
++                Offset = overflow ? float.MaxValue : .125f });
++            stack.Add(new NoiseLayer { Source = Source(commonNoise ? 91 : 123), Blend = blend,
++                Amplitude = overflow ? -float.MaxValue : .25f, Offset = overflow ? -float.MaxValue : -.125f,
++                BlendFactor = overflow ? float.MaxValue : .375f });
++            var compiled = stack.Compile();
++            GridRegion3D[] regions =
++            [
++                new(-13.5f, 7.25f, -3.125f, width, 1, 1, .75f),
++                new(nanA, 7.25f, -3.125f, width, 1, 1, .75f),
++                new(float.PositiveInfinity, float.NegativeInfinity, nanB, width, 1, 1, .75f),
++                new(float.MaxValue, -float.MaxValue, float.MaxValue, width, 1, 1, float.MaxValue),
++            ];
++            foreach (var region in regions)
++            foreach (var backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd })
++                MatchesOriginal(compiled, region, backend, $"blend={blend}; commonNoise={commonNoise}; overflow={overflow}");
++        }
++    }
++
++    [Fact]
++    public void ResolvedProgramsPreserveLayerCullingOctaveFadeAndReplacement()
++    {
++        var stack = new NoiseStack { Lod = LodPolicy.Automatic with { CullLayers = true }, ParallelThreshold = 1 };
++        stack.Add(new NoiseLayer { Source = Source(1), Amplitude = .75f, FeatureSize = 100000f });
++        stack.Add(new NoiseLayer { Source = Source(2), Blend = LayerBlend.Replace, FeatureSize = 64f });
++        stack.Add(new NoiseLayer { Source = Source(3), Blend = LayerBlend.Subtract, FeatureSize = 8192f, Amplitude = .25f });
++        var compiled = stack.Compile();
++        foreach (float step in new[] { .25f, 1f, 7f, 32f, 256f, 4096f, 100000f, 1f })
++        foreach (var backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd, NoiseBackend.Parallel })
++            MatchesOriginal(compiled, new GridRegion3D(-137f, 87f, -23f, 17, 3, 2, step), backend);
++    }
++
++    [Fact]
++    public void ManyLodStridesAndPreviouslyCachedStepsRemainExact()
++    {
++        var stack = new NoiseStack { Lod = LodPolicy.Automatic with { CullLayers = true }, ParallelThreshold = 1 };
++        stack.Add(new NoiseLayer { Source = Source(41), FeatureSize = 10000f, Amplitude = .75f });
++        stack.Add(new NoiseLayer { Source = Source(43), FeatureSize = 64f, Blend = LayerBlend.Subtract });
++        var compiled = stack.Compile();
++        // Exceed the dynamic-code budget with nonempty programs, then revisit earlier strides.
++        // This exercises uncached fused fills, continuous fades, layer culling and retained programs.
++        var strides = Enumerable.Range(0, 24).Select(index => 2f + index * 2.25f).Concat([2f, 4.25f, 1000f]);
++        foreach (float step in strides)
++        foreach (var backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd, NoiseBackend.Parallel })
++            MatchesOriginal(compiled, new GridRegion3D(-31.5f, 11.25f, -7f, 17, 2, 1, step), backend);
++    }
++
++    [Fact]
++    public void ConcurrentFirstUsePreservesSnapshotsAcrossDisabledLodStrides()
++    {
++        var source = Source(19);
++        var stack = new NoiseStack { Lod = LodPolicy.Disabled, ParallelThreshold = int.MaxValue };
++        stack.Add(new NoiseLayer { Source = source });
++        stack.Add(new NoiseLayer { Source = Source(23), Blend = LayerBlend.Multiply, Offset = .5f, Amplitude = .5f });
++        var compiled = stack.Compile();
++        source.Seed = 999;
++        source.FractalType = FractalType.None;
++        Parallel.For(0, 12, index =>
++            MatchesOriginal(compiled, new GridRegion3D(index - 100.5f, 7.25f, 19f, 17, 2, 1, .25f * (index + 1)), NoiseBackend.Auto));
++    }
++
++    [Fact]
++    public void ScalarOnlyStacksRetainTheirOriginalFallback()
++    {
++        var stack = new NoiseStack { ParallelThreshold = 1 };
++        stack.Add(new NoiseLayer { Source = Source(1) });
++        stack.Add(new NoiseLayer { Source = Source(2, NoiseType.OpenSimplex2S), Amplitude = .5f });
++        var compiled = stack.Compile();
++        Assert.False(compiled.IsVectorised);
++        foreach (var backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd, NoiseBackend.Parallel })
++            MatchesOriginal(compiled, new GridRegion3D(1f, -2f, 3f, 17, 3, 2, .75f), backend);
++    }
++}
+diff --git a/src/Tedd.FastNoise/CompiledNoiseStack.cs b/src/Tedd.FastNoise/CompiledNoiseStack.cs
+index 8d7ee7c..aaeec6f 100644
+--- a/src/Tedd.FastNoise/CompiledNoiseStack.cs
++++ b/src/Tedd.FastNoise/CompiledNoiseStack.cs
+@@ -1,6 +1,9 @@
+ using System;
+ using System.Collections.Generic;
+ using System.Numerics;
++using System.Runtime.CompilerServices;
++using System.Threading;
++using Tedd.FastNoise.Procedural;
+ using Tedd.FastNoise.Internal;
+ using Tedd.FastNoise.Internal.Kernels;
+ 
+@@ -28,6 +31,9 @@ public sealed class CompiledNoiseStack
+ 
+     /// <summary>Cache for the common case: the same step used over and over, so resolve level of detail once.</summary>
+     private readonly Dictionary<float, ResolvedLayer[]> _resolvedByStep = [];
++    // LOD fades can produce arbitrarily many stride keys; bound retained dynamic code per stack.
++    private const int MaximumExecutors3D = 16;
++    private readonly Dictionary<float, Lazy<CompiledStack3D>> _executors3D = [];
+ 
+     /// <summary>Builds a compiled stack. Called by <see cref="NoiseStack.Compile"/>.</summary>
+     internal CompiledNoiseStack(NoiseLayer[] layers, LodPolicy lod, int parallelThreshold)
+@@ -188,6 +194,18 @@ public sealed class CompiledNoiseStack
+         GridRegion3D captured = region;
+         int totalRows = region.Height * region.Depth;
+ 
++        // Unsupported algorithms and NativeAOT retain the original lane and scalar fallback policy.
++        if (RuntimeFeature.IsDynamicCodeSupported && _allLayersHaveWideKernels)
++        {
++            CompiledStack3D? executor = ResolveExecutor3D(region.Step);
++            if (executor is not null)
++            {
++                RowScheduler.Run(destination, totalRows, parallel,
++                    (buffer, first, count) => StackFill.Rows3(executor, layers, captured, buffer, first, count, wide));
++                return;
++            }
++        }
++
+         if (wide)
+         {
+             RowScheduler.Run(destination, totalRows, parallel,
+@@ -228,6 +246,32 @@ public sealed class CompiledNoiseStack
+         _ => sampleCount >= ParallelThreshold,
+     };
+ 
++    private CompiledStack3D? ResolveExecutor3D(float step)
++    {
++        // Without either LOD policy, spacing changes traversal but never the resolved noise program.
++        float key = !_lod.CullLayers && !_lod.CullOctaves ? 1f : step;
++        Lazy<CompiledStack3D> executor;
++        lock (_executors3D)
++        {
++            if (!_executors3D.TryGetValue(key, out executor!))
++            {
++                // Keep existing programs; unusual additional strides use the original fused fill.
++                if (_executors3D.Count >= MaximumExecutors3D) return null;
++                executor = new Lazy<CompiledStack3D>(() =>
++                {
++                    var graph = new ProceduralGraph();
++                    var x = graph.Input(0, ProceduralType.Float32);
++                    var y = graph.Input(1, ProceduralType.Float32);
++                    var z = graph.Input(2, ProceduralType.Float32);
++                    return graph.CompileFloat3D(graph.Stack3D(this, x, y, z, key));
++                }, LazyThreadSafetyMode.ExecutionAndPublication);
++                _executors3D.Add(key, executor);
++            }
++        }
++        // Dynamic compilation must not serialize cached fills or hold either cache lock.
++        return executor.Value;
++    }
++
+     // The procedural compiler expands the same resolved plans so imported stacks retain their
+     // original normalization, octave fade, blend order and layer-culling semantics.
+     internal ResolvedLayer[] ResolveForProcedural(float step) => Resolve(step);
+diff --git a/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs b/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs
+index 706dab9..fd9469d 100644
+--- a/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs
++++ b/src/Tedd.FastNoise/Internal/Kernels/FractalKernel.cs
+@@ -195,6 +195,84 @@ internal static class FractalKernel
+         return sum;
+     }
+ 
++    // Direct algorithm selection for immutable procedural requests. The general octave loop
++    // stays in its own method so callers can inline it without an extra generic call boundary.
++    /// <summary>Runs <paramref name="octaves"/> octaves in 3D over already-transformed coordinates.</summary>
++    /// <param name="kernel">Which algorithm each octave runs.</param>
++    /// <param name="fractal">Octave count, falloff and shaping at full detail.</param>
++    /// <param name="seed">Seed of the first octave; each subsequent octave adds one.</param>
++    /// <param name="x">Transformed X coordinate.</param>
++    /// <param name="y">Transformed Y coordinate.</param>
++    /// <param name="z">Transformed Z coordinate.</param>
++    /// <param name="octaves">Octaves to actually run, at or below <see cref="FractalConfig.Octaves"/>.</param>
++    /// <param name="lastOctaveFade">Amplitude multiplier for the final octave, in (0, 1].</param>
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static TF OpenSimplex3<TOps, TF, TI>(
++        in KernelConfig kernel, in FractalConfig fractal, int seed, TF x, TF y, TF z, int octaves, float lastOctaveFade)
++        where TOps : ISimdOps<TF, TI>
++        where TF : struct
++        where TI : struct
++    {
++        if (fractal.Type == FractalType.None || octaves <= 1)
++        {
++            TF single = OpenSimplex2Kernel.Sample3<TOps, TF, TI>(TOps.I(seed), x, y, z);
++
++            // The fade applies to a plain single-octave source too, not just to a fractal that level
++            // of detail has worn down to one octave. Without this a non-fractal layer keeps full
++            // amplitude at every zoom, which is exactly the layer whose detail should disappear first.
++            TF shaped = fractal.Type == FractalType.None ? single : ShapeSingle<TOps, TF, TI>(fractal, single);
++            return TOps.Mul(shaped, TOps.F(lastOctaveFade));
++        }
++
++        TF sum = TOps.F(0f);
++        TF amp = TOps.F(fractal.Bounding);
++        TF lacunarity = TOps.F(fractal.Lacunarity);
++        TF gain = TOps.F(fractal.Gain);
++        TF weighted = TOps.F(fractal.WeightedStrength);
++
++        for (int octave = 0; octave < octaves; octave++)
++        {
++            // Level of detail may ask for the finest surviving octave at reduced amplitude, so it
++            // ramps in rather than popping into existence as the camera approaches.
++            if (lastOctaveFade != 1f && octave == octaves - 1)
++            {
++                amp = TOps.Mul(amp, TOps.F(lastOctaveFade));
++            }
++
++            TF noise = OpenSimplex2Kernel.Sample3<TOps, TF, TI>(TOps.I(seed + octave), x, y, z);
++
++            TF weight;
++            switch (fractal.Type)
++            {
++                case FractalType.Ridged:
++                    noise = TOps.Abs(noise);
++                    sum = TOps.Add(sum, TOps.Mul(TOps.Add(TOps.Mul(noise, TOps.F(-2f)), TOps.F(1f)), amp));
++                    weight = TOps.Sub(TOps.F(1f), noise);
++                    break;
++
++                case FractalType.PingPong:
++                    noise = NoiseMath.PingPong<TOps, TF, TI>(
++                        TOps.Mul(TOps.Add(noise, TOps.F(1f)), TOps.F(fractal.PingPongStrength)));
++                    sum = TOps.Add(sum, TOps.Mul(TOps.Mul(TOps.Sub(noise, TOps.F(0.5f)), TOps.F(2f)), amp));
++                    weight = noise;
++                    break;
++
++                default:
++                    sum = TOps.Add(sum, TOps.Mul(noise, amp));
++                    weight = TOps.Mul(TOps.Add(noise, TOps.F(1f)), TOps.F(0.5f));
++                    break;
++            }
++
++            amp = TOps.Mul(amp, NoiseMath.Lerp<TOps, TF, TI>(TOps.F(1f), weight, weighted));
++            x = TOps.Mul(x, lacunarity);
++            y = TOps.Mul(y, lacunarity);
++            z = TOps.Mul(z, lacunarity);
++            amp = TOps.Mul(amp, gain);
++        }
++
++        return sum;
++    }
++
+     /// <summary>
+     /// Applies a fractal's per-octave shaping to a single octave.
+     /// </summary>
+diff --git a/src/Tedd.FastNoise/Internal/StackFill.cs b/src/Tedd.FastNoise/Internal/StackFill.cs
+index 5bbfece..f11896a 100644
+--- a/src/Tedd.FastNoise/Internal/StackFill.cs
++++ b/src/Tedd.FastNoise/Internal/StackFill.cs
+@@ -1,5 +1,7 @@
+ using System;
+ using System.Runtime.CompilerServices;
++using System.Numerics;
++using Tedd.FastNoise.Procedural;
+ using Tedd.FastNoise.Internal.Kernels;
+ 
+ namespace Tedd.FastNoise.Internal;
+@@ -145,6 +147,54 @@ internal static class StackFill
+         }
+     }
+ 
++    // Keep the original row boundaries and ramp association: regrouping samples changes float coordinates.
++    internal static void Rows3(CompiledStack3D executor, ResolvedLayer[] layers, in GridRegion3D region,
++        Span<float> destination, int firstRow, int rowCount, bool wide)
++    {
++        var scalar = executor.Scalar;
++        var vector = wide ? executor.Wide : null;
++        int lanes = Vector<float>.Count;
++        int width = region.Width;
++        int height = region.Height;
++        float step = region.Step;
++        for (int row = firstRow; row < firstRow + rowCount; row++)
++        {
++            int y = row % height;
++            int z = row / height;
++            float worldY = region.OriginY + (y * step);
++            float worldZ = region.OriginZ + (z * step);
++            int rowStart = row * width;
++            int column = 0;
++            if (vector is not null)
++                for (; column + lanes <= width; column += lanes)
++                {
++                    var baseX = VectorOps.Ramp(region.OriginX + (column * step), step);
++                    var value = vector(baseX, VectorOps.F(worldY), VectorOps.F(worldZ));
++                    // Preserve the retained executor's NaN payload selection. Test the result so
++                    // finite settings that generate NaNs through overflow receive the same treatment.
++                    if (!Vector.EqualsAll(value, value))
++                        value = Evaluate3WideNaN(layers, baseX, VectorOps.F(worldY), VectorOps.F(worldZ));
++                    VectorOps.Store(value, destination, rowStart + column);
++                }
++            for (; column < width; column++)
++            {
++                float value = scalar(region.OriginX + (column * step), worldY, worldZ);
++                if (float.IsNaN(value))
++                    value = Evaluate3ScalarNaN(layers, region.OriginX + (column * step), worldY, worldZ);
++                destination[rowStart + column] = value;
++            }
++        }
++    }
++
++    // Keep exceptional-value recomputation outside the normal row loop's generated body.
++    [MethodImpl(MethodImplOptions.NoInlining)]
++    private static Vector<float> Evaluate3WideNaN(ResolvedLayer[] layers, Vector<float> x, Vector<float> y, Vector<float> z)
++        => Evaluate3<VectorOps, Vector<float>, Vector<int>>(layers, x, y, z);
++
++    [MethodImpl(MethodImplOptions.NoInlining)]
++    private static float Evaluate3ScalarNaN(ResolvedLayer[] layers, float x, float y, float z)
++        => Evaluate3<ScalarOps, float, int>(layers, x, y, z);
++
+     /// <summary>Runs every layer against one set of 2D coordinates and returns the blended result.</summary>
+     public static TF Evaluate2<TOps, TF, TI>(ResolvedLayer[] layers, TF worldX, TF worldY)
+         where TOps : ISimdOps<TF, TI>
+diff --git a/src/Tedd.FastNoise/Procedural/CompiledStack3D.cs b/src/Tedd.FastNoise/Procedural/CompiledStack3D.cs
+new file mode 100644
+index 0000000..b87e527
+--- /dev/null
++++ b/src/Tedd.FastNoise/Procedural/CompiledStack3D.cs
+@@ -0,0 +1,52 @@
++// Compiles a resolved stack's Float32 DAG into immutable native-coordinate delegates.
++// Grid traversal remains outside this compiler; SIMD blend min/max retain the original stack semantics.
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using System.Linq.Expressions;
++using System.Numerics;
++using Tedd.FastNoise.Internal;
++
++namespace Tedd.FastNoise.Procedural;
++
++internal sealed class CompiledStack3D
++{
++    internal readonly Func<float, float, float, float> Scalar;
++    internal readonly Func<Vector<float>, Vector<float>, Vector<float>, Vector<float>>? Wide;
++
++    internal CompiledStack3D(ProceduralNode[] nodes, int output)
++    {
++        Scalar = Compile<Func<float, float, float, float>>(nodes, output, false);
++        if (Vector.IsHardwareAccelerated)
++            Wide = Compile<Func<Vector<float>, Vector<float>, Vector<float>, Vector<float>>>(nodes, output, true);
++    }
++
++    private static TDelegate Compile<TDelegate>(ProceduralNode[] nodes, int output, bool wide) where TDelegate : Delegate
++    {
++        Type type = wide ? typeof(Vector<float>) : typeof(float);
++        var inputs = new[] { Expression.Parameter(type, "x"), Expression.Parameter(type, "y"), Expression.Parameter(type, "z") };
++        var locals = nodes.Select(n => Expression.Variable(type, $"n{n.Id}")).ToArray();
++        List<Expression> body = [];
++        foreach (var node in nodes)
++        {
++            if (node.Type != ProceduralType.Float32)
++                throw new NotSupportedException("Native stack executors require Float32 nodes.");
++            Expression value;
++            if (node.Operation == ProceduralOperation.Input)
++                value = inputs[node.InputIndex];
++            else if (wide && node.Operation is ProceduralOperation.Min or ProceduralOperation.Max)
++                // Procedural min/max deliberately normalize NaN and zero behavior. Stack fills must
++                // retain VectorOps' existing behavior, including operand order and exceptional values.
++                value = ProceduralRuntime.Call(typeof(VectorOps),
++                    node.Operation == ProceduralOperation.Min ? nameof(VectorOps.Min) : nameof(VectorOps.Max),
++                    locals[node.A], locals[node.B]);
++            else
++                value = wide
++                    ? ProceduralWideRuntime.Emit(node, id => locals[id], id => nodes[id].Type)
++                    : ProceduralRuntime.Emit(node, id => locals[id]);
++            body.Add(Expression.Assign(locals[node.Id], value));
++        }
++        body.Add(locals[output]);
++        return Expression.Lambda<TDelegate>(Expression.Block(locals, body), inputs).Compile();
++    }
++}
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralGraph.cs b/src/Tedd.FastNoise/Procedural/ProceduralGraph.cs
+index b937a2d..27e5539 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralGraph.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralGraph.cs
+@@ -169,6 +169,19 @@ public sealed class ProceduralGraph
+ 
+     /// <summary>Eliminates unreachable work, compacts the DAG and generates a typed CPU delegate.</summary>
+     public CompiledProceduralGraph Compile(params ProceduralValue[] outputs)
++    {
++        var (nodes, outputIds) = Compact(outputs);
++        return new(nodes, outputIds, _nodes.Count);
++    }
++
++    // Stack fills use native float coordinates and results, without the public double wire format.
++    internal CompiledStack3D CompileFloat3D(ProceduralValue output)
++    {
++        var (nodes, outputIds) = Compact([output]);
++        return new(nodes, outputIds[0]);
++    }
++
++    private (ProceduralNode[] Nodes, int[] Outputs) Compact(ProceduralValue[] outputs)
+     {
+         ArgumentNullException.ThrowIfNull(outputs);
+         if (outputs.Length == 0) throw new ArgumentException("At least one output is required.", nameof(outputs));
+@@ -193,7 +206,7 @@ public sealed class ProceduralGraph
+             remap[i] = live.Count;
+             live.Add(n with { Id = live.Count, A = n.A < 0 ? -1 : remap[n.A], B = n.B < 0 ? -1 : remap[n.B], C = n.C < 0 ? -1 : remap[n.C] });
+         }
+-        return new(live.ToArray(), outputs.Select(o => remap[o.Id]).ToArray(), _nodes.Count);
++        return (live.ToArray(), outputs.Select(o => remap[o.Id]).ToArray());
+     }
+ 
+     private ProceduralValue Stack(CompiledNoiseStack stack, ProceduralValue x, ProceduralValue y, ProceduralValue z, float step, bool is3D)
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs b/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs
+index d1434bc..ed75273 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralRuntime.cs
+@@ -175,7 +175,9 @@ internal static class ProceduralRuntime
+             ProceduralOperation.Lookup => FromBoundary(Call(typeof(ProceduralRuntime), nameof(Lookup),
+                 Expression.Constant(node.Table, typeof(IReadOnlyList<double>)), a), node.Type),
+             ProceduralOperation.Noise2D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample2), typeof(float), typeof(float)), a, b()),
+-            ProceduralOperation.Noise3D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample3), typeof(float), typeof(float), typeof(float)), a, b(), operand(node.C)),
++            ProceduralOperation.Noise3D => Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)), Method(typeof(ProceduralNoise),
++                node.NoiseRequest!.Value.NoiseType == NoiseType.OpenSimplex2 ? nameof(ProceduralNoise.SampleOpenSimplex3) : nameof(ProceduralNoise.Sample3),
++                typeof(float), typeof(float), typeof(float)), a, b(), operand(node.C)),
+             _ => throw new NotSupportedException($"Unsupported procedural operation {node.Operation}."),
+         };
+     }
+@@ -222,4 +224,14 @@ internal sealed class ProceduralNoise
+         NoisePipeline.Transform3<VectorOps, Vector<float>, Vector<int>>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
+         return FractalKernel.Fractal3<VectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
+     }
++    public float SampleOpenSimplex3(float x, float y, float z)
++    {
++        NoisePipeline.Transform3<ScalarOps, float, int>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
++        return FractalKernel.OpenSimplex3<ScalarOps, float, int>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
++    }
++    public Vector<float> SampleOpenSimplex3Wide(Vector<float> x, Vector<float> y, Vector<float> z)
++    {
++        NoisePipeline.Transform3<VectorOps, Vector<float>, Vector<int>>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
++        return FractalKernel.OpenSimplex3<VectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
++    }
+ }
+diff --git a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+index b230585..4e9e39d 100644
+--- a/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
++++ b/src/Tedd.FastNoise/Procedural/ProceduralWideRuntime.cs
+@@ -87,7 +87,9 @@ internal static class ProceduralWideRuntime
+                     ProceduralRuntime.Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample2Wide), typeof(Vector<float>), typeof(Vector<float>)), a, b());
+             case ProceduralOperation.Noise3D:
+                 return Expression.Call(Expression.Constant(new ProceduralNoise(node.NoiseRequest!.Value)),
+-                    ProceduralRuntime.Method(typeof(ProceduralNoise), nameof(ProceduralNoise.Sample3Wide), typeof(Vector<float>), typeof(Vector<float>), typeof(Vector<float>)), a, b(), operand(node.C));
++                    ProceduralRuntime.Method(typeof(ProceduralNoise),
++                        node.NoiseRequest!.Value.NoiseType == NoiseType.OpenSimplex2 ? nameof(ProceduralNoise.SampleOpenSimplex3Wide) : nameof(ProceduralNoise.Sample3Wide),
++                        typeof(Vector<float>), typeof(Vector<float>), typeof(Vector<float>)), a, b(), operand(node.C));
+             default: throw new NotSupportedException($"Unsupported SIMD operation {node.Operation}.");
+         }
+     }
