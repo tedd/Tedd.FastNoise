@@ -158,6 +158,45 @@ public class StackTests
         }
     }
 
+    [Theory]
+    [InlineData(1f)]
+    [InlineData(4f)]
+    public void ReplacementPruningResolvesLodBeforeDiscardingPredecessors(float step)
+    {
+        var before = Source(91, NoiseType.Perlin, 0.03125f);
+        var replacement = Source(92, NoiseType.OpenSimplex2, 0.0625f);
+        NoiseStack stack = new() { ParallelThreshold = 1, Lod = new LodPolicy { CullLayers = true, NyquistFactor = 2f } };
+        stack.Add(new NoiseLayer { Source = before, Name = "before" });
+        stack.Add(new NoiseLayer { Source = replacement, Name = "replacement", Blend = LayerBlend.Replace, FeatureSize = 4f });
+        var compiled = stack.Compile();
+        GridRegion3D region = new(-13.5f, 7.25f, -3.125f, 17, 13, 5, step);
+        NoiseGenerator expected = step == 1f ? replacement : before;
+        foreach (NoiseBackend backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd, NoiseBackend.Parallel })
+            Assert.Equal(expected.Create(region, backend), compiled.Create(region, backend));
+        string name = Assert.Single(compiled.DescribeActiveLayers(step));
+        Assert.StartsWith(step == 1f ? "replacement" : "before", name, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ReplacementDiscardsNonFinitePredecessorAndRetainsFollowingBlend()
+    {
+        var replacement = Source(102, NoiseType.Value, 0.03125f);
+        var following = Source(103, NoiseType.Perlin, 0.0625f);
+        NoiseStack stack = new() { ParallelThreshold = 1 };
+        stack.Add(new NoiseLayer { Source = Source(101), Amplitude = float.NaN });
+        stack.Add(new NoiseLayer { Source = replacement, Blend = LayerBlend.Replace, Amplitude = -0.5f, Offset = 0.25f });
+        stack.Add(new NoiseLayer { Source = following, Blend = LayerBlend.Subtract, Amplitude = 0.125f });
+        var compiled = stack.Compile();
+        GridRegion3D region = new(-13.5f, 7.25f, -3.125f, 17, 3, 2, 0.75f);
+        float[] expected = replacement.Create(region, NoiseBackend.Scalar);
+        float[] tail = following.Create(region, NoiseBackend.Scalar);
+        for (int i = 0; i < expected.Length; i++) expected[i] = (expected[i] * -0.5f + 0.25f) - tail[i] * 0.125f;
+        foreach (NoiseBackend backend in new[] { NoiseBackend.Scalar, NoiseBackend.Simd, NoiseBackend.Parallel })
+            Assert.Equal(expected, compiled.Create(region, backend));
+        Assert.Equal(3, compiled.LayerCount);
+        Assert.Equal(2, compiled.DescribeActiveLayers(1f).Count);
+    }
+
     /// <summary>
     /// A stack containing OpenSimplex2S cannot vectorise, but it still has to produce the right
     /// answer, and it still has to be able to run in parallel.

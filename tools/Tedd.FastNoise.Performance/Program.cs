@@ -14,9 +14,17 @@ foreach (int width in new[] { 16, 17, 64 })
         registry.Register(new CompositeScenario(width, layers));
 foreach (int samples in new[] { 4096, 65536, 262144 })
     registry.Register(new GraphScenario(samples));
-var host = new HarnessHost(registry, args[0], new InlineDispatcher(), null);
-Console.WriteLine($"PID={Environment.ProcessId}");
-await host.ListenAsync(CancellationToken.None);
+foreach (int width in new[] { 16, 64 })
+    registry.Register(new CompositeScenario(width, 16, true));
+bool owned = args[0] == "--harness";
+var host = new HarnessHost(registry, args[owned ? 1 : 0], new InlineDispatcher(), null);
+if (owned)
+    await host.RunOwnedAsync();
+else
+{
+    Console.WriteLine($"PID={Environment.ProcessId}");
+    await host.ListenAsync(CancellationToken.None);
+}
 
 sealed class CompositeScenario : ISynchronousScenario
 {
@@ -26,11 +34,12 @@ sealed class CompositeScenario : ISynchronousScenario
     private readonly float[] _output, _expected;
     private readonly CompiledNoiseStack _stack;
     private readonly Original.CompiledNoiseStack _original;
+    private readonly bool _replace;
     private string _variant = "baseline";
 
-    public CompositeScenario(int width, int layers)
+    public CompositeScenario(int width, int layers, bool replace = false)
     {
-        _width = width; _layers = layers;
+        _width = width; _layers = layers; _replace = replace;
         _region = new(-137f, 87f, -23f, width, 64, 16, 1f);
         _originalRegion = new(-137f, 87f, -23f, width, 64, 16, 1f);
         _output = new float[_region.SampleCount]; _expected = new float[_output.Length];
@@ -40,14 +49,16 @@ sealed class CompositeScenario : ISynchronousScenario
         {
             float frequency = 0.002f * MathF.Pow(2f, i), amplitude = MathF.Pow(0.5f, i);
             stack.Add(new NoiseLayer { Source = new NoiseGenerator(1337 + i) { NoiseType = NoiseType.OpenSimplex2,
-                FractalType = FractalType.FBm, Octaves = 4, Frequency = frequency }, Amplitude = amplitude });
+                FractalType = FractalType.FBm, Octaves = 4, Frequency = frequency }, Amplitude = amplitude,
+                Blend = replace && i == layers - 1 ? LayerBlend.Replace : LayerBlend.Add });
             original.Add(new Original.NoiseLayer { Source = new Original.NoiseGenerator(1337 + i) { NoiseType = Original.NoiseType.OpenSimplex2,
-                FractalType = Original.FractalType.FBm, Octaves = 4, Frequency = frequency }, Amplitude = amplitude });
+                FractalType = Original.FractalType.FBm, Octaves = 4, Frequency = frequency }, Amplitude = amplitude,
+                Blend = replace && i == layers - 1 ? Original.LayerBlend.Replace : Original.LayerBlend.Add });
         }
         _stack = stack.Compile(); _original = original.Compile();
     }
-    public ScenarioDescriptor Describe() => new($"composite-3d-w{_width}-l{_layers}", "1",
-        $"opensimplex2-fbm4-1337-origin-137-87-23-w{_width}-64-16-step1-l{_layers}",
+    public ScenarioDescriptor Describe() => new($"composite-3d-w{_width}-l{_layers}{(_replace ? "-replace" : "")}", "1",
+        $"opensimplex2-fbm4-1337-origin-137-87-23-w{_width}-64-16-step1-l{_layers}{(_replace ? "-replace" : "")}",
         ResetLevel.LogicalState, ThreadAffinity.Any, false, "one complete 3D composite volume",
         new[] { "baseline", "candidate", "baseline-parallel", "candidate-parallel" }, Array.Empty<string>(), new Dictionary<string, int>());
     public void Prepare(ScenarioContext context)

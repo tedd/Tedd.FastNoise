@@ -99,6 +99,9 @@ public sealed class CompiledNoiseStack
                 continue;
             }
 
+            if (plan.Blend == LayerBlend.Replace)
+                names.Clear();
+
             (int octaves, float fade) = _lod.Resolve(plan.Frequency, plan.Lacunarity, plan.Octaves, step);
             string name = plan.Name ?? plan.Kernel.NoiseType.ToString();
 
@@ -254,6 +257,11 @@ public sealed class CompiledNoiseStack
                 {
                     continue;
                 }
+
+                // Replace discards the entire preceding accumulator. Resolve culling first: a
+                // replacement omitted at this LOD must leave its predecessors intact.
+                if (plan.Blend == LayerBlend.Replace)
+                    resolved.Clear();
 
                 (int octaves, float fade) = _lod.Resolve(plan.Frequency, plan.Lacunarity, plan.Octaves, step);
 
