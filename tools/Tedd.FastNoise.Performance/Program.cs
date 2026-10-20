@@ -98,10 +98,12 @@ sealed class CompositeScenario : ISynchronousScenario
     public ScenarioDescriptor Describe() => new($"composite-3d-w{_width}-l{_layers}{(_replace ? "-replace" : "")}", "1",
         $"opensimplex2-fbm4-1337-origin-137-87-23-w{_width}-64-16-step1-l{_layers}{(_replace ? "-replace" : "")}",
         ResetLevel.LogicalState, ThreadAffinity.Any, false, "one complete 3D composite volume",
-        new[] { "baseline", "candidate", "baseline-scalar", "candidate-scalar", "baseline-parallel", "candidate-parallel" }, Array.Empty<string>(), new Dictionary<string, int>());
+        new[] { "baseline", "candidate", "baseline-scalar", "candidate-scalar", "baseline-parallel", "candidate-parallel",
+            "entry-a", "entry-b", "entry-a-scalar", "entry-b-scalar", "entry-a-parallel", "entry-b-parallel" }, Array.Empty<string>(), new Dictionary<string, int>());
     public void Prepare(ScenarioContext context)
     {
-        _variant = context.Variant;
+        _variant = context.Variant.StartsWith("entry-", StringComparison.Ordinal)
+            ? "candidate" + context.Variant[7..] : context.Variant;
         _original.Fill(_expected, _originalRegion, Original.NoiseBackend.Simd);
     }
     public void Reset(ResetContext context) { }

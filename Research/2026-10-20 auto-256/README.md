@@ -94,3 +94,23 @@ All144 H10 runs completed. Descriptive ratios:
 Reject H10: no useful primary improvement, no confirmation/adoption. Ordinary-stack and scalar paths do not call the changed writer, so their effects are controls for fixture/runtime/temporal variability, not gains/regressions caused by unrolling. Keep every observation.
 
 H11 prospective experiment (V05/C04): replace only AVX2 eight-lane3D gradient-code gather with transposed nibble encoding: one vpermd selects one of8 packed IDwords, variable shift extracts one4bit ID, one duplicated16-byte pshufb table decodes original code. This differs from H05 four shuffles/three blends; it remains uncertain whether a7-op dependency chain beats the hot gather. Exact64-entry table includes special tailIDs[8,1,9,3]. Keep zero-axis/sign extraction and every FP operation unchanged; original gather fallback when AVX2/width guard fails. Full64index mixed-lane lookup, released-gradient raw-bit oracle and wholegraph exceptional inputs must pass before timing; additionally test AVX2-disabled fallback. Reuse nine-case8pair exploration/144runs and original budgets/profile/seed. PrimaryNoise256, mandatoryLand256 and related cases. No H11 implementation/result exists at this freeze.
+
+H11 `hyp-6f0ba2f68f654d23b6257cca3c66ac9a`:278/278 CPU cases pass with default AVX2 and again with DOTNET_EnableAVX2=0; exact Earth/cold validation passes. Source patch SHA256 `764aa91080ac9fecf31407ddfef99c90846d1e9129783cfa5349b6cabc2b4821`. Optimized Tier1 Sample3<VectorOps> fully inlines both decoder sites: seven integer/shuffle ops plus a decode-table broadcast, with no gather or decoder call. Kernel2269bytes/984byte frame, alias2220bytes/1080byte frame; widegraph15888 unchanged. These establish emitted mechanism, not hardware causation. Scalar retains a direct table read; capture does not prove complete scalar code equivalence.
+
+H11 exploration completed all144runs. Descriptive ratios:
+
+| Case | Ratio | logSE | Execution |
+| --- | ---: | ---: | --- |
+| earth-noise-n256 auto | 0.813407 | 0.022846 | `exec-de5a789c532e4e868c7ad60a7939a9f6` |
+| earth-land-n256 auto | 0.850009 | 0.019345 | `exec-780fa0eb903d4297a5fc0a28dfc45d36` |
+| earth-land-n1 auto | 1.131853 | 0.154253 | `exec-880a25501d2d4ec6ba421c2d0f201fb0` |
+| earth-land-n4096 auto | 0.838216 | 0.045911 | `exec-1cef2bf2936842e3acc7ea54bbe81492` |
+| earth-land-n65536 parallel | 0.877033 | 0.013470 | `exec-a870a89951e049aabbaef91e94580e15` |
+| earth-noise-n256 scalar | 0.984514 | 0.043792 | `exec-3b3edb281761468cab60d3af76987ad9` |
+| composite-3d-w16-l4 auto | 0.958153 | 0.067561 | `exec-4d1936dfe32f4f5eb36e7bca36c97ce3` |
+| earth-noise-first-fill-n256 cold | 0.990343 | 0.036991 | `exec-4208b54b238c48ab8b80b902b93794fd` |
+| earth-land-first-fill-n256 cold | 1.006197 | 0.019616 | `exec-d6082de3324d43d59e4d803e5049e30c` |
+
+Supported awaiting confirmation: Noise256 and Land256 show useful exploratory gains, larger batches improve, and cold costs are near unchanged. Ordinary-stack and point effects are noisy; scalarNoise256 is near unchanged. No adoption yet.
+
+H11 selected-source fresh confirmation protocol, frozen before new confirmation data: four cases Noise256Auto(primary), Land256Auto(caller guard), ordinary four-layer16x64x16SIMD stack(guard and secondary benefit), Land1Evaluate(single-point guard).24 randomized paired fresh-process blocks percase,192processes total, seed20261029, quiet profile, exact10.0.13, same updated harness source and byte-identical dependencyDLLs. Entry-a/entry-b labels both normalize outside timing to each builds source-linked current code; aliased release is oracle only. Rebuild both normal bundles; shared composite fixture now also declares these labels. Noise/Land256 use1024operations and8warmup batches; point32768operations and8warmups; stack64operations and4warmups. Max600seconds perplan,48launches pergrant; no exclusions, repeated holdouts or budget expansion. Family4, alpha.05, useful ratio.95/regression1.05, minimum10blocks. Actual independent unit is a separately initialized randomized paired process session; host thermal/background correlations remain a limit. Adoption requires useful Noise primary and noninferiority on every three mandatory caller guards; secondary stack gain claimed only if its own useful-benefit gate passes. Cold costs/allocations remain separately reported. A guard-only plan need not pass its primary-benefit gate; report its noninferiority result explicitly.
