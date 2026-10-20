@@ -9,6 +9,9 @@ using Tedd.FastNoise;
 using Original = baseline::Tedd.FastNoise;
 
 var registry = new ScenarioRegistry();
+foreach (int samples in new[] { 1, 256, 4096, 65536 })
+    registry.Register(new EarthScenario(samples, true));
+registry.Register(new EarthScenario(256, false));
 foreach (int width in new[] { 16, 17, 64 })
     foreach (int layers in new[] { 1, 4, 8 })
         registry.Register(new CompositeScenario(width, layers));

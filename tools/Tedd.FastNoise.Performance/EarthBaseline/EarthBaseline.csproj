@@ -1,0 +1,12 @@
+<!-- Builds the same frozen terrain recipe against the immutable baseline noise library. -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DefineConstants>$(DefineConstants);EARTH_BASELINE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../EarthRecipe.cs" />
+    <ProjectReference Include="$(BaselineProject)" Aliases="baseline" />
+  </ItemGroup>
+</Project>
