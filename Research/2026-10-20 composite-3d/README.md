@@ -21,6 +21,12 @@ Coordination correction: installed `MachineMutex` prepends `Global\` on Windows.
 
 ### Forcecraft Earth workload (new primary target)
 
+Combined retained-source confirmation on the **65,536-record Earth land graph with explicit Parallel** established **13.7246×** throughput (candidate/original elapsed ratio **0.0728620**, 95% CI **[0.0572040, 0.0928060]**). Its confidence interval satisfies the prospectively frozen 10× criterion. This includes nine noise fields, elevation and valley, all writes and scheduling; no H07 prototype is present. Ten randomized paired blocks launched 20 fresh owned processes, eight complete batches/arm, four warmups, seed 20261026, quiet validation, exact CoreCLR 10.0.13. Every session passed bitwise validation, quiescence and joined shutdown. The same registered normal builds and byte-identical dependencies used for H06b confirmation were reused; each arm was freshly launched. Both arms request Parallel; original source executes that request sequentially. The effect combines graph partitioning and OpenSimplex specialization and is not attributed solely to either mechanism.
+
+Plan `confirm-plan-257119739fbe4c4b9594a68dd62da5ff`; execution `op-57e54e3513fa4432b68f7790743cfcd5-confirmation`; comparison `cmp-d071f8c3db50bd76cbd761642b2417925eae560b3909d3911ef39e2172e7cb10`. Promotion eligible under the 0.1 useful-ratio threshold. Complete records and 52 raw observations (32 exploratory, 20 confirmation) are in `earth-parallel-evidence.json.gz` and `earth-parallel-measurements.csv`.
+
+Exploration on the same recipe gave elapsed ratios 0.29356 at 4,096 records (four partitions) and 0.05355 at 65,536 records (32 partitions); these noisy within-process estimates are not independent confirmation. The actual Forcecraft column sampler still uses 256 records and Auto; its established gains remain 1.54–1.68×. Obtaining the large-batch result in that caller requires aggregation and explicit Parallel selection. Forcecraft was not modified or executed.
+
 H07a exploration completed: eight randomized paired blocks per case, 32 operations/arm and four warmups; first-fill uses one operation/arm and one warmup. Seed 20261024; same-process, descriptive results. All 128 runs validated exact outputs and quiescence. Full evidence: `h07a-evidence.json.gz`, raw `h07a-measurements.csv`, `h07a-source.patch`, and separate `h07a-jit.asm.gz`.
 
 | Case | Candidate/original elapsed ratio |
