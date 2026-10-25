@@ -232,6 +232,6 @@ internal sealed class ProceduralNoise
     public Vector<float> SampleOpenSimplex3Wide(Vector<float> x, Vector<float> y, Vector<float> z)
     {
         NoisePipeline.Transform3<VectorOps, Vector<float>, Vector<int>>(_kernel.Transform3D, _request.Frequency, ref x, ref y, ref z);
-        return FractalKernel.OpenSimplex3<VectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
+        return FractalKernel.OpenSimplex3<ProceduralVectorOps, Vector<float>, Vector<int>>(_kernel, _fractal, _request.Seed, x, y, z, _request.Octaves, _request.LastOctaveFade);
     }
 }
