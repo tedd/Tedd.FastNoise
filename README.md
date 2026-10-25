@@ -228,6 +228,12 @@ The GPU package compiles the same graph into specialized GLSL/SPIR-V. Graph cons
 not make arbitrary C# methods GPU-executable: express their pure operations through graph nodes
 and retain orchestration and stateful work outside the graph.
 
+`ProceduralGeometry.IntersectsBox` and `IntersectsBoxShell` compose solid and hollow geometry
+using half-open minimum/maximum XYZ tuples. They test positive-volume overlap with an entire voxel
+footprint, so thin walls between sample centers remain represented at coarse resolution. Empty or
+reversed bounds have no coverage. Combine these predicates with seeded layout expressions and
+`Select` to produce material IDs; the same expressions compile for scalar, SIMD and GPU execution.
+
 ### Planetary terrain recipes
 
 `ProceduralGraph` is the generic algorithm builder, not a fixed Earth preset. Applications supply
