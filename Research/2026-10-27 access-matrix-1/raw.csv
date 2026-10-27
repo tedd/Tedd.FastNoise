@@ -1,0 +1,1249 @@
+shape,fractal,algorithm,access,observation,milliseconds,checksum
+"2D 256×256","Single",OpenSimplex2,"Point loop",0,1.568500,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",1,1.562300,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",2,1.576300,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",3,1.556500,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",4,1.530600,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",5,1.525500,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",6,1.530200,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",7,1.621100,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",8,1.533700,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",9,1.536600,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",10,1.532400,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",11,1.558600,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Point loop",12,1.531600,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",0,1.332300,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",1,1.308800,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",2,1.331600,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",3,1.306400,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",4,1.304900,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",5,1.335700,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",6,1.307800,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",7,1.312900,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",8,1.298900,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",9,1.440500,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",10,1.318500,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",11,1.355600,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Scalar fill",12,1.300400,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",0,0.354000,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",1,0.361900,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",2,0.354000,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",3,0.352800,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",4,0.393700,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",5,0.353400,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",6,0.353600,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",7,0.353400,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",8,0.353300,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",9,0.365400,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",10,0.353000,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",11,0.353900,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"SIMD fill",12,0.354400,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",0,0.194300,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",1,0.121400,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",2,0.102000,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",3,0.112600,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",4,0.101300,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",5,0.106900,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",6,0.223800,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",7,0.116000,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",8,0.121100,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",9,0.109900,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",10,0.105800,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",11,0.102200,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2,"Parallel fill",12,0.108100,7F92078F391E1A65
+"2D 256×256","Single",OpenSimplex2S,"Point loop",0,1.635300,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",1,1.623000,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",2,1.628600,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",3,1.685200,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",4,1.655900,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",5,1.627200,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",6,1.628300,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",7,1.632400,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",8,1.648700,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",9,1.634200,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",10,1.625600,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",11,1.632200,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Point loop",12,1.670100,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",0,1.300100,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",1,1.304400,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",2,1.343700,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",3,1.328200,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",4,1.296700,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",5,1.301800,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",6,1.300400,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",7,1.295400,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",8,1.297500,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",9,1.318400,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",10,1.302300,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",11,1.302100,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Scalar fill",12,1.300200,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",0,1.316500,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",1,1.307900,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",2,1.296700,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",3,1.310900,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",4,1.340300,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",5,1.302400,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",6,1.324100,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",7,1.302000,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",8,1.299800,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",9,1.296100,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",10,1.300800,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",11,1.301600,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"SIMD fill",12,1.323800,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",0,0.217300,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",1,0.208900,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",2,0.386100,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",3,0.277600,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",4,0.234700,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",5,0.230500,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",6,0.195600,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",7,0.198100,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",8,0.208000,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",9,0.204900,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",10,0.208100,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",11,0.210700,0A595F618F08E795
+"2D 256×256","Single",OpenSimplex2S,"Parallel fill",12,0.203000,0A595F618F08E795
+"2D 256×256","Single",Perlin,"Point loop",0,1.296600,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",1,1.339500,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",2,1.298200,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",3,1.288700,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",4,1.326800,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",5,1.297600,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",6,1.287100,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",7,1.292400,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",8,1.293400,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",9,1.293500,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",10,1.292500,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",11,1.292100,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Point loop",12,1.495100,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",0,0.903400,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",1,0.895800,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",2,0.910000,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",3,0.901100,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",4,0.925400,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",5,0.895200,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",6,0.902000,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",7,0.920200,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",8,0.906600,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",9,0.895800,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",10,0.907400,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",11,0.896000,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Scalar fill",12,0.930300,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",0,0.393100,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",1,0.390200,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",2,0.384700,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",3,0.385100,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",4,0.389800,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",5,0.384800,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",6,0.384800,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",7,0.385200,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",8,0.411300,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",9,0.383800,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",10,0.384200,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",11,0.384800,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"SIMD fill",12,0.393300,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",0,0.056800,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",1,0.117700,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",2,0.108300,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",3,0.185700,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",4,0.141700,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",5,0.115500,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",6,0.122900,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",7,0.110900,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",8,0.122500,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",9,0.116400,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",10,0.111100,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",11,0.107000,EC2D114FA71FC1F8
+"2D 256×256","Single",Perlin,"Parallel fill",12,0.099000,EC2D114FA71FC1F8
+"2D 256×256","Single",Value,"Point loop",0,1.125600,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",1,1.134500,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",2,1.139200,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",3,1.120500,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",4,1.131100,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",5,1.123900,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",6,1.127800,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",7,1.131500,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",8,1.116400,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",9,1.145700,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",10,1.132400,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",11,1.132500,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Point loop",12,1.126900,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",0,0.768500,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",1,0.777300,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",2,0.769300,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",3,0.778200,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",4,0.801700,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",5,0.778100,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",6,0.778100,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",7,0.770700,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",8,0.776100,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",9,0.769300,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",10,0.774600,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",11,0.769300,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Scalar fill",12,0.769000,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",0,0.124400,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",1,0.138900,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",2,0.124400,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",3,0.131300,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",4,0.124600,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",5,0.125100,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",6,0.124700,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",7,0.124700,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",8,0.124800,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",9,0.124700,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",10,0.124600,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",11,0.124700,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"SIMD fill",12,0.124500,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",0,0.027100,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",1,0.065500,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",2,0.067500,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",3,0.055100,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",4,0.062600,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",5,0.058200,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",6,0.052800,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",7,0.061600,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",8,0.051800,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",9,0.058700,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",10,0.052800,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",11,0.051800,CCCEB21B42E51A12
+"2D 256×256","Single",Value,"Parallel fill",12,0.057100,CCCEB21B42E51A12
+"2D 256×256","Single",ValueCubic,"Point loop",0,2.127600,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",1,2.090800,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",2,2.091700,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",3,2.112000,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",4,2.126700,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",5,2.090700,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",6,2.091200,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",7,2.096900,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",8,2.091500,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",9,2.090600,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",10,2.199500,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",11,2.124700,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Point loop",12,2.116600,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",0,1.862200,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",1,1.868400,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",2,1.860800,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",3,1.862900,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",4,1.862200,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",5,1.960000,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",6,1.865800,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",7,1.892500,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",8,1.877100,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",9,1.863000,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",10,1.862300,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",11,1.887800,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Scalar fill",12,1.862300,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",0,0.341000,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",1,0.353700,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",2,0.339000,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",3,0.366400,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",4,0.335600,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",5,0.335500,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",6,0.335600,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",7,0.335100,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",8,0.335400,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",9,0.344200,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",10,0.350800,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",11,0.338700,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"SIMD fill",12,0.341900,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",0,0.058000,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",1,0.108300,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",2,0.130100,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",3,0.133800,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",4,0.120800,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",5,0.106100,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",6,0.106200,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",7,0.102600,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",8,0.113700,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",9,0.116300,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",10,0.113000,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",11,0.105100,D96471A0F3834C85
+"2D 256×256","Single",ValueCubic,"Parallel fill",12,0.114000,D96471A0F3834C85
+"2D 256×256","Single",Cellular,"Point loop",0,3.891400,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",1,3.848200,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",2,3.819800,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",3,3.822500,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",4,3.851000,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",5,3.825800,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",6,3.834100,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",7,3.810900,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",8,3.892900,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",9,3.832000,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",10,3.843100,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",11,3.815700,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Point loop",12,3.842400,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",0,3.403400,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",1,3.388200,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",2,3.389100,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",3,3.351900,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",4,3.349200,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",5,3.419700,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",6,3.356100,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",7,3.378200,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",8,3.354000,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",9,3.395500,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",10,3.350400,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",11,3.347800,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Scalar fill",12,3.383100,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",0,0.955000,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",1,0.993300,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",2,0.955700,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",3,0.970600,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",4,0.955300,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",5,0.974400,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",6,0.955900,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",7,0.960900,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",8,1.009400,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",9,0.994600,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",10,0.955000,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",11,0.959800,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"SIMD fill",12,0.956500,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",0,0.146200,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",1,0.195000,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",2,0.189700,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",3,0.180600,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",4,0.171100,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",5,0.185100,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",6,0.176300,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",7,0.191500,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",8,0.216000,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",9,0.178400,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",10,0.166900,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",11,0.189900,5833EA50DAD13079
+"2D 256×256","Single",Cellular,"Parallel fill",12,0.163000,5833EA50DAD13079
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",0,10.043000,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",1,10.064400,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",2,10.022500,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",3,10.101200,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",4,10.014700,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",5,9.978100,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",6,10.003900,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",7,10.023500,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",8,9.997900,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",9,10.033900,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",10,10.194500,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",11,10.508400,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Point loop",12,10.077600,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",0,9.499400,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",1,9.439700,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",2,9.556600,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",3,9.606000,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",4,9.473600,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",5,9.491600,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",6,9.454100,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",7,9.527400,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",8,9.545400,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",9,9.464400,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",10,9.623600,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",11,9.569800,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Scalar fill",12,9.616200,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",0,2.341500,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",1,2.293600,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",2,2.311100,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",3,2.347000,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",4,2.293100,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",5,2.471700,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",6,2.308100,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",7,2.363800,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",8,2.304300,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",9,2.293800,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",10,2.320200,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",11,2.301000,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"SIMD fill",12,2.337400,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",0,0.288300,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",1,0.337700,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",2,0.321600,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",3,0.326700,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",4,0.306900,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",5,0.322800,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",6,0.357100,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",7,0.354200,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",8,0.380100,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",9,0.330000,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",10,0.324100,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",11,0.338700,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2,"Parallel fill",12,0.358600,64E84BE51E5134AE
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",0,6.342500,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",1,6.302500,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",2,6.528300,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",3,6.354000,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",4,6.407000,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",5,6.481600,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",6,6.452700,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",7,6.311000,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",8,6.322400,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",9,6.400900,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",10,6.315200,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",11,6.461200,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Point loop",12,6.493000,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",0,6.006100,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",1,5.887200,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",2,6.200800,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",3,6.054600,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",4,6.074700,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",5,6.193900,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",6,6.020500,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",7,6.210600,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",8,5.924600,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",9,5.920000,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",10,6.019000,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",11,5.853400,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Scalar fill",12,6.103500,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",0,5.864000,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",1,5.932400,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",2,6.187900,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",3,6.019400,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",4,5.950100,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",5,6.861600,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",6,6.298200,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",7,6.266200,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",8,6.229300,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",9,6.338900,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",10,6.418900,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",11,6.305400,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"SIMD fill",12,6.729200,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",0,0.578400,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",1,0.575800,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",2,0.578600,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",3,0.637300,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",4,0.597900,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",5,0.593400,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",6,0.572000,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",7,0.563100,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",8,0.554300,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",9,0.659600,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",10,0.653900,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",11,0.653700,10433742B011B00C
+"2D 256×256","fBm ×4",OpenSimplex2S,"Parallel fill",12,0.592500,10433742B011B00C
+"2D 256×256","fBm ×4",Perlin,"Point loop",0,7.961000,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",1,8.135500,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",2,8.019900,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",3,8.039400,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",4,8.077800,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",5,8.025400,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",6,8.052600,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",7,7.972100,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",8,8.109300,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",9,7.942500,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",10,8.056100,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",11,7.994500,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Point loop",12,8.096500,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",0,7.742000,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",1,7.827800,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",2,7.766400,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",3,7.890000,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",4,7.818000,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",5,7.733500,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",6,7.968900,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",7,7.784400,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",8,7.841400,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",9,7.728200,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",10,7.813000,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",11,7.762600,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Scalar fill",12,7.825700,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",0,2.538300,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",1,2.538600,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",2,2.571600,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",3,2.591300,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",4,2.546900,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",5,2.531000,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",6,2.542700,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",7,2.571100,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",8,2.600200,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",9,2.584600,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",10,2.547900,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",11,2.544600,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"SIMD fill",12,2.534300,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",0,0.271400,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",1,0.366600,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",2,0.330200,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",3,0.307700,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",4,0.309700,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",5,0.380100,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",6,0.330200,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",7,0.343600,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",8,0.354800,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",9,0.327500,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",10,0.292100,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",11,0.328600,69F904846409D386
+"2D 256×256","fBm ×4",Perlin,"Parallel fill",12,0.328000,69F904846409D386
+"2D 256×256","fBm ×4",Value,"Point loop",0,7.017100,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",1,7.015000,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",2,6.944200,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",3,6.942200,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",4,7.000500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",5,6.921900,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",6,6.973000,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",7,6.969600,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",8,6.900300,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",9,6.969400,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",10,6.954500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",11,6.980500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Point loop",12,6.919800,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",0,7.429000,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",1,7.358900,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",2,7.396500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",3,7.369700,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",4,7.417600,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",5,7.330000,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",6,7.408400,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",7,7.385400,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",8,7.454500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",9,7.326000,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",10,7.397400,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",11,7.466200,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Scalar fill",12,7.302500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",0,1.481600,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",1,1.480500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",2,1.762100,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",3,1.490200,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",4,1.467700,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",5,1.484300,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",6,1.471900,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",7,1.499100,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",8,1.468800,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",9,1.465500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",10,1.470600,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",11,1.468200,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"SIMD fill",12,1.554700,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",0,0.227800,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",1,0.245500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",2,0.221700,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",3,0.224500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",4,0.232200,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",5,0.234800,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",6,0.226800,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",7,0.224100,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",8,0.228300,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",9,0.231200,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",10,0.227900,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",11,0.204500,C542D0D87588817D
+"2D 256×256","fBm ×4",Value,"Parallel fill",12,0.223400,C542D0D87588817D
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",0,13.581500,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",1,13.591400,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",2,13.673100,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",3,13.594100,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",4,15.909600,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",5,17.911500,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",6,17.378700,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",7,24.420300,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",8,24.651500,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",9,24.505400,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",10,24.439600,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",11,24.573200,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Point loop",12,24.557300,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",0,24.669700,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",1,24.676600,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",2,24.814500,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",3,24.682900,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",4,18.920100,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",5,20.438300,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",6,24.667000,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",7,24.710000,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",8,24.697800,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",9,24.662400,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",10,24.661800,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",11,24.694300,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Scalar fill",12,24.691200,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",0,2.929800,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",1,2.947400,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",2,2.943400,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",3,2.932700,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",4,2.922100,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",5,2.937500,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",6,2.985300,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",7,2.938200,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",8,2.936600,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",9,2.933700,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",10,2.930200,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",11,2.947800,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"SIMD fill",12,2.931300,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",0,0.281900,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",1,0.326200,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",2,0.345700,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",3,0.309600,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",4,0.389900,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",5,0.399600,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",6,0.352600,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",7,0.349600,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",8,0.374800,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",9,0.373100,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",10,0.407200,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",11,0.391700,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",ValueCubic,"Parallel fill",12,0.378900,88052FD17C8EEB9C
+"2D 256×256","fBm ×4",Cellular,"Point loop",0,34.463200,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",1,34.439500,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",2,34.437800,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",3,27.868600,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",4,24.943600,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",5,22.056700,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",6,20.868900,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",7,28.089800,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",8,32.647800,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",9,31.265600,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",10,32.177700,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",11,32.188900,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Point loop",12,32.368400,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",0,31.109500,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",1,28.626600,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",2,28.437300,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",3,30.537800,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",4,21.025000,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",5,21.428900,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",6,21.714200,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",7,24.731800,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",8,30.859600,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",9,31.362100,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",10,29.296900,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",11,31.412200,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Scalar fill",12,31.014300,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",0,6.973500,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",1,6.942400,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",2,6.858300,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",3,6.906700,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",4,7.047000,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",5,6.836800,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",6,6.907100,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",7,6.973800,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",8,7.012900,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",9,6.884000,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",10,6.964000,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",11,7.036100,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"SIMD fill",12,6.903700,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",0,0.536400,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",1,0.584300,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",2,0.536500,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",3,0.649400,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",4,0.604300,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",5,0.572800,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",6,0.541300,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",7,0.550100,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",8,0.541800,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",9,0.594400,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",10,0.571200,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",11,0.617400,37FE35DFBFA01AA8
+"2D 256×256","fBm ×4",Cellular,"Parallel fill",12,0.548000,37FE35DFBFA01AA8
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",0,6.494400,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",1,6.506100,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",2,6.327900,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",3,6.149000,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",4,6.346100,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",5,5.737500,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",6,6.035500,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",7,5.981900,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",8,6.041900,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",9,6.040600,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",10,6.071000,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",11,5.994600,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Point loop",12,6.059200,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",0,3.502400,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",1,5.548300,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",2,5.629700,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",3,5.285300,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",4,5.519400,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",5,5.574600,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",6,5.560100,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",7,5.638100,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",8,5.439100,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",9,5.520700,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",10,5.938800,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",11,5.333700,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Scalar fill",12,5.576000,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",0,0.841400,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",1,0.827600,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",2,0.882700,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",3,0.885400,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",4,0.861700,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",5,0.855600,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",6,0.855000,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",7,0.888300,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",8,0.890400,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",9,0.857300,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",10,0.876800,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",11,0.883000,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"SIMD fill",12,0.855100,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",0,0.114200,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",1,0.172000,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",2,0.164500,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",3,0.187500,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",4,0.197100,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",5,0.208200,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",6,0.185000,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",7,0.202300,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",8,0.168400,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",9,0.163800,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",10,0.255500,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",11,0.177600,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2,"Parallel fill",12,0.163600,A179AA1EAD4F8852
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",0,5.150600,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",1,4.884200,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",2,5.100400,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",3,5.256400,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",4,5.085500,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",5,5.006800,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",6,5.203100,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",7,5.115000,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",8,5.031900,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",9,5.267600,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",10,5.100900,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",11,5.050000,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Point loop",12,5.257200,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",0,4.249200,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",1,4.492500,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",2,4.261700,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",3,4.306500,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",4,4.182100,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",5,4.553000,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",6,4.216800,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",7,4.204500,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",8,4.725300,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",9,4.134200,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",10,4.288700,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",11,4.179200,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Scalar fill",12,4.485300,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",0,4.193800,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",1,4.361400,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",2,4.392000,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",3,4.138200,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",4,4.224500,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",5,4.387100,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",6,4.248300,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",7,4.221100,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",8,4.236100,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",9,4.422100,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",10,4.106500,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",11,4.305700,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"SIMD fill",12,4.476800,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",0,0.357200,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",1,0.361900,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",2,0.342000,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",3,0.404100,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",4,0.411200,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",5,0.377000,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",6,0.364100,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",7,0.347200,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",8,0.340400,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",9,0.334000,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",10,0.350300,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",11,0.348900,CCB90D79BC35BAF3
+"3D 16×256×16","Single",OpenSimplex2S,"Parallel fill",12,0.337000,CCB90D79BC35BAF3
+"3D 16×256×16","Single",Perlin,"Point loop",0,4.682900,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",1,4.593700,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",2,4.709800,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",3,4.780000,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",4,4.656300,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",5,4.710700,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",6,4.786300,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",7,4.377700,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",8,4.720800,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",9,4.797000,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",10,4.760100,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",11,4.663000,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Point loop",12,4.857600,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",0,4.027900,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",1,3.779500,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",2,3.720100,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",3,3.684000,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",4,3.981300,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",5,3.885400,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",6,3.758500,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",7,3.757600,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",8,3.771400,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",9,3.815700,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",10,3.610600,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",11,3.769400,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Scalar fill",12,3.830400,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",0,1.023000,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",1,1.043900,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",2,1.184800,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",3,1.018900,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",4,1.098800,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",5,1.041200,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",6,1.116700,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",7,1.041700,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",8,1.030000,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",9,1.033900,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",10,1.041700,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",11,1.030200,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"SIMD fill",12,1.046400,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",0,0.113100,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",1,0.176000,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",2,0.179600,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",3,0.181500,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",4,0.174200,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",5,0.174600,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",6,0.183700,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",7,0.174200,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",8,0.173600,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",9,0.170100,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",10,0.318400,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",11,0.196500,98CEEF5E86A5E915
+"3D 16×256×16","Single",Perlin,"Parallel fill",12,0.194600,98CEEF5E86A5E915
+"3D 16×256×16","Single",Value,"Point loop",0,1.796600,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",1,1.803500,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",2,1.817800,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",3,1.831500,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",4,1.864300,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",5,1.802400,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",6,2.016700,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",7,1.916500,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",8,1.808700,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",9,1.817800,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",10,1.869000,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",11,2.319700,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Point loop",12,1.862300,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",0,1.427200,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",1,1.391100,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",2,1.411000,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",3,1.996800,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",4,1.431800,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",5,1.365400,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",6,1.387600,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",7,1.437200,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",8,1.364700,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",9,1.370400,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",10,1.470500,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",11,1.390600,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Scalar fill",12,1.369300,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",0,0.249900,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",1,0.272800,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",2,0.254100,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",3,0.258300,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",4,0.264500,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",5,0.348700,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",6,0.350800,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",7,0.329400,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",8,0.359300,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",9,0.330800,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",10,0.331400,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",11,0.331900,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"SIMD fill",12,0.342500,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",0,0.051400,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",1,0.098000,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",2,0.088200,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",3,0.087700,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",4,0.102700,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",5,0.090200,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",6,0.090000,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",7,0.106400,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",8,0.089100,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",9,0.092500,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",10,0.126800,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",11,0.095900,48F32DF5739741A7
+"3D 16×256×16","Single",Value,"Parallel fill",12,0.097600,48F32DF5739741A7
+"3D 16×256×16","Single",ValueCubic,"Point loop",0,13.716500,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",1,13.709900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",2,13.735400,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",3,13.711900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",4,13.738200,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",5,13.754000,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",6,13.715900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",7,13.723900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",8,13.731600,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",9,13.719100,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",10,13.702200,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",11,13.700300,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Point loop",12,13.718200,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",0,8.248500,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",1,9.465000,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",2,10.706300,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",3,13.870400,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",4,10.396700,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",5,9.427200,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",6,9.606200,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",7,8.853600,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",8,8.633800,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",9,9.030700,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",10,8.867900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",11,8.193200,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Scalar fill",12,8.443500,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",0,2.078600,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",1,1.544200,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",2,1.495000,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",3,1.490900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",4,1.970300,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",5,2.046900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",6,2.048800,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",7,2.091400,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",8,2.145700,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",9,1.898400,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",10,1.574200,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",11,1.489900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"SIMD fill",12,1.490000,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",0,0.262900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",1,0.280400,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",2,0.278000,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",3,0.312200,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",4,0.316400,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",5,0.280100,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",6,0.269400,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",7,0.309900,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",8,0.288700,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",9,0.261800,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",10,0.265000,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",11,0.257500,B9605F7EF4771A17
+"3D 16×256×16","Single",ValueCubic,"Parallel fill",12,0.277100,B9605F7EF4771A17
+"3D 16×256×16","Single",Cellular,"Point loop",0,17.390200,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",1,17.433000,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",2,17.778800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",3,17.442600,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",4,17.636500,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",5,17.756800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",6,17.526900,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",7,17.830200,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",8,17.621500,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",9,17.895500,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",10,17.837500,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",11,17.655800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Point loop",12,17.740500,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",0,16.692800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",1,16.822400,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",2,16.519800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",3,16.426100,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",4,16.810800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",5,16.554100,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",6,16.749100,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",7,16.846400,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",8,16.561000,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",9,16.419500,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",10,16.778300,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",11,16.756200,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Scalar fill",12,16.613600,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",0,3.283800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",1,3.872900,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",2,4.813300,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",3,5.152100,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",4,3.366800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",5,3.227900,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",6,4.575800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",7,5.129700,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",8,3.309400,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",9,3.350500,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",10,3.860700,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",11,3.237800,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"SIMD fill",12,3.396300,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",0,0.404300,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",1,0.440100,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",2,0.486600,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",3,0.504500,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",4,0.497000,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",5,0.495000,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",6,0.484200,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",7,0.464400,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",8,0.455600,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",9,0.493700,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",10,0.452400,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",11,0.462000,DBD4CEC63BA9F16B
+"3D 16×256×16","Single",Cellular,"Parallel fill",12,0.480800,DBD4CEC63BA9F16B
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",0,33.545200,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",1,30.549400,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",2,25.493600,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",3,23.647800,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",4,27.769700,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",5,31.973400,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",6,33.898200,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",7,33.708200,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",8,34.699300,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",9,34.965900,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",10,34.890100,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",11,34.685800,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Point loop",12,34.691600,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",0,25.901300,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",1,28.239200,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",2,24.919600,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",3,34.146500,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",4,26.129700,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",5,27.173900,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",6,33.801500,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",7,29.680600,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",8,27.275900,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",9,34.931900,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",10,34.915100,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",11,34.324800,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Scalar fill",12,34.690600,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",0,4.960800,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",1,5.261500,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",2,5.104000,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",3,4.845100,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",4,5.057000,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",5,5.109900,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",6,4.976400,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",7,5.233700,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",8,4.844200,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",9,4.863700,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",10,5.069300,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",11,5.246300,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"SIMD fill",12,5.113300,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",0,0.365700,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",1,0.426400,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",2,0.420000,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",3,0.431700,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",4,0.488200,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",5,0.417600,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",6,0.440200,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",7,0.453900,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",8,0.430400,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",9,0.487300,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",10,0.445300,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",11,0.424900,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2,"Parallel fill",12,0.441900,BE52956BE0567FAC
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",0,18.300400,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",1,18.148100,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",2,17.817700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",3,18.317000,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",4,18.271400,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",5,18.335300,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",6,18.387700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",7,16.281300,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",8,14.345800,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",9,16.945800,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",10,18.378700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",11,18.245900,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Point loop",12,18.142300,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",0,17.292700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",1,17.660900,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",2,17.358700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",3,17.349700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",4,17.476100,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",5,17.464400,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",6,17.589000,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",7,17.509900,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",8,17.095900,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",9,17.107600,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",10,17.423800,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",11,16.736700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Scalar fill",12,16.524700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",0,14.318400,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",1,14.435900,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",2,14.837600,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",3,12.998900,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",4,14.691000,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",5,15.413900,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",6,13.933400,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",7,17.289400,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",8,17.653100,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",9,17.674600,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",10,17.607000,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",11,17.621800,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"SIMD fill",12,15.533600,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",0,1.157100,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",1,1.178200,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",2,1.194900,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",3,1.180000,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",4,1.167800,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",5,1.118800,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",6,1.210700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",7,1.202000,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",8,1.188800,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",9,1.188100,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",10,1.159800,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",11,1.256200,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",OpenSimplex2S,"Parallel fill",12,1.200700,290CCE8E3E6E3744
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",0,21.872400,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",1,22.117500,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",2,21.799100,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",3,22.005200,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",4,22.057000,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",5,22.037800,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",6,21.910000,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",7,22.273300,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",8,22.131400,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",9,22.173300,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",10,14.312100,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",11,16.721500,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Point loop",12,21.640700,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",0,22.326100,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",1,22.942200,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",2,22.356500,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",3,23.040600,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",4,23.017600,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",5,23.076100,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",6,22.905900,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",7,22.782100,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",8,22.670300,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",9,22.762900,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",10,22.566800,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",11,22.946800,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Scalar fill",12,23.140500,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",0,5.093800,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",1,4.983800,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",2,4.227800,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",3,4.122200,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",4,5.060400,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",5,5.056600,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",6,5.109600,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",7,4.921100,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",8,4.998900,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",9,5.102600,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",10,5.074600,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",11,5.025400,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"SIMD fill",12,4.953200,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",0,0.400400,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",1,0.432200,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",2,0.444800,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",3,0.426000,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",4,0.424500,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",5,0.441900,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",6,0.449200,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",7,0.456200,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",8,0.459500,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",9,0.440600,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",10,0.454700,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",11,0.466200,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Perlin,"Parallel fill",12,0.444600,9404D2D091BCFB97
+"3D 16×256×16","fBm ×4",Value,"Point loop",0,16.570900,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",1,16.611100,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",2,16.367700,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",3,16.385500,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",4,13.329600,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",5,16.762100,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",6,16.768800,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",7,16.801800,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",8,16.783800,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",9,16.565800,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",10,15.560400,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",11,16.402900,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Point loop",12,16.597200,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",0,11.097000,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",1,17.175100,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",2,17.292200,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",3,17.042900,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",4,16.838000,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",5,17.093700,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",6,16.866600,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",7,16.894400,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",8,17.161200,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",9,17.367800,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",10,12.917000,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",11,15.931000,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Scalar fill",12,16.954700,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",0,2.779200,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",1,2.813000,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",2,2.791900,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",3,2.728300,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",4,3.019700,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",5,2.762700,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",6,2.726900,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",7,2.790500,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",8,2.856700,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",9,2.970800,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",10,2.731300,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",11,2.794300,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"SIMD fill",12,2.831100,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",0,0.292500,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",1,0.328800,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",2,0.296400,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",3,0.302100,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",4,0.319800,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",5,0.337100,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",6,0.300700,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",7,0.300800,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",8,0.616300,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",9,0.318400,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",10,0.368700,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",11,0.316200,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",Value,"Parallel fill",12,0.336000,FCCB7DE59DAB1FFD
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",0,55.421900,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",1,52.234900,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",2,54.404100,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",3,54.501500,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",4,54.366500,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",5,54.654100,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",6,54.667500,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",7,55.266300,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",8,55.295400,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",9,53.512200,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",10,49.582800,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",11,52.888700,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Point loop",12,54.318600,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",0,38.330000,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",1,39.230900,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",2,40.505700,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",3,43.564100,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",4,42.090400,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",5,38.989000,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",6,50.746600,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",7,50.419000,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",8,49.687500,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",9,55.584700,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",10,55.490300,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",11,55.610100,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Scalar fill",12,55.612500,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",0,7.583100,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",1,7.804500,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",2,9.522200,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",3,9.799700,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",4,9.724600,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",5,9.645400,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",6,9.837200,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",7,9.673000,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",8,9.788200,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",9,9.831500,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",10,9.628800,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",11,9.828400,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"SIMD fill",12,9.791000,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",0,0.750400,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",1,0.770600,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",2,0.770100,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",3,0.782700,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",4,0.760200,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",5,0.915900,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",6,0.841600,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",7,0.838200,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",8,0.896300,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",9,0.872500,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",10,0.808800,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",11,0.819400,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",ValueCubic,"Parallel fill",12,0.828200,1BAC0D293F6D2168
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",0,81.915600,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",1,63.220900,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",2,73.376700,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",3,86.792600,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",4,78.399300,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",5,60.783400,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",6,74.726700,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",7,77.883200,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",8,63.133100,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",9,78.570900,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",10,80.009400,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",11,75.620500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Point loop",12,77.234500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",0,66.291800,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",1,59.138500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",2,70.912000,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",3,78.397500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",4,76.219500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",5,76.992600,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",6,80.428700,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",7,80.133200,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",8,79.893300,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",9,79.964200,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",10,77.235400,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",11,76.442100,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Scalar fill",12,76.668300,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",0,24.332400,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",1,24.271900,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",2,24.151700,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",3,24.225000,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",4,24.250500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",5,24.291500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",6,24.065500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",7,23.964500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",8,21.383300,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",9,20.935800,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",10,23.561800,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",11,23.297400,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"SIMD fill",12,19.037100,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",0,1.426700,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",1,1.436800,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",2,1.428800,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",3,1.543200,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",4,1.490500,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",5,1.542900,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",6,1.614700,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",7,1.586200,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",8,1.440800,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",9,1.438400,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",10,1.446400,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",11,1.426700,A56CBF034935AF53
+"3D 16×256×16","fBm ×4",Cellular,"Parallel fill",12,1.426300,A56CBF034935AF53

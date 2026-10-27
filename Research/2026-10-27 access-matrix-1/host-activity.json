@@ -1,0 +1,121 @@
+{
+  "revision": "420ecc4b0fb68c5c203732200ff7a392ce15ad42",
+  "priorityClass": "High",
+  "launcherPriorityClass": "High",
+  "cpu": "AMD Ryzen 9 5950X 16-Core Processor",
+  "logicalProcessors": 32,
+  "beforeRunCpuPercent": 18.139187,
+  "durationSeconds": 18.4061448,
+  "exitCode": 0,
+  "activity": [
+    {
+      "elapsedSeconds": 1.0098304,
+      "totalCpuPercent": 22.604116,
+      "benchmarkCpuPercent": 3.6779937103365152,
+      "estimatedCompetingCpuPercent": 18.926122289663486
+    },
+    {
+      "elapsedSeconds": 2.041465,
+      "totalCpuPercent": 24.461855,
+      "benchmarkCpuPercent": 3.0765041469140333,
+      "estimatedCompetingCpuPercent": 21.385350853085967
+    },
+    {
+      "elapsedSeconds": 3.0573599,
+      "totalCpuPercent": 21.118013,
+      "benchmarkCpuPercent": 3.1241697590961435,
+      "estimatedCompetingCpuPercent": 17.993843240903857
+    },
+    {
+      "elapsedSeconds": 4.0629968,
+      "totalCpuPercent": 23.107418,
+      "benchmarkCpuPercent": 3.107483426672192,
+      "estimatedCompetingCpuPercent": 19.999934573327806
+    },
+    {
+      "elapsedSeconds": 5.0766894,
+      "totalCpuPercent": 23.370882,
+      "benchmarkCpuPercent": 3.130957180707443,
+      "estimatedCompetingCpuPercent": 20.239924819292558
+    },
+    {
+      "elapsedSeconds": 6.0804595,
+      "totalCpuPercent": 20.707989,
+      "benchmarkCpuPercent": 3.259196876854572,
+      "estimatedCompetingCpuPercent": 17.44879212314543
+    },
+    {
+      "elapsedSeconds": 7.0846611,
+      "totalCpuPercent": 20.742596,
+      "benchmarkCpuPercent": 3.355044071827808,
+      "estimatedCompetingCpuPercent": 17.38755192817219
+    },
+    {
+      "elapsedSeconds": 8.0957129,
+      "totalCpuPercent": 19.137566,
+      "benchmarkCpuPercent": 3.7186676538234713,
+      "estimatedCompetingCpuPercent": 15.418898346176528
+    },
+    {
+      "elapsedSeconds": 9.0986975,
+      "totalCpuPercent": 23.345823,
+      "benchmarkCpuPercent": 3.0670180529192583,
+      "estimatedCompetingCpuPercent": 20.27880494708074
+    },
+    {
+      "elapsedSeconds": 10.1005554,
+      "totalCpuPercent": 26.74886,
+      "benchmarkCpuPercent": 3.1192048293475576,
+      "estimatedCompetingCpuPercent": 23.62965517065244
+    },
+    {
+      "elapsedSeconds": 11.1041817,
+      "totalCpuPercent": 21.379848,
+      "benchmarkCpuPercent": 3.6002257513578493,
+      "estimatedCompetingCpuPercent": 17.77962224864215
+    },
+    {
+      "elapsedSeconds": 12.113423,
+      "totalCpuPercent": 27.419426,
+      "benchmarkCpuPercent": 3.096385373844691,
+      "estimatedCompetingCpuPercent": 24.32304062615531
+    },
+    {
+      "elapsedSeconds": 13.1147898,
+      "totalCpuPercent": 22.626118,
+      "benchmarkCpuPercent": 3.1207345799760846,
+      "estimatedCompetingCpuPercent": 19.505383420023918
+    },
+    {
+      "elapsedSeconds": 14.1173936,
+      "totalCpuPercent": 24.659723,
+      "benchmarkCpuPercent": 3.068182940260153,
+      "estimatedCompetingCpuPercent": 21.591540059739845
+    },
+    {
+      "elapsedSeconds": 15.1333366,
+      "totalCpuPercent": 26.068403,
+      "benchmarkCpuPercent": 4.565878080758467,
+      "estimatedCompetingCpuPercent": 21.502524919241534
+    },
+    {
+      "elapsedSeconds": 16.1372813,
+      "totalCpuPercent": 23.750177,
+      "benchmarkCpuPercent": 3.161357517998745,
+      "estimatedCompetingCpuPercent": 20.588819482001256
+    },
+    {
+      "elapsedSeconds": 17.150516,
+      "totalCpuPercent": 29.33773,
+      "benchmarkCpuPercent": 3.0841817794041257,
+      "estimatedCompetingCpuPercent": 26.253548220595874
+    },
+    {
+      "elapsedSeconds": 18.164037,
+      "totalCpuPercent": 21.269625,
+      "benchmarkCpuPercent": 4.384082199579482,
+      "estimatedCompetingCpuPercent": 16.88554280042052
+    }
+  ],
+  "note": "High process priority; background applications remained running. Competing CPU is estimated as total system CPU minus benchmark CPU over sampled intervals."
+}
