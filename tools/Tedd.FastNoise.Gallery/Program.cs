@@ -93,9 +93,9 @@ internal static class Program
 
         yield return ("layered-world", BuildWorld, Palette.Terrain);
 
-        // The zoom ladder: the same world at four sample spacings, band-limited, plus the same
+        // The zoom ladder: the same world at increasing sample spacings, band-limited, plus the same
         // far view with level of detail off so the difference is visible rather than asserted.
-        foreach (float step in new[] { 1f, 64f, 1024f, 4096f })
+        foreach (float step in new[] { 1f, 64f, 128f, 1024f, 4096f })
         {
             float captured = step;
             yield return (
